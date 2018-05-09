@@ -1,0 +1,26 @@
+{{#if products}}
+{{# each products}}
+    {{# each this}}
+    <div class="col-md-3 col-sm-6">
+        <div class="products">
+            <a href="/product/{{this.ma}}"><img src="{{this.hinhanh.[0]}}" alt="Product Name" class="thumbnail"></a>
+            <div class="productname">
+                {{this.ten}}
+            </div>
+            <h4 class="price">{{this.gia}} VND</h4>
+            <div class="button_group">
+                <button class="button_buy" type="button" onclick="window.location.href='/product/{{this.ma}}'">
+                    Xem chi tiết
+                </button>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+{{/each}}
+{{else}}
+    <div class="alert alert-danger">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>Lỗi !!!</strong>. Không tìm thấy sản phẩm trong database. Click vào <a href="/addProduct">đây</a>  để phát sinh sản phẩm.
+    </div>
+    {{/if}}
+
