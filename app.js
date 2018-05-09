@@ -31,7 +31,7 @@ app.use('/add',add);
 
 
 //connect to database
-mongodb.connect('mongodb://localhost:27017/eshopping');
+mongodb.connect('mongodb://admin:admin@ds117540.mlab.com:17540/eshopping');
 
 
 // catch 404 and forward to error handler
