@@ -11,7 +11,6 @@ var usersRouter = require('./routes/users');
 var infoProduct = require('./routes/product');
 var mongodb = require('mongoose');
 var session = require('express-session');
-var passport = require('passport');
 var flash = require('connect-flash');
 
 
