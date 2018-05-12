@@ -1,26 +1,88 @@
-{{#if products}}
-{{# each products}}
-    {{# each this}}
-    <div class="col-md-3 col-sm-6">
-        <div class="products">
-            <a href="/product/{{this.ma}}"><img src="{{this.hinhanh.[0]}}" alt="Product Name" class="thumbnail"></a>
-            <div class="productname">
-                {{this.ten}}
+<div class="row">
+    <div class="col-md-3">
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                            Loại Ghế
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <ul class="list-unstyled">
+                            <li><a href="/">▶Tất cả sản phẩm</a></li>
+                            {{#each loai}}
+                            <li><a href="/category/loai/{{this._id}}/">▶{{this.ten}}</a></li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <h4 class="price">{{this.gia}} VND</h4>
-            <div class="button_group">
-                <button class="button_buy" type="button" onclick="window.location.href='/product/{{this.ma}}'">
-                    Xem chi tiết
-                </button>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                            Giá Tiền
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <ul class="list-unstyled">
+                            <li><a href="/category/sort/inc">▶Tăng dần</a></li>
+                            <li><a href="/category/sort/dec">▶Giảm dần</a></li>
+
+                        </ul>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    {{/each}}
-{{/each}}
-{{else}}
-    <div class="alert alert-danger">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Lỗi !!!</strong>. Không tìm thấy sản phẩm trong database. Click vào <a href="/addProduct">đây</a>  để phát sinh sản phẩm.
-    </div>
-    {{/if}}
 
+    <!--Khung thứ 2-->
+    <div class="col-md-9">
+        <div class="row">
+        {{#if products}}
+        {{# each products}}
+            {{# each this}}
+            <div class="col-md-3 col-sm-6">
+                <div class="products">
+                    <a href="/product/detail/{{this._id}}"><img src="{{this.hinhanh.[0]}}" alt="Product Name" class="thumbnail"></a>
+                    <div class="productname">
+                        {{this.ten}}
+                    </div>
+
+                    <h4 class="price">{{formatNumber this.gia num}} VND</h4>
+                    <div class="button_group">
+                        <button class="button_buy" type="button" onclick="window.location.href='/product/{{this._id}}'">
+                            Xem chi tiết
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        {{/each}}
+        {{else}}
+            <div class="alert alert-danger">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                Không tìm thấy sản phẩm .{{#unless loai}} Nếu muốn phát sinh ngẫu nhiên . Click vào <a href="/product/generate">đây</a>  để phát sinh sản phẩm.{{/unless}}
+            </div>
+        {{/if}}
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <ul class="pagination">
+                    {{#each pages}}
+                        <li><a href="{{this.[1]}}/page/{{this.[0]}}">{{this.[0]}}</a></li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+<!--HẾt row-->
+</div>

@@ -2,10 +2,11 @@
 <html>
   <head>
     <title>{{title}}</title>
-
+      <link rel="shortcut icon" href="/images/favion.ico" />
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script src="/javascripts/eshopScript.js"></script>
       <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
 
@@ -13,6 +14,11 @@
   <!--Phan Header , cai dat tai /views/partials/header.hbs-->
   {{> header}}
   <div class="container">
+      <div class="alert flash {{alert_class}}" style="display:none">
+          <button type="button" class="close">×</button>
+          <i class="fa {{icon_class}} sign"></i><strong>{{type}}</strong>
+          <span>{{{message}}}</span>
+      </div>
       <!--Phan Body , cai dat tai /views/index.hbs-->
         {{{body}}}
   </div>
@@ -22,6 +28,5 @@
   </body>
 
   <!--JAVASCRIPT-->
-  <script src="/javascripts/eshopScript.js">
-  </script>
+
 </html>
