@@ -22,6 +22,16 @@
             <ul class="nav navbar-nav">
                 <li class="active"><a href="/">Trang chủ</a></li>
                 <li><a href="/product/add" data-toggle="tooltip" >Thêm Sản phẩm</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Phân Loại Sản Phẩm
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/">▶Tất cả sản phẩm</a></li>
+                        {{#each loai}}
+                            <li><a href="/category/loai/{{this._id}}/">▶{{this.ten}}</a></li>
+                        {{/each}}
+                    </ul>
+                </li>
                 <li><a href="#" data-toggle="tooltip" data-placement="bottom" title="Tính năng đang được phát triển">Thanh toán</a></li>
                 <li><a href="#" data-toggle="tooltip" data-placement="bottom" title="Tính năng đang được phát triển">Liên hệ</a></li>
             </ul>
