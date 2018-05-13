@@ -9,8 +9,10 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 router.get('/detail/:id', function(req, res, next) {
         var id = req.params.id;
    Product.findOne({_id:id},function (err,result) {
-       Loai.findOne({_id:result.loai},function (err,result2){
-           res.render('product/product-detail',{title:'eShop-'+result.ten,product:result,loai:result2});
+       Loai.find(function (err,result1) {
+           Loai.findOne({_id:result.loai},function (err,result2){
+               res.render('product/product-detail',{title:'eShop-'+result.ten,product:result,product_loai:result2,loai:result1});
+           });
        });
     });
 });
