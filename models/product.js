@@ -1,5 +1,7 @@
 var mongoose= require('mongoose');
+var random = require('mongoose-simple-random');
 var Schema  = mongoose.Schema;
+
 var schemaProduct = new Schema(
     {
         ten:{type:String,required:true, trim:true},
@@ -11,7 +13,9 @@ var schemaProduct = new Schema(
         mota:{type:String, default:'Không có mô tả'}
     }
 );
+
+//Thêm các hàm random cho schema
+schemaProduct.plugin(random);
+
 var productmodel = mongoose.model('product_col',schemaProduct);
 module.exports = productmodel;
-
-

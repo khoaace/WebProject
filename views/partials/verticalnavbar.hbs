@@ -1,0 +1,42 @@
+<div class="card">
+<div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                            Loại Ghế
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <ul class="list-unstyled">
+                            <li><a href="/">▶Tất cả sản phẩm</a></li>
+                            {{#each loai}}
+                            <li><a href="/category/loai/{{this._id}}/">▶{{this.ten}}</a></li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                            Giá Tiền
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <ul class="list-unstyled">
+                            <li><a href="/category/sort/inc">▶Tăng dần</a></li>
+                            <li><a href="/category/sort/dec">▶Giảm dần</a></li>
+
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+</div>
+</div>

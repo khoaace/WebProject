@@ -13,15 +13,31 @@
   <body>
   <!--Phan Header , cai dat tai /views/partials/header.hbs-->
   {{> header}}
-  <div class="container">
-      <div class="alert flash {{alert_class}}" style="display:none">
-          <button type="button" class="close">×</button>
-          <i class="fa {{icon_class}} sign"></i><strong>{{type}}</strong>
-          <span>{{{message}}}</span>
+
+  
+    
+
+    <!-- phần nội dung -->
+      <div class="container">
+          <div class="alert flash {{alert_class}}" style="display:none">
+              <button type="button" class="close">×</button>
+              <i class="fa {{icon_class}} sign"></i><strong>{{type}}</strong>
+              <span>{{{message}}}</span>
+          </div>
+
+          <div class="row">
+            <!-- Thanh điều hướng dọc, cai dat tai /views/partials/verticalnavbar.hbs-->
+            <div class="col-md-3">
+                {{> verticalnavbar}}
+            </div>
+            <!--Phan Body , cai dat tai /views/index.hbs-->
+            <div class="col-md-9">
+              {{{body}}}
+            </div>
+          </div>
       </div>
-      <!--Phan Body , cai dat tai /views/index.hbs-->
-        {{{body}}}
-  </div>
+  
+
   <!--Phan Footer , cai dat tai /views/partials/footer.hbs-->
   {{> footer}}
 

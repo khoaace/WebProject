@@ -27,7 +27,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cookieParser());
-app.use(session({ secret: 'keyboard cat' }));
+// Login
+app.use(session({
+    secret : "secret",
+    saveUninitialized: true,
+    resave: true
+  }));
+//app.use(passport.initialize());
+//app.use(passport.session());
+//
 app.use(flash({ unsafe: true }));
 
 app.use('/', indexRouter);

@@ -1,5 +1,5 @@
 
-    <div class="container">
+        <div class="row">
         <div class="card">
             <div class="container-fliud">
                 <div class="wrapper row">
@@ -47,9 +47,43 @@
                         </div>
                     </div>
                 </div>
+                <!-- hhh -->
+                <div class="row">
+                    <br><br>
+                    <h4 class="price">Sản Phẩm Tương Tự</h4>
+                </div>
+
+                <!-- mine -->
+                <div class="row">
+                    <div class="col-md-12">
+                        {{#if relatedproducts}}
+                            {{#each relatedproducts}}
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="products">
+                                        <a href="/product/detail/{{this._id}}"><img src="{{this.hinhanh.[0]}}" alt="Product Name" class="thumbnail"></a> 
+                                        
+
+                                        <div class="productname">
+                                            {{this.ten}}
+                                        </div>
+
+                                        <h4 class="price">{{this.gia}} VND</h4>
+                                        <div class="button_group">
+                                            <button class="button_buy" type="button" onclick="window.location.href='/product/detail/{{this._id}}'">
+                                                Xem chi tiết
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{/each}}
+                        {{/if}}
+                    </div>
+                </div>
+                <!-- end mine-->
+                <!--  -->
             </div>
         </div>
     </div>
-    <script>
+<script>
 
-    </script>
+</script>

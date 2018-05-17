@@ -5,13 +5,22 @@ var Loai = require('../models/loai');
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
+var number4related = 4;
+
 
 router.get('/detail/:id', function(req, res, next) {
-        var id = req.params.id;
-   Product.findOne({_id:id},function (err,result) {
-       Loai.find(function (err,result1) {
-           Loai.findOne({_id:result.loai},function (err,result2){
-               res.render('product/product-detail',{title:'eShop-'+result.ten,product:result,product_loai:result2,loai:result1});
+    var id = req.params.id;
+    Product.findOne({_id:id},function (err,result) {
+        Loai.find(function (err,result1) {
+            Loai.findOne({_id:result.loai},function (err,result2){
+                Product.findRandom({loai: result2._id}, {}, {skip: 10, limit: number4related},function (err, relatedproductresult){
+                    console.log(relatedproductresult);
+                 res.render('product/product-detail',{title:'eShop-'+result.ten,product:result,product_loai:result2,loai:result1,relatedproducts:relatedproductresult});
+                });
+                /*Product.find({loai: result2._id},function (err, relatedproductresult){
+                   console.log(relatedproductresult);
+                res.render('product/product-detail',{title:'eShop-'+result.ten,product:result,product_loai:result2,loai:result1,relatedproducts:relatedproductresult});
+               });*/
            });
        });
     });
