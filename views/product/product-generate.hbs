@@ -1,0 +1,40 @@
+<form class="form-horizontal" method="post">
+    <fieldset>
+        <!-- Form Name -->
+
+        <center> <legend>Phát sinh sản phẩm</legend></center>
+        {{#if message}}
+            <div class="alert {{message.[0]}}">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{message.[1]}}
+            </div>
+        {{/if}}
+
+        <!-- Select Basic -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="selectbasic">Chọn loại</label>
+            <div class="col-md-4">
+                <select id="selectbasic" name="loai" class="form-control">
+                    {{# each loai}}
+                        {{#if this.ten}}
+                            <option value="{{this._id}}">{{this.ten}}</option>
+                        {{/if}}
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
+
+        <!-- Number input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="textinput">Số lượng</label>
+            <div class="col-md-4">
+                <input id="textinput" name="count" min='0' type="number" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập số lượng')" oninput="setCustomValidity('')">
+            </div>
+        </div>
+        <center>
+            <input type="submit" class="btn3d btn btn-success btn-lg" value="Phát sinh sản phẩm">
+        </center>
+    </fieldset>
+
+</form>

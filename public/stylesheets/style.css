@@ -77,6 +77,24 @@ footer {
   border: 1px solid #e1e1e1;
 }
 
+.btn-center{
+  margin: 0 auto;
+}
+.edit-product, .like {
+  background: #A9A9A9;
+  padding: 1.2em 1.5em;
+  border: none;
+  text-transform: UPPERCASE;
+  font-weight: bold;
+  color: #fff;
+  -webkit-transition: background .3s ease;
+  transition: background .3s ease; }
+.edit-product:hover, .like:hover {
+  background: #b36800;
+  color: #fff; }
+
+
+
 /*Đang Test*/
 .products-details {
 

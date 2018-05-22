@@ -1,0 +1,106 @@
+{{#if message}}
+    <div class="alert {{message.[0]}}">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        {{message.[1]}}
+    </div>
+{{/if}}
+<div class="dropdown">
+    <button class="btn3d btn btn-default btn-lg" type="button" data-toggle="dropdown">Phân loại sản phẩm
+        <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+        {{# each loai}}
+            {{#if this.ten}}
+                <li><a href="/dashboard/product/category/{{this._id}}">▶{{this.ten}}</a></li>
+            {{/if}}
+        {{/each}}
+        <li class="divider"></li>
+        <li><a href="#">▶Toàn bộ sản phẩm</a></li>
+    </ul>
+</div>
+<form method="post" action="/dashboard/product/select-delete">
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <span class="glyphicon glyphicon-list"></span>{{Table_name}}
+        <!--<div class="pull-right action-buttons">
+            <div class="btn-group pull-right">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                    <span class="glyphicon glyphicon-cog" style="margin-right: 0px;"></span>
+                </button>
+                <ul class="dropdown-menu slidedown">
+                    <li><a type="submit" ><span class="glyphicon glyphicon-trash"></span>Delete</a></li>
+                </ul>
+            </div>
+        </div>-->
+        <div class="btn-group pull-right">
+        <button type="submit" class="btn-danger">Xoá nhiều mục</button>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <ul class="list-group">
+
+            {{#if products}}
+                {{# each products}}
+                    {{# each this}}
+
+                        <li class="list-group-item">
+                            <div class="checkbox">
+                                <input type="checkbox" name="checkbox" value="{{this._id}}" />
+                                <label>
+                                    <strong><a data-toggle="tooltip" class="white-tooltip" title="<img class='img-responsive' src='{{this.hinhanh.[0]}}' width='300' height='300' />">{{this.ten}}</a></strong>
+                                </label>
+
+                            </div>
+                            <div class="pull-right action-buttons">
+                                <a href="/dashboard/product/edit/{{this._id}}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a class="trash" data-toggle="modal" data-target="#{{this._id}}"><span class="glyphicon glyphicon-trash"></span></a>
+                               <!-------- Dialog-------------->
+                                <div id="{{this._id}}" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title">Xoá sản phẩm</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Bạn có chắc chắn xoá sản phẩm {{this.ten}}</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="/dashboard/product/delete/{{this._id}}"> <button type="button" class="btn-danger btn">Xoá</button></a>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                               <!--------- End Dialog---------->
+
+                            </div>
+                        </li>
+
+                    {{/each}}
+                {{/each}}
+            {{else}}
+                <div class="alert alert-danger">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    Không tìm thấy sản phẩm .
+                </div>
+            {{/if}}
+        </ul>
+    </div>
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-md-6">
+                <h6>
+                    Tổng sản phẩm <span class="label label-info">{{product_count}}</span></h6>
+            </div>
+            <div class="col-md-6">
+                <ul class="pagination pagination-sm pull-right">
+                    {{#each pages}}
+                        <li class="{{this.[2]}}"><a href="{{this.[1]}}/page/{{this.[0]}}">{{this.[0]}}</a></li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</form>

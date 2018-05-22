@@ -9,8 +9,10 @@ var HandlebarsIntl = require('handlebars-intl');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var infoProduct = require('./routes/product');
+var dashBoard = require('./routes/dashboard_product');
 var mongodb = require('mongoose');
 var session = require('express-session');
+var back = require('express-back');
 var flash = require('connect-flash');
 
 
@@ -33,6 +35,8 @@ app.use(session({
     saveUninitialized: true,
     resave: true
   }));
+app.use(back());
+
 //app.use(passport.initialize());
 //app.use(passport.session());
 //
@@ -41,12 +45,13 @@ app.use(flash({ unsafe: true }));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/product',infoProduct);
+app.use('/dashboard',dashBoard);
 
 HandlebarsIntl.registerWith(Handlebars);
 
 //connect to database
 mongodb.connect('mongodb://admin:admin@ds117540.mlab.com:17540/eshopping');
-//mongodb.connect('mongodb://localhost:27017/eshoppingee');
+//mongodb.connect('mongodb://localhost:27017/eshop');
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

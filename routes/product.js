@@ -14,7 +14,7 @@ router.get('/detail/:id', function(req, res, next) {
         Loai.find(function (err,result1) {
             Loai.findOne({_id:result.loai},function (err,result2){
                 Product.findRandom({loai: result2._id}, {}, {skip: 10, limit: number4related},function (err, relatedproductresult){
-                    console.log(relatedproductresult);
+
                  res.render('product/product-detail',{title:'eShop-'+result.ten,product:result,product_loai:result2,loai:result1,relatedproducts:relatedproductresult});
                 });
                 /*Product.find({loai: result2._id},function (err, relatedproductresult){
@@ -25,59 +25,6 @@ router.get('/detail/:id', function(req, res, next) {
        });
     });
 });
-
-router.get('/add', function(req, res, next) {
-    Loai.find(function (err,result) {
-        if(err)
-            console.log(err);
-        res.render('product/product-add',{title:'eShop-Add Product',loai:result,message: req.flash('info')});
-    });
-});
-
-router.get('/add/error',function (req,res,next) {
-    var id = req.params.id;
-        req.flash('info', ['alert-danger','Chưa điền link ảnh.']);
-    res.redirect('/product/add');
-});
-router.get('/add/success',function (req,res,next) {
-    req.flash('info',['alert-success','Thêm sản phẩm thành công.']);
-    res.redirect('/product/add');
-});
-
-router.post("/add",urlencodedParser,function (req,res) {
-    var ten = req.body.ten;
-    var nhanhieu = req.body.nhanhieu;
-    var xuatxu = req.body.xuatxu;
-    var gia = req.body.gia;
-    var mmota = req.body.mota;
-    var hinhanh = req.body.hinhanh;
-    Product.findOne(function (err,result1) {
-        if(hinhanh[0] == null)
-        // Nếu chưa điền link ảnh thì báo lỗi
-            res.redirect('/product/add/error');
-        if(gia < 0)
-            res.redirect('/product/add/error');
-        else {
-            //Sau khi kiểm tra xong tiến hành lưu
-            Loai.findOne({ten: req.body.loai}, function (err, result) {
-                var product = new Product({
-                    ten: ten,
-                    gia: gia,
-                    loai: result,
-                    nhanhieu: nhanhieu,
-                    xuatxu: xuatxu,
-                    hinhanh: hinhanh,
-                    mota: mmota
-                });
-                product.save(function (err, result) {
-                    res.redirect('/product/add/success');
-                });
-            });
-        }
-    });
-
-});
-
 
 /*------------------------>Phát sinh dữ liệu<-----------------------------*/
 

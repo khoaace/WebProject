@@ -13,7 +13,7 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="textinput">Tên sản phẩm</label>
             <div class="col-md-4">
-                <input id="textinput" name="ten" type="text" placeholder="" class="form-control input-md" required="">
+                <input id="textinput" name="ten" type="text" placeholder="" class="form-control input-md" required="" oninvalid="this.setCustomValidity('Chưa nhập tên sản phẩm')"  oninput="setCustomValidity('')">
 
             </div>
         </div>
@@ -36,7 +36,7 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="textinput">Nhãn hiệu</label>
             <div class="col-md-4">
-                <input id="textinput" name="nhanhieu" type="text" placeholder="" class="form-control input-md">
+                <input id="textinput" name="nhanhieu" type="text" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập tên nhãn hiệu')" oninput="setCustomValidity('')">
 
             </div>
         </div>
@@ -45,7 +45,7 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="textinput">Xuất xứ</label>
             <div class="col-md-4">
-                <input id="textinput" name="xuatxu" type="text" placeholder="" class="form-control input-md">
+                <input id="textinput" name="xuatxu" type="text" placeholder="" class="form-control input-md" required="" oninvalid="this.setCustomValidity('Chưa nhập xuất xứ')" oninput="setCustomValidity('')">
 
             </div>
         </div>
@@ -54,7 +54,7 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="textinput">Giá</label>
             <div class="col-md-4">
-                <input id="textinput" name="gia" min='0' type="number" placeholder="" class="form-control input-md">
+                <input id="textinput" name="gia" min='0' type="number" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập giá')" oninput="setCustomValidity('')">
 
             </div>
         </div>
@@ -71,7 +71,7 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="textinput">Hình Ảnh 1</label>
             <div class="col-md-4">
-                <input id="textinput" name="hinhanh" type="text" placeholder="Link hình ảnh" class="form-control input-md">
+                <input id="textinput" name="hinhanh" type="text" placeholder="Link hình ảnh" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập link hình ảnh')" oninput="setCustomValidity('')">
             </div>
         </div>
 
@@ -108,7 +108,7 @@
         </div>
 
         <center>
-        <input type="submit" class="btn btn-success" value="Thêm sản phẩm">
+        <input type="submit" class="btn3d btn btn-success btn-lg" value="Thêm sản phẩm">
         </center>
     </fieldset>
 
