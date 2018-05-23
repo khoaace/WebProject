@@ -1,6 +1,6 @@
 
 .container{
-  width: 1250px;
+  width: auto;
 }
 
 .jumbotron {
@@ -13,7 +13,7 @@ footer {
 }
 .products {
   border: 1px solid #e1e1e1;
-  min-height: 400px;
+  width: 200px;
   overflow: hidden;
   -webkit-border-radius: 10px;
   border-radius: 10px;

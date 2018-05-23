@@ -137,7 +137,7 @@ var products = [
     })
 ];
 
-router.get('/generate', function(req, res, next) {
+router.get('/random_generate', function(req, res, next) {
 
             for (var i = 0; i < loai.length; i++) {
                 loai[i].save(function (err, result) {

@@ -5,8 +5,6 @@ var Loai = require('../models/loai');
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-
-
 router.get("/",function (req,res,next) {
     res.render('error',{layout:'dashboard_layout'});
 });
@@ -145,7 +143,14 @@ router.post("/product/edit/update/",urlencodedParser,function (req,res) {
 
 router.get('/product/add', function(req, res, next) {
     Loai.find(function (err,result) {
-        res.render('product/product-add',{title:'Dashboard-Thêm sản phẩm mới',loai:result,message: req.flash('info'),layout:'dashboard_layout'});
+        if (result.length == 0)
+        {
+            req.flash('info',['alert-warning','Không tồn tại LOẠI SẢN PHẨM nào, cần tạo LOẠI SẢN PHẨM trước']);
+            res.redirect('/dashboard/category');
+        }
+        else{
+            res.render('product/product-add',{title:'Dashboard-Thêm sản phẩm mới',loai:result,message: req.flash('info'),layout:'dashboard_layout'});
+        }
     });
 });
 
@@ -155,6 +160,7 @@ router.get('/product/add/success',function (req,res,next) {
 });
 
 router.post("/product/add",urlencodedParser,function (req,res) {
+    
     var ten = req.body.ten;
     var nhanhieu = req.body.nhanhieu;
     var xuatxu = req.body.xuatxu;
@@ -164,58 +170,84 @@ router.post("/product/add",urlencodedParser,function (req,res) {
     if(mota.trim() === "")
         mota="Không có mô tả";
     kq=hinhanh[0].localeCompare('');
+    console.log('check0');
     Product.findOne(function (err,result1) {
+        console.log('check1');
         //Sau khi kiểm tra xong tiến hành lưu
         Loai.findOne({ten: req.body.loai}, function (err, result) {
-            var product = new Product({
-                ten: ten,
-                gia: gia,
-                loai: result,
-                nhanhieu: nhanhieu,
-                xuatxu: xuatxu,
-                hinhanh: hinhanh,
-                mota: mota
-            });
-            product.save(function (err, result) {
-                res.redirect('/dashboard/product/add/success');
-            });
+            console.log('check2');
+            if (result == null)
+            {
+                console.log('check3');
+                req.flash('info',['alert-warning','Không tồn tại LOẠI SẢN PHẨM nào, cần tạo LOẠI SẢN PHẨM trước']);
+                res.redirect('/dashboard/product/add');
+            }
+            else{
+                var product = new Product({
+                    ten: ten,
+                    gia: gia,
+                    loai: result,
+                    nhanhieu: nhanhieu,
+                    xuatxu: xuatxu,
+                    hinhanh: hinhanh,
+                    mota: mota
+                });
+                product.save(function (err, result) {
+                    res.redirect('/dashboard/product/add/success');
+                });    
+            }
+            
         });
     });
 
 });
 
 /*----------------------------------------------Xoá sản phẩm--------------------------------*/
+
 router.get('/product/delete/:id',function (req,res,next) {
     var id = req.params.id;
-    var path = req.prevPath;
+    
     Product.deleteOne({_id:id},function (err,result) {
         req.flash('info',['alert-success','Đã xoá sản phẩm.']);
-        res.redirect(path);
+        res.redirect('/dashboard/product');
     });
 });
 
  // Xoá nhiều sản phẩm
 router.post('/product/select-delete',urlencodedParser,function (req,res,next) {
-    var arr = req.body.checkbox;
-    var path = req.prevPath;
-    if(arr != null)
+    
+    var checkif_array_object = req.body.checkbox;
+    
+    if(checkif_array_object == null)
     {
-        for(var i=0;i<arr.length;i++) {
-            Product.deleteOne({_id: arr[i]}, function (err, result) {
-            });
-        }
-        req.flash('info',['alert-success','Đã xoá '+arr.length+' sản phẩm']);
-        res.redirect(path);
-    }
-    else {
         req.flash('info', ['alert-warning', 'Chưa chọn sản phẩm']);
-        res.redirect(path);
+        res.redirect('/dashboard/product');
     }
-
+    else if(checkif_array_object.constructor === Array)
+    {
+        var arr = checkif_array_object;
+        if(arr != null)
+        {
+            for(var i=0;i<arr.length;i++) {
+                Product.deleteOne({_id: arr[i]}, function (err, result) {
+                });
+            }
+            req.flash('info',['alert-success','Đã xoá '+arr.length+' sản phẩm']);
+            res.redirect('/dashboard/product');
+        }
+    }
+    else
+    {
+        var id = checkif_array_object;
+        Product.deleteOne({_id:id},function (err,result) {
+            req.flash('info',['alert-success','Đã xoá sản phẩm.']);
+            res.redirect('/dashboard/product');
+        });
+    }
 });
 
 /*------------------------------Hiển thị loại sản phẩm-----------------------*/
-
+/* okey */
 router.get('/category',function (req,res,next) {
     Loai.find(function (err,result1) {
         var curentPage = '/dashboard/category';
@@ -233,6 +265,7 @@ router.get('/category',function (req,res,next) {
             });
     });
 });
+
 
 router.get('/category/page/:id',function (req,res,next) {
     var page = req.params.number;
@@ -254,63 +287,84 @@ router.get('/category/page/:id',function (req,res,next) {
 });
 
 /*------------------------------Thêm loại sản phẩm mới------------------------------*/
+/* okey */
 router.post('/category/add',urlencodedParser,function (req,res,next) {
     var ten = req.body.ten;
-    var path = req.prevPath;
+    
     var loai = new Loai({
         ten: ten
     });
     loai.save(function (err, result) {
         req.flash('info',['alert-success','Thêm mới thành công.']);
-        res.redirect(path);
+        res.redirect('/dashboard/category');
     });
 });
 /*------------------------------Xoá loại sản phẩm----------------------------------*/
+/* okey */
 router.get('/category/delete/:id',function (req,res,next) {
     var id = req.params.id;
-    var path = req.prevPath;
+    
     Product.deleteMany({loai:id},function (err,result) {
-    Loai.deleteOne({_id:id},function (err,result1) {
-        req.flash('info',['alert-success','Xoá thành công.']);
-        res.redirect(path);
-    });
+        Loai.deleteOne({_id:id},function (err,result1) {
+            req.flash('info',['alert-success','Xoá thành công.']);
+            res.redirect('/dashboard/category/');
+        });
     });
 });
 
+/*okey*/
 router.post('/category/select-delete',urlencodedParser,function (req,res,next) {
-    var arr = req.body.checkbox;
-    var path = req.prevPath;
-    if(arr != null)
+    var checkif_array_or_object = req.body.checkbox;
+
+    if (checkif_array_or_object ==  null)
     {
-        for(var i=0;i<arr.length;i++) {
-            Product.deleteMany({loai:arr[i]},function (err,result) {
-            });
-            Loai.deleteOne({_id:arr[i]}, function (err, result1) {
-            });
-        }
-        req.flash('info',['alert-success','Đã xoá '+arr.length+' sản phẩm']);
-        res.redirect(path);
+        req.flash('info', ['alert-warning', 'Chưa chọn loại sản phẩm']);
+        res.redirect('/dashboard/category/');
     }
-    else {
-        req.flash('info', ['alert-warning', 'Chưa chọn sản phẩm']);
-        res.redirect(path);
+    else if (checkif_array_or_object.constructor === Array)
+    {
+        var arr = checkif_array_or_object;
+        if(arr != null)
+        {
+            console.log(arr.length);
+            for(var i=0;i<arr.length;i++) {
+                Product.deleteMany({loai:arr[i]},function (err,result) {
+                });
+                console.log(arr[i]);
+                Loai.deleteOne({_id:arr[i]}, function (err, result1) {
+                });
+            }
+            req.flash('info',['alert-success','Đã xoá '+arr.length+' loại sản phẩm']);
+            res.redirect('/dashboard/category/');
+        }            
     }
+    else
+    {
+        id = checkif_array_or_object;
+        Product.deleteMany({loai:id},function (err,result) {
+            Loai.deleteOne({_id:id},function (err,result1) {
+                req.flash('info',['alert-success','Xoá thành công.']);
+                res.redirect('/dashboard/category/');
+            });
+        });
+    }
+
+    
 });
 
 /*--------------------------------Sửa loại sản phẩm-----------------------------------*/
 router.post('/category/edit',urlencodedParser,function (req,res,next) {
     var id =req.body.id;
     var ten = req.body.ten;
-    var path = req.prevPath;
+    
     Loai.where({_id:id}).update({ten:ten}).exec(function (err,result) {
     });
     req.flash('info',['alert-success','Chỉnh sửa thành công']);
-    res.redirect(path);
+    res.redirect('/dashboard/category');
 });
 
 
 /*-------------------------------Phát sinh sản phẩm------------------------------------*/
-
 router.get('/product/generate',function (req,res,next) {
     Loai.find(function (err,result) {
        res.render('product/product-generate', {
@@ -324,26 +378,33 @@ router.get('/product/generate',function (req,res,next) {
 router.post('/product/generate',urlencodedParser,function (req,res,next) {
     var loai = req.body.loai;
     var count =  req.body.count;
-    var path = req.prevPath;
+
     Loai.findOne({_id:loai},function (err,result) {
-        var products=[];
-        for(var j=0;j < count;j++)
+        if (result == null)
         {
-            products.push(new Product({
-                ten: "Ghế test",
-                gia: 50000,
-                loai: result,
-                nhanhieu: "Ghế hòa phát",
-                xuatxu: "Việt Nam",
-                hinhanh: ["/images/gheXoay.PNG", "/images/gheChanQuy.png"]
-            }));
+            req.flash('info', ['alert-warning', 'Không tồn tại LOẠI SẢN PHẨM, cần tạo LOẠI SẢN PHẨM trước']);
+            res.redirect('/dashboard/category');
         }
-        for (var i = 0; i < products.length; i++) {
-            products[i].save(function (err, docs) {
-            });
+        else{
+            var products=[];
+            for(var j=0;j < count;j++)
+            {
+                products.push(new Product({
+                    ten: "Ghế test",
+                    gia: 50000,
+                    loai: result,
+                    nhanhieu: "Ghế hòa phát",
+                    xuatxu: "Việt Nam",
+                    hinhanh: ["/images/gheXoay.PNG", "/images/gheChanQuy.png"]
+                }));
+            }
+            for (var i = 0; i < products.length; i++) {
+                products[i].save(function (err, docs) {
+                });
+            }
+            req.flash('info',['alert-success','Phát sinh thành công '+count+' sản phẩm loại '+result.ten]);
+            res.redirect('/dashboard/product/generate');
         }
-        req.flash('info',['alert-success','Phát sinh thành công '+count+' sản phẩm loại '+result.ten]);
-        res.redirect(path);
     });
 
 });
