@@ -1,1 +1,280 @@
-<h1>User Profile</h1>
+<!--banner-->
+<div class="banner-top">
+    <div class="container">
+        <h1>Xin chào : {{user.fullname}}</h1>
+    </div>
+</div>
+<!--login-->
+<div class="container">
+
+    <div class="row">
+        <br><br>
+        {{#if message}}
+            <div class="alert {{message.[0]}}">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{message.[1]}}
+            </div>
+        {{/if}}
+        <div class="col-md-3">
+            <ul class="nav nav-pills nav-stacked admin-menu" >
+                <li class="active"><a href="" data-target-id="profile"><i class="glyphicon glyphicon-user"></i>Thông tin</a></li>
+                <li><a href="" data-target-id="change-password"><i class="glyphicon glyphicon-lock"></i> Đổi mật khẩu</a></li>
+                <li><a href="" data-target-id="settings"><i class="glyphicon glyphicon-cog"></i> Chỉnh sửa thông tin</a></li>
+                {{#if user.mod}}
+                    <li><a href="" data-target-id="dashboard"><i class="glyphicon glyphicon-level-up"></i> Bảng điều khiển</a></li>
+                {{/if}}
+                <li><a href="" data-target-id="logout"><i class="glyphicon glyphicon-log-out"></i> Đăng xuất</a></li>
+            </ul>
+        </div>
+
+        <div class="col-md-9  admin-content" id="profile">
+            <div class="panel panel-info" style="margin: 1em;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Tên đăng nhập</h3>
+                </div>
+                <div class="panel-body">
+                    {{user.username}}
+                </div>
+            </div>
+
+            <div class="panel panel-info" style="margin: 1em;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Địa chỉ mail</h3>
+                </div>
+                <div class="panel-body">
+                    {{user.email}}
+                </div>
+            </div>
+
+            <div class="panel panel-info" style="margin: 1em;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Tên đầy đủ</h3>
+
+                </div>
+                <div class="panel-body">
+                    {{user.fullname}}
+                </div>
+            </div>
+
+            <div class="panel panel-info" style="margin: 1em;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Giới tính</h3>
+
+                </div>
+                <div class="panel-body">
+                    {{user.gender}}
+                </div>
+            </div>
+
+            <div class="panel panel-info" style="margin: 1em;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Ngày sinh</h3>
+
+                </div>
+                <div class="panel-body">
+                    {{user.birthDay}}
+                </div>
+            </div>
+
+
+            <div class="panel panel-info" style="margin: 1em;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Ngày tạo</h3>
+
+                </div>
+                <div class="panel-body">
+                    {{user.createDate}}
+                </div>
+            </div>
+
+
+            <div class="panel panel-info" style="margin: 1em;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Là Quản trị viên ?</h3>
+
+                </div>
+                <div class="panel-body">
+                    {{#if user.mod}}
+                    <div class="label label-success">Có</div>
+                        {{else}}
+                        <div class="label label-warning">Không</div>
+                        {{/if}}
+                </div>
+            </div>
+
+            <div class="panel panel-info" style="margin: 1em;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Tài khoản đã được kích hoạt chưa ? </h3>
+
+                </div>
+                <div class="panel-body">
+                    {{#if user.mod}}
+                        <div class="label label-success">Rồi</div>
+                    {{else}}
+                        <div class="label label-warning">Chưa</div>
+                    {{/if}}
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-9  admin-content" id="settings">
+            <form action="/editprofile" method="post">
+
+
+                <div class="panel panel-info" style="margin: 1em;">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><label for="new_password" class="control-label panel-title">Tên đầy đủ</label></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="fullname" value="{{user.fullname}}" >
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="panel panel-info" style="margin: 1em;">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><label for="new_password" class="control-label panel-title">Ngày sinh</label></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <input type="date" class="form-control" name="birthday" >
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="panel panel-info" style="margin: 1em;">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><label for="new_password" class="control-label panel-title">Giới tính</label></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <select id="selectbasic" name="gender" class="form-control">
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="panel panel-info border" style="margin: 1em;">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="pull-left">
+                                <input type="submit" class="form-control btn btn-primary" name="submit" id="submit" value="Cập nhật">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="col-md-9  admin-content" id="change-password">
+            <form action="/changepassword" method="post">
+
+
+                <div class="panel panel-info" style="margin: 1em;">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><label for="new_password" class="control-label panel-title">Nhập mật khẩu mới</label></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" name="newpassword" >
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="panel panel-info" style="margin: 1em;">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><label for="confirm_password" class="control-label panel-title">Nhập lại mật khẩu mới</label></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" name="renewpassword"  >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-info" style="margin: 1em;">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><label for="confirm_password" class="control-label panel-title">Nhập mật khẩu cũ</label></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" name="password" >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="panel panel-info border" style="margin: 1em;">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="pull-left">
+                                <input type="submit" class="form-control btn btn-primary" name="submit" id="submit" value="Đổi mật khẩu">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="col-md-9  admin-content" id="settings"></div>
+
+        <div class="col-md-9  admin-content" id="logout">
+            <div class="panel panel-info" style="margin: 1em;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Xác nhận</h3>
+                </div>
+                <div class="panel-body">
+                    Bạn có muốn đăng xuất ?  
+                    <a href="/logout" class="label label-danger"> <span >  Có  </span></a>
+                    <a href="/profile" class="label label-success"> <span >  Không   </span></a>
+                </div>
+                <form id="logout-form" action="#" method="POST" style="display: none;">
+                </form>
+
+
+            </div>
+        </div>
+
+        <div class="col-md-9  admin-content" id="dashboard">
+            <div class="panel panel-info" style="margin: 1em;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Xác nhận</h3>
+                </div>
+                <div class="panel-body">
+                    Bạn muốn truy cập trang dành cho quản trị viên ?  
+                    <a href="/dashboard" class="label label-danger"> <span >  Có  </span></a>
+                    <a href="/profile" class="label label-success"> <span >  Không   </span></a>
+                </div>
+                <form id="logout-form" action="#" method="POST" style="display: none;">
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--//login--><br><br>

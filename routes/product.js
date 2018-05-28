@@ -15,7 +15,7 @@ router.get('/detail/:id', function(req, res, next) {
             Loai.findOne({_id:result.loai},function (err,result2){
                 Product.findRandom({loai: result2._id}, {}, {skip: 10, limit: number4related},function (err, relatedproductresult){
 
-                 res.render('product/product-detail',{title:'eShop-'+result.ten,product:result,product_loai:result2,loai:result1,relatedproducts:relatedproductresult});
+                 res.render('product/product-detail',{title:'eShop-'+result.ten,product:result,product_loai:result2,loai:result1,relatedproducts:relatedproductresult,current_cate:result2.ten,user:req.user});
                 });
                 /*Product.find({loai: result2._id},function (err, relatedproductresult){
                    console.log(relatedproductresult);

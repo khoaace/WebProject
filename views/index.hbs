@@ -1,45 +1,101 @@
-<div class="row">
-    <!--Khung thứ 2-->
-    <div class="col-md-12">
-        <div class="row">
-        {{#if products}}
-        {{# each products}}
-            {{# each this}}
-            <div class="col-md-3 col-sm-6">
-                <div class="products">
-                    <a href="/product/detail/{{this._id}}"><img src="{{this.hinhanh.[0]}}" alt="Product Name" class="thumbnail"></a>
-                    <div class="productname">
-                        {{this.ten}}
+
+<!--banner-->
+<div class="banner">
+    <div class="container">
+        <section class="rw-wrapper">
+            <h1 class="rw-sentence">
+                <span>Panda Team</span>
+                <div class="rw-words rw-words-1">
+                    <span>Trần Đăng Khoa</span>
+                    <span>Tiêu Trí Kiệt</span>
+                    <span>Lê Hoàng Lâm</span>
+                </div>
+                <div class="rw-words rw-words-2">
+                    <span>eShop</span>
+                    <span>Toy Store</span>
+                    <span>2018</span>
+
+                </div>
+            </h1>
+        </section>
+    </div>
+</div>
+<!--end Banner-->
+
+<div class="content">
+    <div class="container">
+
+        <!--products-->
+        <div class="content-mid">
+            <h3>{{current_cate}}</h3>
+            <label class="line"></label>
+
+
+{{#if products}}
+    {{# each products}}
+    <div class="mid-popular">
+        {{# each this}}
+                <div class="col-md-3 item-grid simpleCart_shelfItem">
+                    <div class=" mid-pop">
+                        <div class="pro-img">
+                            <img src="{{this.hinhanh.[0]}}" class="img-responsive" alt="">
+                            <div class="zoom-icon ">
+                                <a class="picture" href="{{this.hinhanh.[0]}}" rel="title" class="b-link-stripe b-animate-go  thickbox"><i class="glyphicon glyphicon-search icon "></i></a>
+                                <a href="/product/detail/{{this._id}}"><i class="glyphicon glyphicon-menu-right icon"></i></a>
+                            </div>
+                        </div>
+                        <div class="mid-1">
+                            <div class="women">
+                                <div class="women-top">
+                                    <span>Women</span>
+                                    <h6><a href="/product/detail/{{this._id}}">{{this.ten}}</a></h6>
+                                </div>
+                                <div class="img item_add">
+                                    <a href="#"><img src="/images/ca.png" alt=""></a>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="mid-2">
+                                <p><em class="item_price">{{formatNumber this.gia num}} VND</em></p>
+                                <div class="block">
+                                    <div class="starbox small ghosting"> </div>
+                                </div>
+
+                                <div class="clearfix"></div>
+                            </div>
+
+                        </div>
                     </div>
 
-                    <h4 class="price">{{formatNumber this.gia num}} VND</h4>
-                    <div class="button_group">
-                        <button class="button_buy" type="button" onclick="window.location.href='/product/detail/{{this._id}}'">
-                            Xem chi tiết
-                        </button>
-                    </div>
                 </div>
-            </div>
-            {{/each}}
+
         {{/each}}
-        {{else}}
-            <div class="alert alert-danger">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                Không tìm thấy sản phẩm .{{#unless loai}} Nếu muốn phát sinh ngẫu nhiên . Click vào <a href="/product/random_generate">đây</a>  để phát sinh sản phẩm.{{/unless}}
-            </div>
-        {{/if}}
-        </div>
-        <div class="row">
-            <div class="col-md-9">
-                <ul class="pagination">
-                    {{#each pages}}
-                        <li class="{{this.[2]}}"><a href="{{this.[1]}}/page/{{this.[0]}}">{{this.[0]}}</a></li>
-                    {{/each}}
-                </ul>
+    </div>
+        <div class="clearfix"></div>
+    {{/each}}
+{{else}}
+
+{{/if}}
+
+
+
+                <!--end-->
+                <div class="clearfix"></div>
             </div>
         </div>
+        <!--//products-->
+        <!--brand-->
+        <div class="brand">
+            <center>
+            <ul class="pagination">
+                {{#each pages}}
+                    <li class="{{this.[2]}}"><a href="{{this.[1]}}/page/{{this.[0]}}">{{this.[0]}}</a></li>
+                {{/each}}
+            </ul>
+            </center>
+        </div>
+        <!--//brand-->
     </div>
 
-
-<!--HẾt row-->
 </div>
+<!--//content-->

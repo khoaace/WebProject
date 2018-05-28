@@ -1,57 +1,81 @@
+
 <!DOCTYPE html>
-<html>
+  <html>
   <head>
-    <title>{{title}}</title>
+      <title>{{title}}</title>
       <link rel="shortcut icon" href="/images/favion.ico" />
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+      <link href="/stylesheets/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+      <!-- Custom Theme files -->
+      <!--theme-style-->
+      <link href="/stylesheets/style.css" rel="stylesheet" type="text/css" media="all" />
+      <!--//theme-style-->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+      <!--theme-style-->
+      <link href="/stylesheets/style4.css" rel="stylesheet" type="text/css" media="all" />
+      <!--//theme-style-->
+      <script src="/javascripts/jquery.min.js"></script>
+      <!--- start-rate---->
+      <script src="/javascripts/jstarbox.js"></script>
+      <link rel="stylesheet" href="/stylesheets/jstarbox.css" type="text/css" media="screen" charset="utf-8" />
       <script src="/javascripts/eshopScript.js"></script>
-      <link rel='stylesheet' href='/stylesheets/style.css' />
+      <link href="/stylesheets/form.css" rel="stylesheet" type="text/css" media="all" />
+      <link rel='stylesheet' href='/stylesheets/mystyle.css' />
+      <script type="text/javascript">
+          jQuery(function() {
+              jQuery('.starbox').each(function() {
+                  var starbox = jQuery(this);
+                  starbox.starbox({
+                      average: starbox.attr('data-start-value'),
+                      changeable: starbox.hasClass('unchangeable') ? false : starbox.hasClass('clickonce') ? 'once' : true,
+                      ghosting: starbox.hasClass('ghosting'),
+                      autoUpdateAverage: starbox.hasClass('autoupdate'),
+                      buttons: starbox.hasClass('smooth') ? false : starbox.attr('data-button-count') || 5,
+                      stars: starbox.attr('data-star-count') || 5
+                  }).bind('starbox-value-changed', function(event, value) {
+                      if(starbox.hasClass('random')) {
+                          var val = Math.random();
+                          starbox.next().text(' '+val);
+                          return val;
+                      }
+                  })
+              });
+          });
+      </script>
+      <!---//End-rate---->
+
   </head>
 
-  <body >
+  <body>
   <!--Phan Header , cai dat tai /views/partials/header.hbs-->
   {{> header}}
 
-  
     
 
     <!-- phần nội dung -->
-      <div class="container">
-          <div class="alert flash {{alert_class}}" style="display:none">
-              <button type="button" class="close">×</button>
-              <i class="fa {{icon_class}} sign"></i><strong>{{type}}</strong>
-              <span>{{{message}}}</span>
-          </div>
-
-          <div class="row">
-            <!-- Thanh điều hướng dọc, cai dat tai /views/partials/verticalnavbar.hbs-->
-            <div class="col-md-3">
-                {{> verticalnavbar}}
-            </div>
-            <!--Phan Body , cai dat tai /views/index.hbs-->
-            <div class="col-md-9">
               {{{body}}}
-            </div>
-          </div>
-      </div>
-  
+
+
 
   <!--Phan Footer , cai dat tai /views/partials/footer.hbs-->
   {{> footer}}
-
+  <script src="/javascripts/simpleCart.min.js"> </script>
+  <!-- slide -->
+  <script src="/javascripts/bootstrap.min.js"></script>
+  <!--light-box-files -->
+  <script src="/javascripts/jquery.chocolat.js"></script>
+  <link rel="stylesheet" href="/stylesheets/chocolat.css" type="text/css" media="screen" charset="utf-8">
+  <!--light-box-files -->
+  <script type="text/javascript" charset="utf-8">
+      $(function() {
+          $('a.picture').Chocolat();
+      });
+  </script>
   </body>
 
   <!--JAVASCRIPT-->
-   <!-- Facebook embed -->
-    <div id="fb-root"></div>
-    <script>(function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0';
-    fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
+
 
 </html>

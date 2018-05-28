@@ -1,16 +1,29 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt =  require('bcrypt-nodejs');
+
 var userSchema = new Schema({
-   email:{type:String, required:true},
-   password:{type:String,required:true}
+        username: {type: String, require: true},
+        password: {type: String, require: true},
+        admin: {type: Boolean, require: true},
+        mod: {type: Boolean, require: true},
+        email: {type: String,require :true},
+        fullname: {type: String,require :true},
+        gender: {type: String, enum: ['Nam', 'Nữ'],require :true},
+        birthDay: {type: String,require :true},
+        createDate: {type: String,require :true}
 });
-userSchema.methods.encryptPassword = function (password) {
-   return bcrypt.hashSync(password,bcrypt.genSaltSync(5),null);
+// Tạo mã hóa mật khẩu
+userSchema.methods.generateHash = function(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
-userSchema.methods.validPassword = function (password) {
-   return bcrypt.compareSync(password,this.password);
-}
-module.exports = mongoose.model('User',userSchema);
+
+// kiểm tra mật khẩu có trùng khớp
+userSchema.methods.validPassword = function(password) {
+    return bcrypt.compareSync(password, this.password);
+};
+var usermodel=mongoose.model('user_col',userSchema);
+module.exports =usermodel;
+
 
 

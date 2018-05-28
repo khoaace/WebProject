@@ -1,0 +1,48 @@
+<!--banner-->
+<div class="banner-top">
+    <div class="container">
+        <h1>Đăng nhập</h1>
+    </div>
+</div>
+<!--login-->
+<div class="container">
+    <div class="login">
+        {{#if message}}
+            <div class="alert alert-danger">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{message}}
+            </div>
+        {{/if}}
+        <form method="post">
+            <div class="col-md-6 login-do">
+                <div class="login-mail">
+                    <input type="text" placeholder="Tên đăng nhập" required="" name="username">
+                    <i  class="glyphicon glyphicon-envelope"></i>
+                </div>
+                <div class="login-mail">
+                    <input type="password" placeholder="Mật khẩu" required="" name="password">
+                    <i class="glyphicon glyphicon-lock"></i>
+                </div>
+                <a class="news-letter " href="#">
+                    <label class="checkbox1"><input type="checkbox" name="checkbox" value="Remember Me"><i> </i>Lưu mật khẩu</label>
+                </a>
+                <label class="hvr-skew-backward">
+                    <input type="submit" value="Đăng nhập">
+                </label>
+            </div>
+            <div class="col-md-6 login-right">
+                <h3>Đăng kí tài khoản</h3>
+
+                <p>Khi là thành viên của shop bạn có thể đặt hàng và nhận tin tức mới nhất từ shop.
+                </p>
+                <a href="/signup" class=" hvr-skew-backward">Đăng kí</a>
+
+            </div>
+
+            <div class="clearfix"> </div>
+        </form>
+    </div>
+<br><br>
+</div>
+
+<!--//login-->

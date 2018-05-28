@@ -1,19 +1,23 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
 var exphbs=require('express-handlebars');
 var Handlebars     = require('handlebars');
 var HandlebarsIntl = require('handlebars-intl');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var infoProduct = require('./routes/product');
-var dashBoard = require('./routes/dashboard_product');
 var mongodb = require('mongoose');
-var session = require('express-session');
 var back = require('express-back');
+var passport = require('passport');
+
+
+
+
+
+var session = require('express-session');
+var morgan = require('morgan');
+var bodyParser = require('body-parser');
 var flash = require('connect-flash');
+
+var configDB = require('./config/database');
 
 
 var app = express();
@@ -22,38 +26,41 @@ var app = express();
 app.engine('hbs',exphbs({extname:'hbs',defaultLayout:'layout', layoutsDir:__dirname + '/views/layouts'}));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
+app.set('superSecret', 'verysecret');
 
-app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(cookieParser());
-// Login
-app.use(session({
-    secret : "secret",
-    saveUninitialized: true,
-    resave: true
-  }));
-app.use(back());
-
-//app.use(passport.initialize());
-//app.use(passport.session());
-//
 app.use(flash({ unsafe: true }));
+app.use(morgan('dev'));
+app.use(bodyParser.json());
+
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 900000 }}));
+// Login
+app.use(back());
+app.use(passport.initialize());
+app.use(passport.session());
+
+require('./routes/users')(app, passport);
+require('./config/passport')(passport);
+
+
+//Khai báo route
+var indexRouter = require('./routes/index');
+var infoProduct = require('./routes/product');
+var dashBoard = require('./routes/dashboard');
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/product',infoProduct);
 app.use('/dashboard',dashBoard);
 
 HandlebarsIntl.registerWith(Handlebars);
 
 //connect to database
-mongodb.connect('mongodb://admin:admin@ds117540.mlab.com:17540/eshopping');
-//mongodb.connect('mongodb://localhost:27017/eshop');
+mongodb.connect(configDB.database);
 
 // catch 404 and forward to error handler
+
 app.use(function(req, res, next) {
     next(createError(404));
 });

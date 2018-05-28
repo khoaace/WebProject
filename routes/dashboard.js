@@ -3,10 +3,48 @@ var router = express.Router();
 var Product =  require('../models/product');
 var Loai = require('../models/loai');
 var bodyParser = require('body-parser');
+var jwt = require('jsonwebtoken');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
+
+
+/*-----------------------------------Xác thực tài khoản----------------------------*/
+router.use(function(req, res, next) {
+    // check header or url parameters or post parameters for token
+    var token = req.session.token;
+    //req.body.token || req.query.token || req.headers['x-access-token']
+    // decode token
+    if (token) {
+        // verifies secret and checks exp
+        jwt.verify(token, 'verysecret', function(err, decoded) {
+            if (err) {
+                req.flash('info','Xác thực không thành công.');
+                res.redirect('/error');
+            } else {
+                // if everything is good, save to request for use in other routes
+                req.decoded = decoded;
+                if (decoded.mod)
+                    next();
+                else {
+                    req.flash('info', 'Bạn không có quyền truy cập vào trang này.');
+                    res.redirect('/error');
+                }
+            }
+        });
+    } else {
+        // if there is no token
+        // return an error
+        req.flash('info','Chưa thực hiện đăng nhập.');
+        res.redirect('/error');
+    }
+
+});
+
+
+
+
 router.get("/",function (req,res,next) {
-    res.render('error',{layout:'dashboard_layout'});
+    res.render('dashboard',{layout:'dashboard_layout',user:req.user});
 });
 
 
@@ -27,7 +65,7 @@ router.get("/product",function (req,res,next) {
                 product_count: size,
                 layout: 'dashboard_layout',
                 loai:result1,
-                message: req.flash('info')
+                message: req.flash('info'),user:req.user
             });
         });
     });
@@ -50,7 +88,7 @@ router.get('/product/page/:number',function (req,res,next) {
                 product_count: size,
                 layout: 'dashboard_layout',
                 loai:result1,
-                message: req.flash('info')
+                message: req.flash('info'),user:req.user
             });
         });
     });
@@ -74,7 +112,7 @@ router.get("/product/category/:id",function (req,res,next) {
                     product_count: size,
                     layout: 'dashboard_layout',
                     loai: result1,
-                    message: req.flash('info')
+                    message: req.flash('info'),user:req.user
                 });
             });
         });
@@ -99,7 +137,7 @@ router.get("/product/category/:id",function (req,res,next) {
                         product_count: size,
                         layout: 'dashboard_layout',
                         loai: result1,
-                        message: req.flash('info')
+                        message: req.flash('info'),user:req.user
                     });
                 });
             });
@@ -408,12 +446,23 @@ router.post('/product/generate',urlencodedParser,function (req,res,next) {
     });
 
 });
+
+router.get('/user',function (req,res,next) {
+    Loai.find(function (err,result) {
+        res.render('product/product-generate', {
+            loai: result,
+            title:'Dashboard - Phát sinh sản phẩm',
+            layout: 'dashboard_layout',
+            message: req.flash('info')
+        })
+    });
+});
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
 function initPage(page,docs) {
-    page =(page-1)*8;
+    page =(page-1)*12;
     var productChuck=[];
     var count = 0;
-    var chucksize = 4; //  1 hàng có 4 sp
+    var chucksize = 6; //  1 hàng có 4 sp
     //Thêm 4 sản phẩm vào mảng
     for(var i=page;i<docs.length;i+=chucksize)
     {
@@ -428,10 +477,11 @@ function initPage(page,docs) {
 
 function createArrPage(docs,currentPage,page) {
     var allPage=1;
-    if(docs.length > 8)
+    if(docs.length > 12)
     {
-        allPage = parseInt( docs.length / 8);
-        if((docs.length / 2.0) != 0)
+        allPage = parseInt( docs.length) / 12;
+        var konorimono = parseInt( docs.length) - allPage * 12;
+        if(konorimono > 0)
             allPage++;
     }
     var arr=[];

@@ -1,39 +1,68 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-4 col-md-offset-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Đăng kí</h3>
-                </div>
-                {{#if hasErrors}}
-                    <div class="alert alert-danger">
-                        {{#each messages}}
-                            <p>{{this}}</p>
-                        {{/each}}
-                    </div>
-
-                {{/if}}
-                <div class="panel-body">
-                    <form accept-charset="UTF-8" role="form" method="post" action="/user/signup">
-                        <fieldset>
-                            <div class="form-group">
-                                <input class="form-control" type="text" placeholder="Tên đăng nhập" id="email" name="email" >
-                            </div>
-                            <div class="form-group">
-                                <input class="form-control" type="password" placeholder="Mật khẩu" id="password" name="password">
-                            </div>
-                            <div class="checkbox">
-                                <label>
-                                    <input name="remember" type="checkbox" value="Remember Me"> Lưu mật khẩu
-                                </label>
-                            </div>
-                            <!--Mã Token để kiểm tra và xác thực-->
-                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Đăng kí">
-                        </fieldset>
-                    </form>
-
-                </div>
-            </div>
-        </div>
+<!--banner-->
+<div class="banner-top">
+    <div class="container">
+        <h1>Đăng nhập</h1>
     </div>
 </div>
+<!--login-->
+<div class="container">
+    <div class="login">
+        {{#if message}}
+            <div class="alert alert-danger">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{message}}
+            </div>
+        {{/if}}
+        <form method="post">
+            <div class="col-md-6 login-do">
+                <div class="login-mail">
+                    <input type="text" placeholder="Tên đăng nhập" required="" name="username">
+                    <i  class="glyphicon glyphicon-user"></i>
+                </div>
+                <div class="login-mail">
+                    <input type="password" placeholder="Mật khẩu" required="" name="password">
+                    <i class="glyphicon glyphicon-lock"></i>
+                </div>
+                <div class="login-mail">
+                    <input type="password" placeholder="Nhập lại mật khẩu" required="" name="repassword">
+                    <i class="glyphicon glyphicon-lock"></i>
+                </div>
+                <div class="login-mail">
+                    <input type="email" placeholder="Email" required="" name="email" required="">
+                    <i class=" 	glyphicon glyphicon-envelope"></i>
+                </div>
+                <div class="login-mail">
+                    <input type="text" placeholder="Tên đầy đủ" required="" name="fullname" required="">
+                    <i class="glyphicon glyphicon-user"></i>
+                </div>
+                <div class="login-mail">
+                    <label>Giới tính</label>
+                    <select id="selectbasic" name="gender" class="form-control">
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                    </select>
+                </div>
+                <div class="login-mail">
+                   <label>Ngày sinh :</label> <input type="date" name="birthday" >
+                    <i class=" 	glyphicon glyphicon-calendar"></i>
+                </div>
+                <label class="hvr-skew-backward">
+                    <input type="submit" value="Đăng kí">
+                </label>
+            </div>
+            <div class="col-md-6 login-right">
+                <h3>Đăng nhập</h3>
+
+                <p>Nếu đã có tài khoản.
+                </p>
+                <a href="/login" class=" hvr-skew-backward">Đăng nhập</a>
+
+            </div>
+
+            <div class="clearfix"> </div>
+        </form>
+    </div>
+    <br><br>
+</div>
+
+<!--//login-->
