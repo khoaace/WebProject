@@ -10,7 +10,7 @@ module.exports = function (app, passport) {
 /*----------------------Đăng kí--------------------------*/
     app.get('/signup', function (req, res) {
         Loai.find(function (err, docs) {
-            res.render('user/signup', {loai: docs,message: req.flash('info')});
+            res.render('user/signup', {title:'eShop - Đăng kí',loai: docs,message: req.flash('info')});
         });
     });
     app.post('/signup', passport.authenticate('local-signup', {
@@ -35,7 +35,7 @@ module.exports = function (app, passport) {
         if(req.user != null)
             res.redirect('/');
         Loai.find(function (err,result) {
-            res.render('user/login',{Loai:result,message: req.flash('info')});
+            res.render('user/login',{title:'eShop - Đăng nhập',Loai:result,message: req.flash('info')});
         });
     });
   /* --------------------------------- Đăng xuất ----------------------------*/
@@ -47,7 +47,7 @@ module.exports = function (app, passport) {
     });
 /*----------------------------Thông tin cá nhân---------------------------*/
     app.get('/profile', isLoggedIn,function (req, res) {
-        res.render('user/profile',{user:req.user,message: req.flash('info')});
+        res.render('user/profile',{title:'eShop - Profile',user:req.user,message: req.flash('info')});
     });
 
     app.post('/changepassword',urlencodedParser,isLoggedIn,function (req, res) {

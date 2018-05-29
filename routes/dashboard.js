@@ -451,8 +451,6 @@ router.post('/product/generate',urlencodedParser,function (req,res,next) {
 /*--------------------------Trang quản lý thành viên-------------------------*/
 
 router.get('/user',isAdmin,function (req,res,next) {
-    var isMale=false;
-    var isMod =false;
     var curentPage = '/dashboard/user';
     User.find(function (err,result) {
         var userChuck = initPage(1, result);
@@ -461,12 +459,34 @@ router.get('/user',isAdmin,function (req,res,next) {
             users:userChuck,
             title:'Dashboard - Quản lý thành viên',
             users_count:result.length,
+            pages: arrPage,
             layout: 'dashboard_layout',
             message: req.flash('info'),
             user:req.user
         })
     });
 });
+
+
+router.get('/user/page/:id',isAdmin,function (req,res,next) {
+    var page = req.params.number;
+    var curentPage = '/dashboard/user';
+    User.find(function (err,result) {
+        var userChuck = initPage(page, result);
+        var arrPage = createArrPage(result, curentPage,page);
+        res.render('user/user-list', {
+            users:userChuck,
+            title:'Dashboard - Quản lý thành viên',
+            users_count:result.length,
+            pages: arrPage,
+            title:'Dashboard - Quản lý thành viên',
+            layout: 'dashboard_layout',
+            message: req.flash('info'),
+            user:req.user
+        })
+    });
+});
+
 
 /*------------------------chỉnh sửa thành viên------------------------------*/
 router.post('/user/editprofile-admin',isAdmin,urlencodedParser,function (req,res,next) {
