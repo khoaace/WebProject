@@ -49,9 +49,6 @@ $(document).ready(function()
 /*Xử lý cho trang sản phẩm*/
 
 
-$('input[type="date"]').change(function(){
-    alert(this.value.split("-").reverse().join("-"));
-});
 
-// Xử lý của trang signup
+// Xử lý của trang dashboard user
 

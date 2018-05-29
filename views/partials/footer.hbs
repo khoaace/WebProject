@@ -26,9 +26,9 @@
             </div>
             <div class="col-md-3 footer-middle-in">
                 <h6>Nhận thông tin mới</h6>
-                <form>
-                    <input type="text" value="Enter your E-mail" onfocus="this.value='';" onblur="if (this.value == '') {this.value ='Enter your E-mail';}">
-                    <input type="submit" value="Subscribe">
+                <form method="post" action="/subscribe">
+                    <input type="text" value="Enter your E-mail" name="email">
+                    <input type="submit" value="Đăng kí">
                 </form>
             </div>
             <div class="clearfix"> </div>
@@ -47,3 +47,8 @@
     </div>
 </div>
 <!--//footer-->
+<div class="scroll-top-wrapper ">
+  <span class="scroll-top-inner">
+    <i class="fa fa-2x fa-arrow-circle-up">▲</i>
+  </span>
+</div>

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Product =  require('../models/product');
 var Loai = require('../models/loai');
+var User  = require('../models/user');
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
@@ -23,7 +24,7 @@ router.use(function(req, res, next) {
             } else {
                 // if everything is good, save to request for use in other routes
                 req.decoded = decoded;
-                if (decoded.mod)
+                if (decoded.mod || decoded.admin)
                     next();
                 else {
                     req.flash('info', 'Bạn không có quyền truy cập vào trang này.');
@@ -447,16 +448,154 @@ router.post('/product/generate',urlencodedParser,function (req,res,next) {
 
 });
 
-router.get('/user',function (req,res,next) {
-    Loai.find(function (err,result) {
-        res.render('product/product-generate', {
-            loai: result,
-            title:'Dashboard - Phát sinh sản phẩm',
+/*--------------------------Trang quản lý thành viên-------------------------*/
+
+router.get('/user',isAdmin,function (req,res,next) {
+    var isMale=false;
+    var isMod =false;
+    var curentPage = '/dashboard/user';
+    User.find(function (err,result) {
+        var userChuck = initPage(1, result);
+        var arrPage = createArrPage(result, curentPage,1);
+        res.render('user/user-list', {
+            users:userChuck,
+            title:'Dashboard - Quản lý thành viên',
+            users_count:result.length,
             layout: 'dashboard_layout',
-            message: req.flash('info')
+            message: req.flash('info'),
+            user:req.user
         })
     });
 });
+
+/*------------------------chỉnh sửa thành viên------------------------------*/
+router.post('/user/editprofile-admin',isAdmin,urlencodedParser,function (req,res,next) {
+    var gender;
+    var mod=false;
+    if(req.body.gender == 'None')
+        gender = req.body.genderbackup;
+    else
+        gender = req.body.gender;
+    if(req.body.mod == 'None')
+    {
+        if(req.body.modbackup == 'yes')
+            mod=true;
+    }
+    else
+    {
+        if(req.body.mod == 'yes')
+            mod=true;
+    }
+
+    if(req.body.password.trim() == "")
+    {
+        User.where({_id: req.body.id}).update({
+            email:req.body.email,
+            fullname: req.body.fullname,
+            gender: gender,
+            birthDay: req.body.birthday,
+            mod:mod
+        }).exec(function (err, doc) {
+        });
+    }
+    else
+    {
+        var user = new User();
+        var password = user.generateHash(req.body.password);
+        User.where({_id: req.body.id}).update({
+            password:password,
+            email:req.body.email,
+            fullname: req.body.fullname,
+            gender: gender,
+            birthDay: req.body.birthday,
+            mod:mod
+        }).exec(function (err, doc) {
+        });
+    }
+        req.flash('info', ['alert-success', 'Cập nhật thông tin thành công.']);
+    res.redirect('/dashboard/user');
+});
+
+/*----------------------------------Xoá thành viên--------------------------*/
+router.get('/user/delete/:id',isAdmin,function (req,res,next) {
+    var id = req.params.id;
+    console.log('1');
+    User.findOne({_id:id},function (err,result) {
+       if(result.admin)
+       {
+           console.log('2');
+           req.flash('info',['alert-danger','Không thể xoá tài khoản này.']);
+       }
+       else
+       {
+           console.log('3');
+           User.deleteOne({_id:id},function (err,result) {
+           });
+           req.flash('info',['alert-success','Đã xoá thành viên.']);
+       }
+        res.redirect('/dashboard/user');
+    });
+
+});
+
+router.post('/user/select-delete',isAdmin,urlencodedParser,function (req,res,next) {
+    var checkif_array_or_object = req.body.checkbox;
+    var error=false;
+    if (checkif_array_or_object ==  null)
+    {
+        req.flash('info', ['alert-warning', 'Chưa chọn thành viên']);
+        res.redirect('/dashboard/user/');
+    }
+    else if (checkif_array_or_object.constructor === Array)
+    {
+        var arr = checkif_array_or_object;
+        if(arr != null)
+        {
+            for(var i=0;i<arr.length;i++) {
+                User.findOne({_id:arr[i]},function (err,result) {
+                    if(result.admin)
+                    {
+                        error=true;
+                    }
+                });
+            }
+            if(!error) {
+                for(var i=0;i<arr.length;i++) {
+                    Loai.deleteOne({_id: arr[i]}, function (err, result1) {
+                    });
+                    req.flash('info', ['alert-success', 'Đã xoá ' + arr.length + ' thành viên']);
+                    res.redirect('/dashboard/user/');
+                }
+            }
+            else
+            {
+                req.flash('info',['alert-danger','Lỗi!!! Danh sách chứa thành viên không thể xoá.']);
+                res.redirect('/dashboard/user/');
+            }
+        }
+    }
+    else
+    {
+        id = checkif_array_or_object;
+        User.findOne({_id:id},function (err,result) {
+            if(result.admin)
+            {
+                req.flash('info',['alert-danger','Lỗi!!! Danh sách chứa thành viên không thể xoá.']);
+                res.redirect('/dashboard/user/');
+            }
+            else {
+                Loai.deleteOne({_id: id}, function (err, result1) {
+                    req.flash('info', ['alert-success', 'Xoá thành công.']);
+                    res.redirect('/dashboard/user/');
+                });
+            }
+        });
+    }
+
+});
+
+
+
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
 function initPage(page,docs) {
     page =(page-1)*12;
@@ -494,4 +633,12 @@ function createArrPage(docs,currentPage,page) {
     return arr;
 }
 
+function isAdmin(req, res, next) {
+    // Nếu một user đã xác thực, cho đi tiếp
+    if (req.user.admin)
+        return next();
+    // Nếu chưa, đưa về trang chủ
+    req.flash('info','Bạn không có quyền truy cập.');
+    res.redirect('/error');
+}
 module.exports = router;

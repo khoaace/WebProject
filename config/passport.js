@@ -40,7 +40,7 @@ module.exports = function (passport) {
                         newUser.createDate = cur_date;
                         newUser.gender = req.body.gender;
                         newUser.fullname = req.body.fullname;
-                        newUser.brithDay = req.body.birthday;
+                        newUser.birthDay = req.body.birthday;
                         // lưu user
                         newUser.save(function (err) {
                             if (err)

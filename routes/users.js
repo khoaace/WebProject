@@ -6,13 +6,8 @@ module.exports = function (app, passport) {
 
     var urlencodedParser = bodyParser.urlencoded({ extended: false });
     var date;
-    app.get('/logout', function (req, res) {
-        // create a sample user
-        req.session.destroy();
-        req.logout();
-        res.redirect('/');
-    });
 
+/*----------------------Đăng kí--------------------------*/
     app.get('/signup', function (req, res) {
         Loai.find(function (err, docs) {
             res.render('user/signup', {loai: docs,message: req.flash('info')});
@@ -24,6 +19,12 @@ module.exports = function (app, passport) {
         failureFlash: true // allow flash messages
     }));
 
+    app.post('/subscribe',urlencodedParser, function (req, res) {
+        Loai.find(function (err, docs) {
+            res.render('user/signup', {loai: docs,message: req.flash('info'),email:req.body.email});
+        });
+    });
+/*------------------------------Đăng nhập-------------------------------------*/
     app.post('/login', passport.authenticate('local-login', {
         successRedirect: '/profile', // chuyển hướng tới trang được bảo vệ
         failureRedirect: '/login', // trở lại trang đăng ký nếu có lỗi
@@ -37,11 +38,17 @@ module.exports = function (app, passport) {
             res.render('user/login',{Loai:result,message: req.flash('info')});
         });
     });
-
+  /* --------------------------------- Đăng xuất ----------------------------*/
+    app.get('/logout', function (req, res) {
+        // create a sample user
+        req.session.destroy();
+        req.logout();
+        res.redirect('/');
+    });
+/*----------------------------Thông tin cá nhân---------------------------*/
     app.get('/profile', isLoggedIn,function (req, res) {
         res.render('user/profile',{user:req.user,message: req.flash('info')});
     });
-
 
     app.post('/changepassword',urlencodedParser,isLoggedIn,function (req, res) {
             User.findOne({username:req.user.username},function (err, docs) {
@@ -81,14 +88,14 @@ module.exports = function (app, passport) {
 
 
 
-
-
+/*-------------------Các hàm hỗ trợ xác thực-------------------------*/
     function isLoggedIn(req, res, next) {
         // Nếu một user đã xác thực, cho đi tiếp
         if (req.isAuthenticated())
             return next();
         // Nếu chưa, đưa về trang chủ
-        res.redirect('/login');
+        req.flash('info','Bạn cần đăng nhập trước.');
+        res.redirect('/error');
     }
 
     function isUnLoggedIn(req, res, next) {
@@ -96,12 +103,15 @@ module.exports = function (app, passport) {
         if (req.isUnauthenticated())
             return next();
         // Nếu chưa, đưa về trang chủ
-        res.redirect('/profile');
+        req.flash('info','Bạn đã đăng nhập. Vui lòng đăng xuất để sử dụng tài khoản khác');
+        res.redirect('/error');
     }
 
 
+
+
 // Tạo tài khoản Admin
-    app.get('/setup', function (req, res) {
+/*    app.get('/setup', function (req, res) {
         // create a sample user
         var date = new Date();
         var user = new User();
@@ -119,6 +129,6 @@ module.exports = function (app, passport) {
             if (err) throw err;
             console.log('User saved successfully');
         });
-    });
+    });*/
 
 };

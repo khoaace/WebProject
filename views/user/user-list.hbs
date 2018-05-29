@@ -1,0 +1,172 @@
+{{#if message}}
+    <div class="alert {{message.[0]}}">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        {{message.[1]}}
+    </div>
+{{/if}}
+
+<form method="post" action="/dashboard/user/select-delete">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-list"></span>Toàn bộ thành viên
+
+            <div class="btn-group pull-right">
+                <button type="submit" class="btn-danger">Xoá các mục đã chọn</button>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <ul class="list-group">
+
+                {{#if users}}
+                    {{# each users}}
+                        {{# each this}}
+
+                            <li class="list-group-item">
+                                <div class="checkbox">
+                                    <input type="checkbox" name="checkbox" value="{{this._id}}" />
+                                    <label>
+                                        <strong>{{this.username}}</strong>
+                                    </label>
+
+                                </div>
+                                <div class="pull-right action-buttons">
+                                    <a data-toggle="modal" data-target="#{{this._id}}_edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a class="trash" data-toggle="modal" data-target="#{{this._id}}_delete"><span class="glyphicon glyphicon-trash"></span></a>
+                                    <!-------- Dialog-------------->
+                                    <div id="{{this._id}}_delete" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Xoá thành viên</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Bạn có chắc chắn xoá thành viên <strong>{{this.username}}</strong></p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a href="/dashboard/user/delete/{{this._id}}"> <button type="button" class="btn btn-danger">Xoá</button></a>
+                                                    <button type="button" class="btn btn-success" data-dismiss="modal">Huỷ</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--------- End Dialog---------->
+
+                                    <!-------- Dialog-------------->
+                                    <div id="{{this._id}}_edit" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form action="/dashboard/user/editprofile-admin" method="post">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Chỉnh sửa thành viên <strong>{{this.username}}</strong></h4>
+                                                </div>
+                                                <div class="modal-body">
+
+                                                    <div class="panel-body">
+                                                        <div class="form-group">
+                                                            <div class="col-sm-10">
+                                                                <label>Đặt lại mật khẩu (Để trống nếu không đổi)</label><input type="password" class="form-control" name="password" value="">
+                                                                <input type="hidden" name="id" value="{{this._id}}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="panel-body">
+                                                        <div class="form-group">
+                                                            <div class="col-sm-10">
+                                                                <label>Địa chỉ Email </label><input type="email" class="form-control" name="email" value="{{this.email}}" >
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                            <div class="panel-body">
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-10">
+                                                                        <label>Tên đầy đủ </label>
+                                                                        <input type="text" class="form-control" name="fullname" value="{{this.fullname}}" >
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div class="panel-body">
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-10">
+                                                                        <label>Ngày sinh </label>
+                                                                        <input type="date" class="form-control" name="birthday" value="{{this.birthDay}}">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="panel-body">
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-10">
+                                                                        <label>Giới tính ({{this.gender}})</label>
+                                                                        <input type="hidden" name="genderbackup" value="{{this.gender}}">
+                                                                        <select id="selectbasic" name="gender" class="form-control">
+                                                                            <option value="None">Không thay đổi</option>
+                                                                            <option value="Nam">Nam</option>
+                                                                            <option value="Nữ">Nữ</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                    <div class="panel-body">
+                                                        <div class="form-group">
+                                                            <div class="col-sm-10">
+                                                                {{#if this.mod}}
+                                                                <label>Chọn làm quản trị viên (Hiện đang là quản trị viên)</label>
+                                                                    <input type="hidden" name="modbackup" value="yes">
+                                                                {{else}}
+                                                                    <label>Chọn làm quản trị viên </label>
+                                                                    <input type="hidden" name="modbackup" value="no">
+                                                                    {{/if}}
+                                                                <select id="selectbasic" name="mod" class="form-control">
+                                                                        <option value="None">Không thay đổi</option>
+                                                                        <option value="yes">Có</option>
+                                                                        <option value="no">Không</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <input type="submit" class="btn btn-success" name="submit" id="submit" value="Cập nhật">
+                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Huỷ</button>
+                                                </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--------- End Dialog---------->
+
+                                </div>
+                            </li>
+
+                        {{/each}}
+                    {{/each}}
+                {{/if}}
+            </ul>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>
+                        Tổng số thành viên <span class="label label-info">{{users_count}}</span></h6>
+                </div>
+                <div class="col-md-6">
+                    <ul class="pagination pagination-sm pull-right">
+                        {{#each pages}}
+                            <li class="{{this.[2]}}"><a href="{{this.[1]}}/page/{{this.[0]}}">{{this.[0]}}</a></li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
