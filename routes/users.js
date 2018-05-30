@@ -71,17 +71,18 @@ module.exports = function (app, passport) {
     });
 
     app.post('/editprofile',urlencodedParser,isLoggedIn,function (req, res) {
-        if(req.body.fullname.trim()=="")
-            req.flash('info', ['alert-danger', 'Tên đầy đủ không được để TRỐNG.']);
-        else {
+        var gender;
+       if(req.body.gender == 'None')
+           gender = req.body.genderbackup;
+       else
+           gender = req.body.gender;
             User.where({username: req.user.username}).update({
                 fullname: req.body.fullname,
-                gender: req.body.gender,
+                gender: gender,
                 birthDay: req.body.birthday
             }).exec(function (err, doc) {
             });
             req.flash('info', ['alert-success', 'Cập nhật thông tin thành công.']);
-        }
             res.redirect('/profile');
     });
 

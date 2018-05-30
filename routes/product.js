@@ -17,10 +17,6 @@ router.get('/detail/:id', function(req, res, next) {
 
                  res.render('product/product-detail',{title:'eShop-'+result.ten,product:result,product_loai:result2,loai:result1,relatedproducts:relatedproductresult,current_cate:result2.ten,user:req.user});
                 });
-                /*Product.find({loai: result2._id},function (err, relatedproductresult){
-                   console.log(relatedproductresult);
-                res.render('product/product-detail',{title:'eShop-'+result.ten,product:result,product_loai:result2,loai:result1,relatedproducts:relatedproductresult});
-               });*/
            });
        });
     });

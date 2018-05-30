@@ -76,7 +76,7 @@
                                                     <div class="panel-body">
                                                         <div class="form-group">
                                                             <div class="col-sm-10">
-                                                                <label>Địa chỉ Email </label><input type="email" class="form-control" name="email" value="{{this.email}}" >
+                                                                <label>Địa chỉ Email </label><input type="email" class="form-control" name="email" value="{{this.email}}" required="" oninvalid="this.setCustomValidity('Chưa nhập email')" oninput="setCustomValidity('')">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -85,7 +85,7 @@
                                                                 <div class="form-group">
                                                                     <div class="col-sm-10">
                                                                         <label>Tên đầy đủ </label>
-                                                                        <input type="text" class="form-control" name="fullname" value="{{this.fullname}}" >
+                                                                        <input type="text" class="form-control" name="fullname" value="{{this.fullname}}" required="" oninvalid="this.setCustomValidity('Chưa nhập tên')" oninput="setCustomValidity('')">
                                                                     </div>
                                                                 </div>
                                                             </div>

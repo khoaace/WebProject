@@ -208,16 +208,11 @@ router.post("/product/add",urlencodedParser,function (req,res) {
     var hinhanh = req.body.hinhanh;
     if(mota.trim() === "")
         mota="Không có mô tả";
-    kq=hinhanh[0].localeCompare('');
-    console.log('check0');
     Product.findOne(function (err,result1) {
-        console.log('check1');
         //Sau khi kiểm tra xong tiến hành lưu
         Loai.findOne({ten: req.body.loai}, function (err, result) {
-            console.log('check2');
             if (result == null)
             {
-                console.log('check3');
                 req.flash('info',['alert-warning','Không tồn tại LOẠI SẢN PHẨM nào, cần tạo LOẠI SẢN PHẨM trước']);
                 res.redirect('/dashboard/product/add');
             }
@@ -365,11 +360,9 @@ router.post('/category/select-delete',urlencodedParser,function (req,res,next) {
         var arr = checkif_array_or_object;
         if(arr != null)
         {
-            console.log(arr.length);
             for(var i=0;i<arr.length;i++) {
                 Product.deleteMany({loai:arr[i]},function (err,result) {
                 });
-                console.log(arr[i]);
                 Loai.deleteOne({_id:arr[i]}, function (err, result1) {
                 });
             }
@@ -539,16 +532,13 @@ router.post('/user/editprofile-admin',isAdmin,urlencodedParser,function (req,res
 /*----------------------------------Xoá thành viên--------------------------*/
 router.get('/user/delete/:id',isAdmin,function (req,res,next) {
     var id = req.params.id;
-    console.log('1');
     User.findOne({_id:id},function (err,result) {
        if(result.admin)
        {
-           console.log('2');
            req.flash('info',['alert-danger','Không thể xoá tài khoản này.']);
        }
        else
        {
-           console.log('3');
            User.deleteOne({_id:id},function (err,result) {
            });
            req.flash('info',['alert-success','Đã xoá thành viên.']);
