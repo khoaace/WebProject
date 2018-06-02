@@ -10,12 +10,12 @@
 <div id="demo" class="collapse">
     <form method="post" action="/dashboard/category/add">
         <div class="form-group">
-            <label class="col-md-4 control-label" for="textinput">Tên loại sản phẩm</label>
+            <label class="col-md-4 control-label" for="newgenres_textinput">Tên loại sản phẩm</label>
             <div class="col-md-4">
-                <input id="textinput" name="ten" type="text" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập tên')" oninput="setCustomValidity('')">
+                <input id="newgenres_textinput" name="ten" type="text" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập tên')" oninput="setCustomValidity('')">
             </div>
         </div>
-        <button type="submit" class="btn3d btn btn-success">Thêm mới</button>
+        <button id="smbutton_addcategory" class="btn3d btn btn-success">Thêm mới</button>
     </form>
 </div>
 <form method="post" action="/dashboard/category/select-delete">
@@ -35,12 +35,12 @@
                                 <div class="checkbox">
                                     <input type="checkbox" name="checkbox" value="{{this._id}}" />
                                     <label>
-                                        <strong>{{this.ten}}</strong>
+                                        <strong id="{{this.id}}_id">{{this.ten}}</strong>
                                     </label>
 
                                 </div>
                                 <div class="pull-right action-buttons">
-                                    <a data-toggle="modal" data-target="#{{this._id}}_edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a class="smbutton_editcategory" id="{{this.id}}" name="{{this.ten}}"><span class="glyphicon glyphicon-pencil"></span></a>
                                     <a class="trash" data-toggle="modal" data-target="#{{this._id}}_delete"><span class="glyphicon glyphicon-trash"></span></a>
                                     <!-------- Dialog Delete-------------->
                                     <div id="{{this._id}}_delete" class="modal fade" role="dialog">
@@ -112,3 +112,27 @@
     </div>
 </form>
 
+<!-- dialogedit -->
+<div id="dialog_edit" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <form method="post" action="/dashboard/category/edit" class="form-horizontal">
+            <div class="modal-content">
+                <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 id="dialog_edit_title" class="modal-title">Chỉnh sửa loại sản phẩm</h4>
+                </div>
+                <div class="modal-body" id="dialog_edit_body">
+                    <div class="row">
+                        <label class="col-md-4 control-label" for="textinput">Tên loại sản phẩm</label>
+                        <div class="col-md-4"><input id="dialog_edit_body_textinput" value="" type="text" placeholder="" class="form-control input-md"></div>
+                    </div>
+                </div>
+                <input id="dialog_edit_body_id" value="" type="hidden">
+                <div class="modal-footer">
+                    <button type="button" class="btn-success btn" id="smbutton_editcategory_modal">Cập nhật</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

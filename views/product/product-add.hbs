@@ -11,9 +11,9 @@
         {{/if}}
         <!-- Text input-->
         <div class="form-group">
-            <label class="col-md-4 control-label" for="textinput">Tên sản phẩm</label>
+            <label class="col-md-4 control-label" for="name_textinput">Tên sản phẩm</label>
             <div class="col-md-4">
-                <input id="textinput" name="ten" type="text" placeholder="" class="form-control input-md" required="" oninvalid="this.setCustomValidity('Chưa nhập tên sản phẩm')"  oninput="setCustomValidity('')">
+                <input id="name_textinput" name="ten" type="text" placeholder="" class="form-control input-md" required="" oninvalid="this.setCustomValidity('Chưa nhập tên sản phẩm')"  oninput="setCustomValidity('')">
 
             </div>
         </div>
@@ -34,68 +34,68 @@
 
         <!-- Text input-->
         <div class="form-group">
-            <label class="col-md-4 control-label" for="textinput">Nhãn hiệu</label>
+            <label class="col-md-4 control-label" for="brand_textinput">Nhãn hiệu</label>
             <div class="col-md-4">
-                <input id="textinput" name="nhanhieu" type="text" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập tên nhãn hiệu')" oninput="setCustomValidity('')">
+                <input id="brand_textinput" name="nhanhieu" type="text" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập tên nhãn hiệu')" oninput="setCustomValidity('')">
 
             </div>
         </div>
 
         <!-- Text input-->
         <div class="form-group">
-            <label class="col-md-4 control-label" for="textinput">Xuất xứ</label>
+            <label class="col-md-4 control-label" for="made_textinput">Xuất xứ</label>
             <div class="col-md-4">
-                <input id="textinput" name="xuatxu" type="text" placeholder="" class="form-control input-md" required="" oninvalid="this.setCustomValidity('Chưa nhập xuất xứ')" oninput="setCustomValidity('')">
+                <input id="made_textinput" name="xuatxu" type="text" placeholder="" class="form-control input-md" required="" oninvalid="this.setCustomValidity('Chưa nhập xuất xứ')" oninput="setCustomValidity('')">
 
             </div>
         </div>
 
         <!-- Number input-->
         <div class="form-group">
-            <label class="col-md-4 control-label" for="textinput">Giá</label>
+            <label class="col-md-4 control-label" for="price_textinput">Giá</label>
             <div class="col-md-4">
-                <input id="textinput" name="gia" min='0' type="number" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập giá')" oninput="setCustomValidity('')">
+                <input id="price_textinput" name="gia" min='0' type="number" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập giá')" oninput="setCustomValidity('')">
 
             </div>
         </div>
 
         <!-- Textarea -->
         <div class="form-group">
-            <label class="col-md-4 control-label" for="textarea">Mô tả</label>
+            <label class="col-md-4 control-label" for="desc_textarea">Mô tả</label>
             <div class="col-md-4">
-                <textarea class="form-control" id="textarea" placeholder="Có thể để trống" name="mota"></textarea>
+                <textarea class="form-control" id="desc_textarea" placeholder="Có thể để trống" name="mota"></textarea>
             </div>
         </div>
 
-        <!-- Iamge input-->
+        <!-- Image input-->
         <div class="form-group">
-            <label class="col-md-4 control-label" for="textinput">Hình Ảnh 1</label>
+            <label class="col-md-4 control-label" for="link1_textinput">Hình Ảnh 1</label>
             <div class="col-md-4">
-                <input id="textinput" name="hinhanh" type="text" placeholder="Link hình ảnh" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập link hình ảnh')" oninput="setCustomValidity('')">
+                <input id="link1_textinput" name="hinhanh" type="text" placeholder="Link hình ảnh" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập link hình ảnh')" oninput="setCustomValidity('')">
             </div>
         </div>
 
-        <!-- Iamge input-->
+        <!-- Image input-->
         <div class="form-group">
-        <label class="col-md-4 control-label" for="textinput">Hình Ảnh 2</label>
+        <label class="col-md-4 control-label" for="link2_textinput">Hình Ảnh 2</label>
         <div class="col-md-4">
-            <input id="textinput" name="hinhanh" type="text" placeholder="Link hình ảnh (Có thể để trống)" class="form-control input-md">
+            <input id="link2_textinput" name="hinhanh" type="text" placeholder="Link hình ảnh (Có thể để trống)" class="form-control input-md">
         </div>
         </div>
 
-        <!-- Iamge input-->
+        <!-- Image input-->
         <div class="form-group">
-            <label class="col-md-4 control-label" for="textinput">Hình Ảnh 3</label>
+            <label class="col-md-4 control-label" for="link3_textinput">Hình Ảnh 3</label>
             <div class="col-md-4">
-                <input id="textinput" name="hinhanh" type="text" placeholder="Link hình ảnh (Có thể để trống)" class="form-control input-md">
+                <input id="link3_textinput" name="hinhanh" type="text" placeholder="Link hình ảnh (Có thể để trống)" class="form-control input-md">
             </div>
         </div>
 
-
-
+        <center><img id="loadingimg" src="/images/loading1.gif" alt="loading..."></center>
         <center>
-        <input type="submit" class="btn3d btn btn-success btn-lg" value="Thêm sản phẩm">
+            <!--<button id="smbutton" type="submit" class="btn3d btn btn-success btn-lg" value="Thêm sản phẩm">-->
+            <div id="smbutton" type="submit" class="btn3d btn btn-success btn-lg">Submit</div>
         </center>
+                               
     </fieldset>
-
 </form>

@@ -1,0 +1,101 @@
+<form class="form-horizontal" method="post">
+    <fieldset>
+        <!-- Form Name -->
+
+        <center> <legend>Thêm sản phẩm mới</legend></center>
+        {{#if message}}
+        <div class="alert {{message.[0]}}">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{message.[1]}}
+        </div>
+        {{/if}}
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="textinput">Tên sản phẩm</label>
+            <div class="col-md-4">
+                <input id="textinput" name="ten" type="text" placeholder="" class="form-control input-md" required="" oninvalid="this.setCustomValidity('Chưa nhập tên sản phẩm')"  oninput="setCustomValidity('')">
+
+            </div>
+        </div>
+
+        <!-- Select Basic -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="selectbasic">Loại</label>
+            <div class="col-md-4">
+                <select id="selectbasic" name="loai" class="form-control">
+                    {{# each loai}}
+                            {{#if this.ten}}
+                    <option value="{{this.ten}}">{{this.ten}}</option>
+                            {{/if}}
+                        {{/each}}
+                </select>
+            </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="textinput">Nhãn hiệu</label>
+            <div class="col-md-4">
+                <input id="textinput" name="nhanhieu" type="text" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập tên nhãn hiệu')" oninput="setCustomValidity('')">
+
+            </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="textinput">Xuất xứ</label>
+            <div class="col-md-4">
+                <input id="textinput" name="xuatxu" type="text" placeholder="" class="form-control input-md" required="" oninvalid="this.setCustomValidity('Chưa nhập xuất xứ')" oninput="setCustomValidity('')">
+
+            </div>
+        </div>
+
+        <!-- Number input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="textinput">Giá</label>
+            <div class="col-md-4">
+                <input id="textinput" name="gia" min='0' type="number" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập giá')" oninput="setCustomValidity('')">
+
+            </div>
+        </div>
+
+        <!-- Textarea -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="textarea">Mô tả</label>
+            <div class="col-md-4">
+                <textarea class="form-control" id="textarea" placeholder="Có thể để trống" name="mota"></textarea>
+            </div>
+        </div>
+
+        <!-- Iamge input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="textinput">Hình Ảnh 1</label>
+            <div class="col-md-4">
+                <input id="textinput" name="hinhanh" type="text" placeholder="Link hình ảnh" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập link hình ảnh')" oninput="setCustomValidity('')">
+            </div>
+        </div>
+
+        <!-- Iamge input-->
+        <div class="form-group">
+        <label class="col-md-4 control-label" for="textinput">Hình Ảnh 2</label>
+        <div class="col-md-4">
+            <input id="textinput" name="hinhanh" type="text" placeholder="Link hình ảnh (Có thể để trống)" class="form-control input-md">
+        </div>
+        </div>
+
+        <!-- Iamge input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="textinput">Hình Ảnh 3</label>
+            <div class="col-md-4">
+                <input id="textinput" name="hinhanh" type="text" placeholder="Link hình ảnh (Có thể để trống)" class="form-control input-md">
+            </div>
+        </div>
+
+
+
+        <center>
+        <input type="submit" class="btn3d btn btn-success btn-lg" value="Thêm sản phẩm">
+        </center>
+    </fieldset>
+
+</form>

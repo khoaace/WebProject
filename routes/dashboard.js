@@ -10,7 +10,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 /*-----------------------------------Xác thực tài khoản----------------------------*/
-router.use(function(req, res, next) {
+/*router.use(function(req, res, next) {
     // check header or url parameters or post parameters for token
     var token = req.session.token;
     //req.body.token || req.query.token || req.headers['x-access-token']
@@ -41,7 +41,7 @@ router.use(function(req, res, next) {
 
 });
 
-
+*/
 
 
 router.get("/",function (req,res,next) {
@@ -179,7 +179,7 @@ router.post("/product/edit/update/",urlencodedParser,function (req,res) {
 });
 
 /*--------------------------------------Thêm sản phẩm mới------------------------------------*/
-
+/*okey*/
 router.get('/product/add', function(req, res, next) {
     Loai.find(function (err,result) {
         if (result.length == 0)
@@ -193,28 +193,48 @@ router.get('/product/add', function(req, res, next) {
     });
 });
 
+/*bỏ*/
 router.get('/product/add/success',function (req,res,next) {
     req.flash('info',['alert-success','Thêm sản phẩm thành công.']);
     res.redirect('/dashboard/product/add/');
 });
 
+/*okey */
 router.post("/product/add",urlencodedParser,function (req,res) {
-    
+    var errmsg=[];
+
     var ten = req.body.ten;
+    if (ten == "")
+    {
+        errmsg.push("ten");
+    }
+
     var nhanhieu = req.body.nhanhieu;
     var xuatxu = req.body.xuatxu;
     var gia = req.body.gia;
+    if (gia == "")
+    {
+        errmsg.push("gia");
+    }
+
     var mota = req.body.mota;
-    var hinhanh = req.body.hinhanh;
+    
+    if (errmsg.length > 0)
+    {
+        console.log('send err');
+        res.status(400).send(errmsg);
+        return;
+    }
+
     if(mota.trim() === "")
         mota="Không có mô tả";
-    Product.findOne(function (err,result1) {
+    //Product.findOne(function (err,result1) {
         //Sau khi kiểm tra xong tiến hành lưu
         Loai.findOne({ten: req.body.loai}, function (err, result) {
             if (result == null)
             {
                 req.flash('info',['alert-warning','Không tồn tại LOẠI SẢN PHẨM nào, cần tạo LOẠI SẢN PHẨM trước']);
-                res.redirect('/dashboard/product/add');
+                res.send('no');
             }
             else{
                 var product = new Product({
@@ -226,13 +246,13 @@ router.post("/product/add",urlencodedParser,function (req,res) {
                     hinhanh: hinhanh,
                     mota: mota
                 });
-                product.save(function (err, result) {
-                    res.redirect('/dashboard/product/add/success');
+                    product.save(function (err, result) {
+                    res.send('okey');
                 });    
             }
             
         });
-    });
+    //});
 
 });
 
@@ -247,7 +267,7 @@ router.get('/product/delete/:id',function (req,res,next) {
     });
 });
 
- // Xoá nhiều sản phẩm
+// Xoá nhiều sản phẩm
 router.post('/product/select-delete',urlencodedParser,function (req,res,next) {
     
     var checkif_array_object = req.body.checkbox;
@@ -281,7 +301,7 @@ router.post('/product/select-delete',urlencodedParser,function (req,res,next) {
 });
 
 /*------------------------------Hiển thị loại sản phẩm-----------------------*/
-/* okey */
+
 router.get('/category',function (req,res,next) {
     Loai.find(function (err,result1) {
         var curentPage = '/dashboard/category';
@@ -321,20 +341,32 @@ router.get('/category/page/:id',function (req,res,next) {
 });
 
 /*------------------------------Thêm loại sản phẩm mới------------------------------*/
-/* okey */
+/*okey*/
 router.post('/category/add',urlencodedParser,function (req,res,next) {
+    var errmsg=[];
     var ten = req.body.ten;
+    
+    if (ten == "")
+    {
+        errmsg.push("ten");
+    }
+    if (errmsg[0] != null)
+    {
+        res.status(400).send(errmsg);
+        return;
+    }
     
     var loai = new Loai({
         ten: ten
     });
     loai.save(function (err, result) {
-        req.flash('info',['alert-success','Thêm mới thành công.']);
-        res.redirect('/dashboard/category');
+        //req.flash('info',['alert-success','Thêm mới thành công.']);
+        //res.redirect('/dashboard/category');
+        res.send('okey');
     });
 });
 /*------------------------------Xoá loại sản phẩm----------------------------------*/
-/* okey */
+
 router.get('/category/delete/:id',function (req,res,next) {
     var id = req.params.id;
     
@@ -346,7 +378,7 @@ router.get('/category/delete/:id',function (req,res,next) {
     });
 });
 
-/*okey*/
+
 router.post('/category/select-delete',urlencodedParser,function (req,res,next) {
     var checkif_array_or_object = req.body.checkbox;
 
@@ -385,14 +417,28 @@ router.post('/category/select-delete',urlencodedParser,function (req,res,next) {
 });
 
 /*--------------------------------Sửa loại sản phẩm-----------------------------------*/
+/* okey */
 router.post('/category/edit',urlencodedParser,function (req,res,next) {
-    var id =req.body.id;
+    var id = req.body.id;
     var ten = req.body.ten;
-    
+
+    var msg = {'ten': ""};
+    console.log(id);
+    console.log(ten);
     Loai.where({_id:id}).update({ten:ten}).exec(function (err,result) {
+        if (err)
+        {
+            msg.
+            console.log("#");
+            res.status(400).send(msg);
+            return;
+        }
+        else{
+            msg.ten = req.body.ten;
+            res.status(200).send(msg);
+            console.log("30");
+        }
     });
-    req.flash('info',['alert-success','Chỉnh sửa thành công']);
-    res.redirect('/dashboard/category');
 });
 
 
