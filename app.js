@@ -57,7 +57,7 @@ app.use('/dashboard',dashBoard);
 HandlebarsIntl.registerWith(Handlebars);
 
 //connect to database
-mongodb.connect(configDB.database_local);
+mongodb.connect(configDB.database);
 
 // catch 404 and forward to error handler
 
