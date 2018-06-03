@@ -41,7 +41,7 @@
                                 </div>
                                 <div class="pull-right action-buttons">
                                     <a class="smbutton_editcategory" id="{{this.id}}" name="{{this.ten}}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                    <a class="trash" data-toggle="modal" data-target="#{{this._id}}_delete"><span class="glyphicon glyphicon-trash"></span></a>
+                                    <a class="smbutton_deletecategory" id="{{this._id}}" name="{{this.ten}}"><span class="glyphicon glyphicon-trash"></span></a>
                                     <!-------- Dialog Delete-------------->
                                     <div id="{{this._id}}_delete" class="modal fade" role="dialog">
                                         <div class="modal-dialog">
@@ -130,6 +130,27 @@
                 <input id="dialog_edit_body_id" value="" type="hidden">
                 <div class="modal-footer">
                     <button type="button" class="btn-success btn" id="smbutton_editcategory_modal">Cập nhật</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- dialog delete -->
+<div id="dialog_delete" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <form method="post" action="/dashboard/category/edit" class="form-horizontal">
+            <div class="modal-content">
+                <div id="dialog_delete_header" class="modal-header" style="background-color: red">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 id="dialog_delete_title" class="modal-title">Chỉnh sửa loại sản phẩm</h4>
+                </div>
+                <div class="modal-body" id="dialog_delete_body">
+                    <!-- -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-danger btn" id="smbutton_deletecategory_modal">Xóa</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
                 </div>
             </div>

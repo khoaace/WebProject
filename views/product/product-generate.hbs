@@ -27,13 +27,13 @@
 
         <!-- Number input-->
         <div class="form-group">
-            <label class="col-md-4 control-label" for="textinput">Số lượng</label>
+            <label class="col-md-4 control-label" for="numberforgen_textinput">Số lượng</label>
             <div class="col-md-4">
-                <input id="textinput" name="count" min='0' type="number" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập số lượng')" oninput="setCustomValidity('')">
+                <input id="numberforgen_textinput" name="count" min='0' type="number" value="0" class="form-control input-md">
             </div>
         </div>
         <center>
-            <input type="submit" class="btn3d btn btn-success btn-lg" value="Phát sinh sản phẩm">
+            <input id="sm_product_gen" class="btn3d btn btn-success btn-lg" value="Phát sinh sản phẩm">
         </center>
     </fieldset>
 

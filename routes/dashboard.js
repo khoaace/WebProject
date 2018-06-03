@@ -10,7 +10,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 /*-----------------------------------Xác thực tài khoản----------------------------*/
-router.use(function(req, res, next) {
+/*router.use(function(req, res, next) {
     // check header or url parameters or post parameters for token
     var token = req.session.token;
     //req.body.token || req.query.token || req.headers['x-access-token']
@@ -39,9 +39,7 @@ router.use(function(req, res, next) {
         res.redirect('/error');
     }
 
-});
-
-
+});*/
 
 router.get("/",function (req,res,next) {
     res.render('dashboard',{layout:'dashboard_layout',user:req.user});
@@ -200,30 +198,27 @@ router.get('/product/add/success',function (req,res,next) {
 
 /*okey */
 router.post("/product/add",urlencodedParser,function (req,res) {
-    var errmsg=[];
+    var errmsg = false;
 
     var ten = req.body.ten;
     if (ten == "")
     {
-        errmsg.push("ten");
+        res.status(400).send('err');
+        return;
     }
 
     var nhanhieu = req.body.nhanhieu;
     var xuatxu = req.body.xuatxu;
     var gia = req.body.gia;
+
     if (gia == "")
     {
-        errmsg.push("gia");
+        res.status(400).send('err');
+        return;
     }
 
     var mota = req.body.mota;
-    
-    if (errmsg.length > 0)
-    {
-        console.log('send err');
-        res.status(400).send(errmsg);
-        return;
-    }
+    var hinhanh = req.body.hinhanh;
 
     if(mota.trim() === "")
         mota="Không có mô tả";
@@ -342,22 +337,19 @@ router.get('/category/page/:id',function (req,res,next) {
 /*------------------------------Thêm loại sản phẩm mới------------------------------*/
 /*okey*/
 router.post('/category/add',urlencodedParser,function (req,res,next) {
-    var errmsg=[];
+
     var ten = req.body.ten;
     
     if (ten == "")
     {
-        errmsg.push("ten");
-    }
-    if (errmsg[0] != null)
-    {
-        res.status(400).send(errmsg);
+        res.status(400).send('no name');
         return;
     }
     
     var loai = new Loai({
         ten: ten
     });
+
     loai.save(function (err, result) {
         //req.flash('info',['alert-success','Thêm mới thành công.']);
         //res.redirect('/dashboard/category');
@@ -365,7 +357,7 @@ router.post('/category/add',urlencodedParser,function (req,res,next) {
     });
 });
 /*------------------------------Xoá loại sản phẩm----------------------------------*/
-
+/*bỏ*/
 router.get('/category/delete/:id',function (req,res,next) {
     var id = req.params.id;
     
@@ -374,6 +366,31 @@ router.get('/category/delete/:id',function (req,res,next) {
             req.flash('info',['alert-success','Xoá thành công.']);
             res.redirect('/dashboard/category/');
         });
+    });
+});
+/*okey*/
+router.post('/category/delete',function (req,res,next) {
+    var id = req.body.id;
+    
+    Product.deleteMany({loai:id},function (err,result) {
+        if (err) 
+        {
+            res.status(409).send('delete many failed');
+            return;
+        }
+        else {
+            Loai.deleteOne({_id:id},function (err,result1) {
+                if (err) 
+                {
+                    res.status(409).send('delete GENRES failed');
+                    return;
+                }
+                else{
+                    res.send('/dashboard/category/');
+                }
+            });
+        }
+        
     });
 });
 
@@ -395,6 +412,7 @@ router.post('/category/select-delete',urlencodedParser,function (req,res,next) {
                 Product.deleteMany({loai:arr[i]},function (err,result) {
                 });
                 Loai.deleteOne({_id:arr[i]}, function (err, result1) {
+                
                 });
             }
             req.flash('info',['alert-success','Đã xoá '+arr.length+' loại sản phẩm']);
@@ -427,21 +445,21 @@ router.post('/category/edit',urlencodedParser,function (req,res,next) {
     Loai.where({_id:id}).update({ten:ten}).exec(function (err,result) {
         if (err)
         {
-            msg.
-            console.log("#");
+            msg.ten = ten;
+            
             res.status(400).send(msg);
             return;
         }
         else{
             msg.ten = req.body.ten;
             res.status(200).send(msg);
-            console.log("30");
         }
     });
 });
 
 
 /*-------------------------------Phát sinh sản phẩm------------------------------------*/
+/*okey*/
 router.get('/product/generate',function (req,res,next) {
     Loai.find(function (err,result) {
        res.render('product/product-generate', {
@@ -452,15 +470,26 @@ router.get('/product/generate',function (req,res,next) {
        })
     });
 });
-router.post('/product/generate',urlencodedParser,function (req,res,next) {
+/*okey*/
+router.post('/product/generate',function (req,res,next) {
     var loai = req.body.loai;
-    var count =  req.body.count;
+    var count = parseInt(req.body.count);
+
+    res.charset = 'UTF-8';
+    
+    if(count == undefined || count <= 0)
+    {
+        var resmsg = "/dashboard/category";
+        res.status(400).send(resmsg);
+        return;
+    }
 
     Loai.findOne({_id:loai},function (err,result) {
         if (result == null)
         {
-            req.flash('info', ['alert-warning', 'Không tồn tại LOẠI SẢN PHẨM, cần tạo LOẠI SẢN PHẨM trước']);
-            res.redirect('/dashboard/category');
+            console.log('err');
+            res.status(404).send("/dashboard/category");
+            return;
         }
         else{
             var products=[];
@@ -479,8 +508,8 @@ router.post('/product/generate',urlencodedParser,function (req,res,next) {
                 products[i].save(function (err, docs) {
                 });
             }
-            req.flash('info',['alert-success','Phát sinh thành công '+count+' sản phẩm loại '+result.ten]);
-            res.redirect('/dashboard/product/generate');
+            //req.flash('info',['alert-success','Phát sinh thành công '+count+' sản phẩm loại '+result.ten]);
+            res.send('Phát sinh thành công '+count+' sản phẩm loại '+result.ten);
         }
     });
 

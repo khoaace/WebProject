@@ -46,7 +46,9 @@ $(document).ready(function() {
             // Handles successful responses only
             //$("#smbutton").html('saved');
             //$("#testbutton").click();
+            
             $("#main_modal_body_alert").html('Sản Phẩm Đã Được Thêm Mới');
+            $("#main_modal_footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
             $("#modalbox").modal('show');
 
             $("#name_textinput").val('');
@@ -58,8 +60,9 @@ $(document).ready(function() {
         })
         .fail(function(data){
             var nulllist = data.responseJSON;
+            $("#main_modal_header").attr("style","background-color: red")
             $("#main_modal_body_alert").html('Vui lòng điền đủ các thông tin');
-            $(".modal-footer").html('<button type="button" class="btn btn-warning" data-dismiss="modal">OK</button>');
+            $("#main_modal_footer").html('<button type="button" class="btn btn-warning" data-dismiss="modal">OK</button>');
             $("#modalbox").modal('show');
         });
 
@@ -84,19 +87,33 @@ $(document).ready(function(){
         })
         .done(function(data){
             $("#newgenres_textinput").val('');
+            $("#main_modal_header").attr("style",'background-color: #00810b');
             $("#main_modal_body_alert").html('Thêm mới thành công')
-            $("#main_modal_footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
+            $("#main_modal_footer").html('<button type="button" class="btn btn-success" onClick="window.location.reload()">OK</button>');
             $("#modalbox").modal('show');
+            $(".category_table").load('/dashboard/category');
         })
         .fail(function(data){
+            $("#main_modal_header").attr("style",'background-color: red');
             $("#main_modal_body_alert").html('Thêm mới Thất Bại')
             $("#main_modal_footer").html('<button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>');
             $("#modalbox").modal('show');
         });
     });
 
+    function update_tablecontent(){
+        $.ajax({
+            type        : 'GET', // define the type of HTTP verb we want to use (POST for our form)
+            url         : window.location.url, // the url where we want to POST
+
+        }).done(function(data){
+        });
+    };
+
     var formData;
 
+//======================== chỉnh sửa =======================
+    //nút sửa thông tin, mỗi row
     $(".smbutton_editcategory").on('click', function(event){
         event.preventDefault();
         var genresid = $(this).attr('id');
@@ -113,6 +130,7 @@ $(document).ready(function(){
         $("#dialog_edit").modal('show');
     });
 
+    //nút [cập nhật] trên pop modal
     $("#smbutton_editcategory_modal").on('click', function(event){
         //event.preventDefault();
         // process the form
@@ -129,21 +147,119 @@ $(document).ready(function(){
                 // Handle data transformation or DOM manipulation in here.
             }*/
         }).done(function(data){
-            console.log(data);
+            
             var iddanhmuc = "#" + formData.id + "_id";
-            console.log(data);
             $("#dialog_edit").modal('hide');
             $(iddanhmuc).html(data.ten);
 
-            $(".modal-body").html('<p id="modalalert">Cập Nhật Thành Công</p>')
-            $(".modal-footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
+            $(".smbutton_editcategory").attr("name", data.ten);
+            $("#main_modal_header").attr("style",'background-color: #00810b');
+            $("#main_modal_body").html('<p id="modalalert">Cập Nhật Thành Công</p>')
+            $("#main_modal_footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
             $("#modalbox").modal('show');
         }).fail(function(data){
             $("#modalbox").modal('hide');
-            $(".modal-body").html('<p id="modalalert">Cập Nhật Không Thành Công</p>')
-            $(".modal-footer").html('<button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>');
+            $("#main_modal_header").attr("style","background-color: red")
+            $("#main_modal_body").html('<p id="modalalert">Cập Nhật Không Thành Công</p>')
+            $("#main_modal_footer").html('<button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>');
             $("#modalbox").modal('show');
         });
     });
 
+//============================= Xóa danh mục =========================
+//nút xóa danh mục mỗi row
+    $(".smbutton_deletecategory").on('click', function(event){
+        event.preventDefault();
+        var genresid = $(this).attr('id');
+        var genresname = $(this).attr('name');
+
+        formData =  {
+            'id'               : genresid
+        };
+        
+        $("#dialog_delete_body").html('<p>Bạn có chắc chắn xoá <h4>' + genresname + '</h4> Mọi sản phẩm thuộc loại này sẽ bị xoá.</p>');
+        
+        $("#dialog_delete").modal('show');
+    });
+
+    //nút [cập nhật] trên pop modal
+    $("#smbutton_deletecategory_modal").on('click', function(event){
+        //event.preventDefault();
+        // process the form
+        $("#dialog_delete").modal('hide');
+        $.ajax({
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url         : '/dashboard/category/delete', // the url where we want to POST
+            data        : formData, // our data object
+            //dataType    : 'json', // what type of data do we expect back from the server
+            //encode      : true,
+    
+            /*success : function( data, textStatus, jqXHR ) {
+                // Handle data transformation or DOM manipulation in here.
+            }*/
+        }).done(function(data){
+            console.log(data);
+            $("#dialog_delete").modal('hide');
+            $("#main_modal_header").attr("style",'background-color: #00810b');
+            $("#main_modal_body").html('<p id="modalalert">Xóa Thành Công</p>');
+            $("#main_modal_footer").html('<a href = "'+ data+'" role="button" class="btn btn-success">OK</a>');
+
+        }).fail(function(data){
+            $("#modalbox").modal('hide');
+            $("#main_modal_header").attr("style","background-color: red");
+            $("#main_modal_body").html('<p id="modalalert">Xóa Không Thành Công</p>');
+            $("#main_modal_footer").html('<a href = "'+ data+'" role="button" class="btn btn-danger">Hủy</a>');
+
+        });
+        
+        $("#modalbox").modal('show');
+    });
+});
+//================= product-generate  ==================
+$(document).ready(function(){
+    $("#sm_product_gen").on("click", function(event){
+        event.preventDefault();
+
+        var formData = {
+            'loai'             : $("#selectbasic").val(),
+            'count'            : $("#numberforgen_textinput").val()
+        };
+        
+        // process the form
+        $.ajax({
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url         : '/dashboard/product/generate', // the url where we want to POST
+            data        : formData, // our data object
+            //dataType    : 'json', // what type of data do we expect back from the server
+            encode      : true,
+
+            /*success : function( data, textStatus, jqXHR ) {
+                // Handle data transformation or DOM manipulation in here.
+            }*/
+        })
+        .done( function( data ) {
+            $("#main_modal_body").html('<p id="modalalert">' + data +'</p>');
+            $("#main_modal_footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
+        })
+        .fail(function(data){
+            switch (data.status){
+                case 400: {
+                    $("#main_modal_body").html('<p id="modalalert">Sai số lượng phát sinh!</p>');
+                    $("#main_modal_footer").html('<button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>');
+                } break;
+                case 404: {
+                    $("#main_modal_body").html('<p id="modalalert">Không tìm thấy danh mục</p>');
+                    $("#main_modal_footer").html('<a href="'+data.responseText+'" class="btn btn-warning" role="button">Về trang Danh Mục</a><button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>');
+                } break;
+                default:
+                {
+                    $("#main_modal_body").html('<p id="modalalert">Xảy ra lỗi, xin thử lại!</p>');
+                    $("#main_modal_footer").html('<button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>');
+                }
+            }
+            $("#main_modal_header").attr("style","background-color: red");
+        });
+
+        $("#modalbox").modal('show');
+    });
 });
