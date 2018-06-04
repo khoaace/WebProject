@@ -14,6 +14,21 @@ $(document).ready(function() {
 
         // stop the form from submitting the normal way and refreshing the page
         event.preventDefault();
+
+        var imglist = [];
+        if($("#link1_textinput").val() != '')
+        {
+            imglist.push($("#link1_textinput").val());
+        }
+        if($("#link2_textinput").val() != '')
+        {
+            imglist.push($("#link2_textinput").val());
+        }
+        if($("#link3_textinput").val() != '')
+        {
+            imglist.push($("#link3_textinput").val());
+        }
+
         // get the form data
         // there are many ways to get this data using jQuery (you can use the class or id also)
         var formData = {
@@ -23,13 +38,9 @@ $(document).ready(function() {
             'xuatxu'           : $("#made_textinput").val(),
             'gia'              : $("#price_textinput").val(),
             'mota'             : $("#desc_textarea").val(),
-            'hinhanh'          : [
-                                    $("#link1_textinput").val(),
-                                    $("#link2_textinput").val(),
-                                    $("#link3_textinput").val()
-                                ]
+            'hinhanh'          : imglist
         };
-        
+
         // process the form
         $.ajax({
             type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
@@ -46,7 +57,7 @@ $(document).ready(function() {
             // Handles successful responses only
             //$("#smbutton").html('saved');
             //$("#testbutton").click();
-            
+            $("#main_modal_header").attr("style","background-color: #00810b")
             $("#main_modal_body_alert").html('Sản Phẩm Đã Được Thêm Mới');
             $("#main_modal_footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
             $("#modalbox").modal('show');

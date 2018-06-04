@@ -10,7 +10,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 /*-----------------------------------Xác thực tài khoản----------------------------*/
-router.use(function(req, res, next) {
+/*router.use(function(req, res, next) {
     // check header or url parameters or post parameters for token
     var token = req.session.token;
     //req.body.token || req.query.token || req.headers['x-access-token']
@@ -39,7 +39,7 @@ router.use(function(req, res, next) {
         res.redirect('/error');
     }
 
-});
+});*/
 
 router.get("/",function (req,res,next) {
     res.render('dashboard',{layout:'dashboard_layout',user:req.user});
@@ -202,24 +202,30 @@ router.post("/product/add",urlencodedParser,function (req,res) {
     var errmsg = false;
 
     var ten = req.body.ten;
-    if (ten == "")
+    if (ten === undefined || ten == "")
     {
         res.status(400).send('err');
         return;
     }
-
+ 
     var nhanhieu = req.body.nhanhieu;
     var xuatxu = req.body.xuatxu;
     var gia = req.body.gia;
 
-    if (gia == "")
+    if (gia === undefined || gia == "")
+    {
+        res.status(400).send('err');
+        return;
+    }
+    var mota = req.body.mota;
+    var hinhanh = req.body['hinhanh[]'];
+
+    if (hinhanh === undefined || hinhanh.length == 0 )
     {
         res.status(400).send('err');
         return;
     }
 
-    var mota = req.body.mota;
-    var hinhanh = req.body.hinhanh;
 
     if(mota.trim() === "")
         mota="Không có mô tả";
