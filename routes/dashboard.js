@@ -71,7 +71,7 @@ router.get("/product",function (req,res,next) {
 
 
 router.get('/product/page/:number',function (req,res,next) {
-    var page = req.params.number;
+    var page = parseInt(req.params.number);
     Loai.find(function (err,result1) {
         var curentPage = '/dashboard/product';
         Product.find(function (err, docs) {
@@ -119,7 +119,8 @@ router.get("/product/category/:id",function (req,res,next) {
 
     router.get("/product/category/:id/page/:number", function (req, res, next) {
         var id = req.params.id;
-        var page = req.params.number;
+        var page = parseInt(req.params.number);
+        console.log(page);
         Loai.find(function (err, result1) {
             Loai.findOne({_id: id}, function (err, result2) {
                 Product.find({loai: id}, function (err, docs) {
@@ -315,8 +316,9 @@ router.get('/category',function (req,res,next) {
 });
 
 
-router.get('/category/page/:id',function (req,res,next) {
-    var page = req.params.number;
+router.get('/category/page/:number',function (req,res,next) {
+    var page = parseInt(req.params.number);
+    console.log(page);
     Loai.find(function (err,result1) {
         var curentPage = '/dashboard/category';
 

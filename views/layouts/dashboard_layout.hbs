@@ -13,6 +13,29 @@
 </head>
 
 <body>
+<!--     Dialog    -->
+    <div id="modalbox" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div id="main_modal_header" class="modal-header" style="background-color: #00810b">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <!-- modal-title -->
+                    <h4 id="main_modal_title" class="modal-title" style="color:white">Thông Báo</h4>
+                </div>
+                    <!-- modal-title -->
+                <div id="main_modal_body" class="modal-body">
+                    <!-- #modalalert -->
+                    <p id="main_modal_body_alert">Nội dung</p>
+                </div>
+                    <!-- modal-footer -->
+                <div id="main_modal_footer" class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--    / Dialog    -->
+
 <div id="throbber" style="display:none; min-height:120px;"></div>
 <div id="noty-holder"></div>
 <div id="wrapper">
@@ -41,28 +64,7 @@
     <!-- /#page-wrapper -->
 </div><!-- /#wrapper -->
 
-<!--     Dialog    -->
-    <div id="modalbox" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div id="main_modal_header" class="modal-header" style="background-color: #00810b">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <!-- modal-title -->
-                    <h4 id="main_modal_title" class="modal-title" style="color:white">Thông Báo</h4>
-                </div>
-                    <!-- modal-title -->
-                <div id="main_modal_body" class="modal-body">
-                    <!-- #modalalert -->
-                    <p id="main_modal_body_alert">Nội dung</p>
-                </div>
-                    <!-- modal-footer -->
-                <div id="main_modal_footer" class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
-                </div>
-            </div>
-        </div>
-    </div>
-<!--     Dialog    -->
+
 
     <!-- Others JS -->
     <script src="/javascripts/dashboard_script.js"></script>

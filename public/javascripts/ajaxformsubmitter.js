@@ -1,4 +1,4 @@
-/* product-add.hbs */
+//===================== product-add.hbs =======================
 $(document).ready(function() {
 
     $("#loadingimg").hide();    
@@ -72,10 +72,10 @@ $(document).ready(function() {
 
 
 
-/* category-list.hbs*/
+//========================= category-list.hbs ==================
 $(document).ready(function(){
     $("form").submit(function(event){
-        event.preventDefault();
+        //event.preventDefault();
     });
     /* thêm danh mục mới */
     $("#smbutton_addcategory").on('click', function(event){
@@ -89,9 +89,10 @@ $(document).ready(function(){
             $("#newgenres_textinput").val('');
             $("#main_modal_header").attr("style",'background-color: #00810b');
             $("#main_modal_body_alert").html('Thêm mới thành công')
-            $("#main_modal_footer").html('<button type="button" class="btn btn-success" onClick="window.location.reload()">OK</button>');
+            $("#main_modal_footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
             $("#modalbox").modal('show');
-            $(".category_table").load('/dashboard/category');
+            //reload page content
+            $(".category_table").load(window.location.pathname +  ' .category_table');
         })
         .fail(function(data){
             $("#main_modal_header").attr("style",'background-color: red');
@@ -101,20 +102,12 @@ $(document).ready(function(){
         });
     });
 
-    function update_tablecontent(){
-        $.ajax({
-            type        : 'GET', // define the type of HTTP verb we want to use (POST for our form)
-            url         : window.location.url, // the url where we want to POST
-
-        }).done(function(data){
-        });
-    };
-
     var formData;
 
-//======================== chỉnh sửa =======================
+    /* chỉnh sửa */
     //nút sửa thông tin, mỗi row
-    $(".smbutton_editcategory").on('click', function(event){
+        //những element mà có thể bị thay đổi sau, thì viết kiểu này mới chạy được ở lần sau.
+    $(document).on('click', ".smbutton_editcategory", function(event){
         event.preventDefault();
         var genresid = $(this).attr('id');
         var genresname = $(this).attr('name');
@@ -166,9 +159,9 @@ $(document).ready(function(){
         });
     });
 
-//============================= Xóa danh mục =========================
-//nút xóa danh mục mỗi row
-    $(".smbutton_deletecategory").on('click', function(event){
+    /*Xóa danh mục*/
+    //nút xóa danh mục mỗi row
+    $(document).on('click','.smbutton_deletecategory', function(event){
         event.preventDefault();
         var genresid = $(this).attr('id');
         var genresname = $(this).attr('name');
@@ -176,7 +169,7 @@ $(document).ready(function(){
         formData =  {
             'id'               : genresid
         };
-        
+
         $("#dialog_delete_body").html('<p>Bạn có chắc chắn xoá <h4>' + genresname + '</h4> Mọi sản phẩm thuộc loại này sẽ bị xoá.</p>');
         
         $("#dialog_delete").modal('show');
@@ -202,13 +195,16 @@ $(document).ready(function(){
             $("#dialog_delete").modal('hide');
             $("#main_modal_header").attr("style",'background-color: #00810b');
             $("#main_modal_body").html('<p id="modalalert">Xóa Thành Công</p>');
-            $("#main_modal_footer").html('<a href = "'+ data+'" role="button" class="btn btn-success">OK</a>');
+            $("#main_modal_footer").html('<button class="btn btn-success" data-dismiss="modal">OK</a>');
+            //reload page content
+            $(".category_table").load(window.location.pathname +  ' .category_table');
+            
 
         }).fail(function(data){
             $("#modalbox").modal('hide');
             $("#main_modal_header").attr("style","background-color: red");
             $("#main_modal_body").html('<p id="modalalert">Xóa Không Thành Công</p>');
-            $("#main_modal_footer").html('<a href = "'+ data+'" role="button" class="btn btn-danger">Hủy</a>');
+            $("#main_modal_footer").html('<button role="button" class="btn btn-danger" data-dismiss="modal>Hủy</a>');
 
         });
         
@@ -238,6 +234,7 @@ $(document).ready(function(){
             }*/
         })
         .done( function( data ) {
+            $("#main_modal_header").attr("style","background-color: #00810b");
             $("#main_modal_body").html('<p id="modalalert">' + data +'</p>');
             $("#main_modal_footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
         })
@@ -263,3 +260,5 @@ $(document).ready(function(){
         $("#modalbox").modal('show');
     });
 });
+
+//================ product list ====================
