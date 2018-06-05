@@ -86,7 +86,7 @@ $(document).ready(function() {
 //========================= category-list.hbs ==================
 $(document).ready(function(){
     $("form").submit(function(event){
-        //event.preventDefault();
+        event.preventDefault();
     });
     /* thêm danh mục mới */
     $("#smbutton_addcategory").on('click', function(event){
@@ -206,7 +206,7 @@ $(document).ready(function(){
             $("#dialog_delete").modal('hide');
             $("#main_modal_header").attr("style",'background-color: #00810b');
             $("#main_modal_body").html('<p id="modalalert">Xóa Thành Công</p>');
-            $("#main_modal_footer").html('<button class="btn btn-success" data-dismiss="modal">OK</a>');
+            $("#main_modal_footer").html('<button class="btn btn-success" data-dismiss="modal">OK</button>');
             //reload page content
             $(".category_table").load(window.location.pathname +  ' .category_table');
             
@@ -215,7 +215,55 @@ $(document).ready(function(){
             $("#modalbox").modal('hide');
             $("#main_modal_header").attr("style","background-color: red");
             $("#main_modal_body").html('<p id="modalalert">Xóa Không Thành Công</p>');
-            $("#main_modal_footer").html('<button role="button" class="btn btn-danger" data-dismiss="modal>Hủy</a>');
+            $("#main_modal_footer").html('<button role="button" class="btn btn-danger" data-dismiss="modal>Hủy</button>');
+
+        });
+        
+        $("#modalbox").modal('show');
+    });
+
+    /*select and delete*/
+    $(document).on('click','#sm_button_selectdel', function(event){
+        event.preventDefault();
+        
+        var del_list = [];
+
+        $('input[name="checkbox"]').each(function(){
+            if($(this).is(':checked'))
+            {
+                del_list.push($(this).val());
+            }
+        });
+
+        var delformData = {
+            'checkbox'          : del_list
+        }
+        console.log(delformData);
+        event.preventDefault();
+        // process the form
+        
+        $.ajax({
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url         : '/dashboard/category/select-delete', // the url where we want to POST
+            data        : delformData, // our data object
+            //dataType    : 'json', // what type of data do we expect back from the server
+            //encode      : true,
+    
+            /*success : function( data, textStatus, jqXHR ) {
+                // Handle data transformation or DOM manipulation in here.
+            }*/
+        }).done(function(data){
+            $("#main_modal_header").attr("style",'background-color: #00810b');
+            $("#main_modal_body").html('<p id="modalalert">' + data + '</p>');
+            $("#main_modal_footer").html('<button class="btn btn-success" data-dismiss="modal">OK</button>');
+            //reload page content
+            $(".category_table").load(window.location.pathname +  ' .category_table');
+            
+
+        }).fail(function(data){
+            $("#main_modal_header").attr("style","background-color: red");
+            $("#main_modal_body").html('<p id="modalalert">Xóa Không Thành Công</p>');
+            $("#main_modal_footer").html('<button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>');
 
         });
         

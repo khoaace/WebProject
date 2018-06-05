@@ -324,7 +324,7 @@ router.get('/category',function (req,res,next) {
 
 router.get('/category/page/:number',function (req,res,next) {
     var page = parseInt(req.params.number);
-    console.log(page);
+    
     Loai.find(function (err,result1) {
         var curentPage = '/dashboard/category';
 
@@ -379,7 +379,7 @@ router.get('/category/delete/:id',function (req,res,next) {
 /*okey*/
 router.post('/category/delete',function (req,res,next) {
     var id = req.body.id;
-    
+
     Product.deleteMany({loai:id},function (err,result) {
         if (err) 
         {
@@ -402,14 +402,13 @@ router.post('/category/delete',function (req,res,next) {
     });
 });
 
-
+/*okey*/
 router.post('/category/select-delete',urlencodedParser,function (req,res,next) {
-    var checkif_array_or_object = req.body.checkbox;
-
+    var checkif_array_or_object = req.body['checkbox[]'];
+    
     if (checkif_array_or_object ==  null)
     {
-        req.flash('info', ['alert-warning', 'Chưa chọn loại sản phẩm']);
-        res.redirect('/dashboard/category/');
+        res.status(400).send('err not ticked');
     }
     else if (checkif_array_or_object.constructor === Array)
     {
@@ -423,8 +422,8 @@ router.post('/category/select-delete',urlencodedParser,function (req,res,next) {
                 
                 });
             }
-            req.flash('info',['alert-success','Đã xoá '+arr.length+' loại sản phẩm']);
-            res.redirect('/dashboard/category/');
+            
+            res.status(200).send('Đã xoá '+arr.length+' loại sản phẩm');
         }            
     }
     else
@@ -432,8 +431,7 @@ router.post('/category/select-delete',urlencodedParser,function (req,res,next) {
         id = checkif_array_or_object;
         Product.deleteMany({loai:id},function (err,result) {
             Loai.deleteOne({_id:id},function (err,result1) {
-                req.flash('info',['alert-success','Xoá thành công.']);
-                res.redirect('/dashboard/category/');
+                res.status(200).send('Xoá thành công');
             });
         });
     }
