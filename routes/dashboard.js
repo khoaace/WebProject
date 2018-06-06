@@ -10,7 +10,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 /*-----------------------------------Xác thực tài khoản----------------------------*/
-router.use(function(req, res, next) {
+/*router.use(function(req, res, next) {
     // check header or url parameters or post parameters for token
     var token = req.session.token;
     //req.body.token || req.query.token || req.headers['x-access-token']
@@ -39,7 +39,7 @@ router.use(function(req, res, next) {
         res.redirect('/error');
     }
 
-});
+});*/
 
 router.get("/",function (req,res,next) {
     res.render('dashboard',{layout:'dashboard_layout',user:req.user});
@@ -258,45 +258,62 @@ router.post("/product/add",urlencodedParser,function (req,res) {
 });
 
 /*----------------------------------------------Xoá sản phẩm--------------------------------*/
+/*okey*/
+router.post('/product/delete',function (req,res,next) {
 
-router.get('/product/delete/:id',function (req,res,next) {
-    var id = req.params.id;
-    
-    Product.deleteOne({_id:id},function (err,result) {
-        req.flash('info',['alert-success','Đã xoá sản phẩm.']);
-        res.redirect('/dashboard/product');
+    var id = req.body.id;
+    console.log(id);
+
+    if (id === undefined || id == "")
+    {
+        res.status(400).send('form err');
+            return;
+    }
+
+    Product.findOne({_id:id},function (err,result) {
+        if (err) 
+        {
+            res.status(409).send('cannot delete');
+            return;
+        }
+        else{
+            result.remove(function(){
+                
+                res.send('done');
+            });
+        }
     });
+    
 });
 
 // Xoá nhiều sản phẩm
+/*okey*/
 router.post('/product/select-delete',urlencodedParser,function (req,res,next) {
+    var checkif_array_or_object = req.body['checkbox[]'];
     
-    var checkif_array_object = req.body.checkbox;
-    
-    if(checkif_array_object == null)
+    if (checkif_array_or_object ==  null)
     {
-        req.flash('info', ['alert-warning', 'Chưa chọn sản phẩm']);
-        res.redirect('/dashboard/product');
+        res.status(400).send('err not ticked');
     }
-    else if(checkif_array_object.constructor === Array)
+    else if (checkif_array_or_object.constructor === Array)
     {
-        var arr = checkif_array_object;
+        var arr = checkif_array_or_object;
         if(arr != null)
         {
             for(var i=0;i<arr.length;i++) {
-                Product.deleteOne({_id: arr[i]}, function (err, result) {
+                Product.deleteOne({_id:arr[i]}, function (err, result1) {
+                
                 });
             }
-            req.flash('info',['alert-success','Đã xoá '+arr.length+' sản phẩm']);
-            res.redirect('/dashboard/product');
-        }
+            
+            res.status(200).send('Đã xoá '+arr.length+' sản phẩm');
+        }            
     }
     else
     {
-        var id = checkif_array_object;
-        Product.deleteOne({_id:id},function (err,result) {
-            req.flash('info',['alert-success','Đã xoá sản phẩm.']);
-            res.redirect('/dashboard/product');
+        id = checkif_array_or_object;
+        Product.deleteMany({loai:id},function (err,result) {
+            res.status(200).send('Xoá thành công');
         });
     }
 });

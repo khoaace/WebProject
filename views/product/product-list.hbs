@@ -14,10 +14,10 @@
             {{/if}}
         {{/each}}
         <li class="divider"></li>
-        <li><a href="#">▶Toàn bộ sản phẩm</a></li>
+        <li><a href="/dashboard/product">▶Toàn bộ sản phẩm</a></li>
     </ul>
 </div>
-<form method="post" action="/dashboard/product/select-delete">
+<form class="product_table" method="post" action="/dashboard/product/select-delete">
 <div class="panel panel-primary">
     <div class="panel-heading">
         <span class="glyphicon glyphicon-list"></span>{{Table_name}}
@@ -32,7 +32,7 @@
             </div>
         </div>-->
         <div class="btn-group pull-right">
-        <button type="submit" class="btn-danger">Xoá các mục đã chọn</button>
+            <button id="sm_button_selectdel_product" type="submit" class="btn-danger">Xoá các mục đã chọn</button>
         </div>
     </div>
 
@@ -53,7 +53,7 @@
                             </div>
                             <div class="pull-right action-buttons">
                                 <a href="/dashboard/product/edit/{{this._id}}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                <a class="trash" data-toggle="modal" data-target="#{{this._id}}"><span class="glyphicon glyphicon-trash"></span></a>
+                                <a class="smbutton_deleteproduct" id="{{this._id}}" name="{{this.ten}}"><span class="glyphicon glyphicon-trash"></span></a>
                                <!-------- Dialog-------------->
                                 <div id="{{this._id}}" class="modal fade" role="dialog">
                                     <div class="modal-dialog">
@@ -91,7 +91,7 @@
         <div class="row">
             <div class="col-md-6">
                 <h6>
-                    Tổng số loại sản phẩm <span class="label label-info">{{product_count}}</span></h6>
+                    Tổng số sản phẩm <span class="label label-info">{{product_count}}</span></h6>
             </div>
             <div class="col-md-6">
                 <ul class="pagination pagination-sm pull-right">
@@ -104,3 +104,49 @@
     </div>
 </div>
 </form>
+
+<!-- dialogedit -->
+<div id="dialog_edit" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <form method="post" action="/dashboard/category/edit" class="form-horizontal">
+            <div class="modal-content">
+                <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 id="dialog_edit_title" class="modal-title">Chỉnh sửa loại sản phẩm</h4>
+                </div>
+                <div class="modal-body" id="dialog_edit_body">
+                    <div class="row">
+                        <label class="col-md-4 control-label" for="textinput">Tên loại sản phẩm</label>
+                        <div class="col-md-4"><input id="dialog_edit_body_textinput" value="" type="text" placeholder="" class="form-control input-md"></div>
+                    </div>
+                </div>
+                <input id="dialog_edit_body_id" value="" type="hidden">
+                <div class="modal-footer">
+                    <button type="button" class="btn-success btn" id="smbutton_editcategory_modal">Cập nhật</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- dialog delete -->
+<div id="dialog_delete" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <form method="post" action="/dashboard/category/edit" class="form-horizontal">
+            <div class="modal-content">
+                <div id="dialog_delete_header" class="modal-header" style="background-color: red">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 id="dialog_delete_title" class="modal-title">Chỉnh sửa loại sản phẩm</h4>
+                </div>
+                <div class="modal-body" id="dialog_delete_body">
+                    <!-- -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-danger btn" id="smbutton_deletecategory_modal">Xóa</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

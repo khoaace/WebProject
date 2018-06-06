@@ -186,7 +186,7 @@ $(document).ready(function(){
         $("#dialog_delete").modal('show');
     });
 
-    //nút [cập nhật] trên pop modal
+    //nút [XÓA] trên pop modal
     $("#smbutton_deletecategory_modal").on('click', function(event){
         //event.preventDefault();
         // process the form
@@ -321,3 +321,106 @@ $(document).ready(function(){
 });
 
 //================ product list ====================
+$(document).ready(function(){
+    
+
+    /*select and delete*/
+    $(document).on('click','#sm_button_selectdel_product', function(event){
+        event.preventDefault();
+        
+        var del_list = [];
+
+        $('input[name="checkbox"]').each(function(){
+            if($(this).is(':checked'))
+            {
+                del_list.push($(this).val());
+            }
+        });
+
+        var delformData = {
+            'checkbox'          : del_list
+        }
+        console.log(delformData);
+        event.preventDefault();
+        // process the form
+        
+        $.ajax({
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url         : '/dashboard/product/select-delete', // the url where we want to POST
+            data        : delformData, // our data object
+            //dataType    : 'json', // what type of data do we expect back from the server
+            //encode      : true,
+    
+            /*success : function( data, textStatus, jqXHR ) {
+                // Handle data transformation or DOM manipulation in here.
+            }*/
+        }).done(function(data){
+            $("#main_modal_header").attr("style",'background-color: #00810b');
+            $("#main_modal_body").html('<p id="modalalert">' + data + '</p>');
+            $("#main_modal_footer").html('<button class="btn btn-success" data-dismiss="modal">OK</button>');
+            //reload page content
+            $(".product_table").load(window.location.pathname +  ' .product_table');
+            
+
+        }).fail(function(data){
+            $("#main_modal_header").attr("style","background-color: red");
+            $("#main_modal_body").html('<p id="modalalert">Xóa Không Thành Công</p>');
+            $("#main_modal_footer").html('<button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>');
+
+        });
+        
+        $("#modalbox").modal('show');
+    });
+
+    /*Xóa danh mục*/
+    //nút xóa danh mục mỗi row
+    $(document).on('click','.smbutton_deleteproduct', function(event){
+        event.preventDefault();
+        var productid = $(this).attr('id');
+        var productname = $(this).attr('name');
+
+        formData =  {
+            'id'               : productid
+        };
+
+        $("#dialog_delete_body").html('<p>Bạn có chắc chắn xoá sản phẩm: </p> <h4>' + productname + '</h4>');
+        
+        $("#dialog_delete").modal('show');
+    });
+
+    //nút [XÓA] trên pop modal
+    $("#smbutton_deletecategory_modal").on('click', function(event){
+        //event.preventDefault();
+        // process the form
+        $("#dialog_delete").modal('hide');
+        $.ajax({
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url         : '/dashboard//product/delete', // the url where we want to POST
+            data        : formData // our data object
+            //dataType    : 'json', // what type of data do we expect back from the server
+            //encode      : true,
+    
+            /*success : function( data, textStatus, jqXHR ) {
+                // Handle data transformation or DOM manipulation in here.
+            }*/
+        }).done(function(data){
+            console.log(data);
+            $("#dialog_delete").modal('hide');
+            $("#main_modal_header").attr("style",'background-color: #00810b');
+            $("#main_modal_body").html('<p id="modalalert">Xóa Thành Công</p>');
+            $("#main_modal_footer").html('<button class="btn btn-success" data-dismiss="modal">OK</button>');
+            //reload page content
+            $(".product_table").load(window.location.pathname +  ' .product_table');
+            
+
+        }).fail(function(data){
+            $("#modalbox").modal('hide');
+            $("#main_modal_header").attr("style","background-color: red");
+            $("#main_modal_body").html('<p id="modalalert">Xóa Không Thành Công</p>');
+            $("#main_modal_footer").html('<button role="button" class="btn btn-danger" data-dismiss="modal>Hủy</button>');
+
+        });
+        
+        $("#modalbox").modal('show');
+    });
+});
