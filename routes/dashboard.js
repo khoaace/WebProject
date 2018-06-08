@@ -671,7 +671,7 @@ router.post('/product/generate',function (req,res,next) {
                     loai: loai,
                     nhanhieu: "Robot dỏm",
                     xuatxu: "Việt Nam",
-                    hinhanh: ["/images/robot.JPG", "/images/robot.JPG"]
+                    hinhanh: ["/images/robot.jpg", "/images/robot.jpg"]
                 }));
             }
             for (var i = 0; i < products.length; i++) {
