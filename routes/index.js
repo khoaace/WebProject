@@ -175,21 +175,34 @@ router.get("/category/sort/dec/page/:number",function (req,res,next) {
 /*------------------------------Tìm kiếm sản phẩm---------------------------------*/
 router.get("/search",function (req,res) {
     var input = change_alias(req.query.search);
+    var id = req.query.advance;
     var currentpage = '/search/'+input;
-    console.log(input);
-    Loai.find(function (err,result1) {
-        const regex = new RegExp(escapeRegex(input), 'gi');
-        Product.find({tenTimKiem: regex}, function(err, result){
-            if(err){
-                console.log(err);
-            } else {
-                var productChuck = initPage(1,result);
-                var arrPage = createArrPage(result,currentpage,1);
-                res.render('index', { title: 'eShop',products:productChuck,pages:arrPage,loai:result1,current_cate:'Toàn bộ sản phẩm',user:req.user,message:req.flash('info')});
-            }
+        Loai.find(function (err,result1) {
+            const regex = new RegExp(escapeRegex(input), 'gi');
+            Product.find({tenTimKiem: regex}, function(err, result){
+                if(err){
+                    console.log(err);
+                } else {
+                    if(id != "All")
+                    {
+                        for(var i=0;i<result.length;i++)
+                        {
+                            if(result[i].loai != id)
+                            {
+                                result.splice(i,1);
+                                i--;
+                            }
+                        }
+                    }
+                    var productChuck = initPage(1,result);
+                    var arrPage = createArrPage(result,currentpage,1);
+                    res.render('index', { title: 'eShop',products:productChuck,pages:arrPage,loai:result1,current_cate:'Toàn bộ sản phẩm',user:req.user,message:req.flash('info')});
+                }
+            });
+
         });
 
-    });
+
 
 });
 router.get("/search/:input/page/:number",function (req,res,next) {

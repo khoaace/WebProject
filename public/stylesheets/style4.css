@@ -1,11 +1,4 @@
-@font-face {
-    font-family: 'Ubuntu-Regular';
-    src:url(../fonts/Ubuntu-Regular.ttf) format('truetype');
-}
-@font-face{
-	font-family:'Oxygen-Regular';
-	src:url(../fonts/Oxygen-Regular.ttf) format('truetype');
-}
+
 .rw-wrapper{
 	position: relative;
 	padding: 13em 0 0;
@@ -23,7 +16,6 @@
 	display: block;
 	text-indent: 5px;
 	font-size: 3em;
-	font-family: 'Ubuntu-Regular';
 }
 .rw-words{
 	width: 100%;
@@ -56,7 +48,6 @@ font-family:'Oxygen-Regular';
 	font-style: italic;
 	text-indent: 5px;
 	color: #8b4d2e;
-	font-family: 'Ubuntu-Regular';
 	-webkit-animation: rotateWordsSecond 18s ease-in infinite 0s;
 	-moz-animation: rotateWordsSecond 18s ease-in infinite 0s;
 	-o-animation: rotateWordsSecond 18s ease-in infinite 0s;

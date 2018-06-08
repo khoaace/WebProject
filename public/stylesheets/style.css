@@ -3,26 +3,9 @@ Author URL: http://w3layouts.com
 License: Creative Commons Attribution 3.0 Unported
 License URL: http://creativecommons.org/licenses/by/3.0/
 --*/
-@font-face {
-    font-family: 'Oxygen-Bold';
-    src:url(../fonts/Oxygen-Bold.ttf) format('truetype');
-}
-@font-face {
-    font-family: 'Ubuntu-Regular';
-    src:url(../fonts/Ubuntu-Regular.ttf) format('truetype');
-}
-@font-face {
-    font-family: 'Ubuntu-Bold';
-    src:url(../fonts/Ubuntu-Bold.ttf) format('truetype');
-}
-@font-face{
-	font-family:'Oxygen-Regular';
-	src:url(../fonts/Oxygen-Regular.ttf) format('truetype');
-}
 html,body{
 	background:#fff;
 	font-size: 100%;
-	font-family:'Oxygen-Regular';
 	 
 }
 body a{
@@ -156,7 +139,6 @@ div#bs-megadropdown-tabs {
 	font-size: 1.5em;
     color: #000;
     margin-bottom: 0.5em;
-    font-family: 'Ubuntu-Regular';
 }
 /*--cart--*/
 .itemContainer{
@@ -261,12 +243,10 @@ a.item_add {
     line-height: 1.8em;
     text-transform: uppercase;
     letter-spacing: 5px;
-    font-family: 'Ubuntu-Bold';
 }
 .col-2 h2{
 	font-size: 2.5em;
     line-height: 1.8em;
-    font-family: 'Oxygen-Bold';
 }
 .col-2 h2 a{
 	text-decoration:none;
@@ -313,13 +293,11 @@ a.buy-now:hover{
 	color:#fff;
 	font-size:1.1em;
 	text-transform:uppercase;
-	font-family: 'Oxygen-Bold';
 }
 .col-pic h5{
 	color:#8b4d2e;
 	font-size:2em;
 	text-transform:uppercase;
-	font-family: 'Ubuntu-Bold';
 }
 .col-pic label{
 	width:100px;
@@ -334,7 +312,6 @@ a.buy-now:hover{
 	font-size: 2.5em;
     color: #000000;
     line-height: 1.8em;
-    font-family: 'Ubuntu-Regular';
 	text-align:center;
 }
 
@@ -353,7 +330,6 @@ a.buy-now:hover{
 	font-size: 0.9em;
     color: #8b4d2e;
     line-height: 1.8em;
-    font-family: 'Ubuntu-Bold';
 }
 /*----*/
 /*-----------------------------------------------------------------------------------*/
@@ -460,7 +436,6 @@ a.buy-now:hover{
 	    color: #8b4d2e;
     font-size: 2em;
     text-transform: uppercase;
-    font-family: 'Ubuntu-Bold';
 }
 .b-animate-go:hover .b-from-left{
 	left:0;
@@ -471,7 +446,6 @@ a.buy-now:hover{
 	    color: #fff;
     font-size: 1.1em;
     text-transform: uppercase;
-    font-family: 'Oxygen-Bold';
 }
 .b-animate-go:hover .b-from-right{
 	right:0;
@@ -511,7 +485,6 @@ a.buy-now:hover{
 /*----*/
 .mid-1 h6 {
     font-size: 1.2em;
-    font-family: 'Ubuntu-Regular';
 }
 .mid-1 h6 a {
     color: #000000;
@@ -603,7 +576,6 @@ a.buy-now:hover{
 .banner-top h1{
 	font-size:3em;
 	color:#fff;
-	font-family: 'Ubuntu-Regular';
 }
 .banner-top h2{
 	font-size:0.9em;
@@ -716,7 +688,6 @@ a.cart:hover{
     padding-top: 2em;
 }
 h4.cate {
-    font-family: 'Ubuntu-Regular';
     font-size: 1.7em;
     color:#8b4d2e;
 }
@@ -774,7 +745,6 @@ ul.kid-menu li,ul.cute li{
 	color: #000;
     text-transform: uppercase;
     font-size: 1.8em;
-    font-family: 'Ubuntu-Bold';
 }
 p.in-para{
 color: #B3B3B3;
@@ -792,7 +762,6 @@ color: #B3B3B3;
 span.reducedfrom {
 	    color: #8b4d2e;
     font-size: 1.5em;
-    font-family: 'Ubuntu-Bold';
     float: left;
 }
 .price_single a {
@@ -805,7 +774,6 @@ h4.quick {
 	color: #000;
 	font-size:1.2em;
 	text-transform: uppercase;
-	font-family: 'Ubuntu-Regular';
 	margin-top: 1em;
 }
 p.quick_desc {
@@ -928,7 +896,6 @@ ul.product-qty {
 	padding-bottom: 0.5em;
 	display: block;
 	text-transform: uppercase;
-	font-family: 'Ubuntu-Regular';
 }
 .product-qty select {
 	border: 1px solid #eee;
@@ -1121,7 +1088,6 @@ nav.nav-sidebar {
 .login-right h3{
 	font-size: 1.5em;
     color: #000000;
-    font-family: 'Ubuntu-Regular';
 }
 .login-right p {
     font-size: 0.9em;
@@ -1140,7 +1106,6 @@ nav.nav-sidebar {
 	font-size: 1.5em;
 	color:#000;
 	line-height:1.4em;
-    font-family: 'Ubuntu-Regular';
 }
 .contact-top div{
 	padding:0.5em 0;
@@ -1186,7 +1151,6 @@ nav.nav-sidebar {
     font-size: 1.5em;
 	color:#000;
 	line-height:1.4em;
-    font-family: 'Ubuntu-Regular';
 }
 .contact-left p {
     font-size: 0.9em;
@@ -1212,7 +1176,6 @@ nav.nav-sidebar {
 	font-size: 1.2em;
 	color:#000;
 	line-height:1.4em;
-    font-family: 'Ubuntu-Regular';
 }
 .address1 p{
 	margin: 0;
@@ -1240,7 +1203,6 @@ nav.nav-sidebar {
 .four h3{
 	font-size: 7em;
     color: #8b4d2e;
-    font-family: 'Ubuntu-Regular';
 }
 .four p{
 	font-size: 0.9em;
@@ -1260,7 +1222,6 @@ th{
 	color: #000000;
     font-size: 1.4em;
     font-weight: 400;
-    font-family: 'Ubuntu-Regular';
 }
 th, td {
     padding: 10px;
@@ -1279,7 +1240,6 @@ a.at-in {
 }
 .sed h5{
   	font-size: 1.1em;
-	font-family: 'Ubuntu-Regular';
 }
 .sed h5 a{
     color: #8b4d2e;
@@ -1330,7 +1290,6 @@ a.at-in {
     background: #F5F5F5;
     border-bottom: 1px solid #A6A5A5;
     padding: 0.8em;
-    font-family: 'Ubuntu-Regular';
 }
 .wishlist h6 a{
 	text-decoration:none;
@@ -1350,7 +1309,6 @@ a.at-in {
 .footer-middle-in h6{
 	font-size: 1.4em;
     color: #fff;
-    font-family: 'Ubuntu-Bold';
 	margin-bottom: 1em;
     text-transform: uppercase;
 }
@@ -1459,7 +1417,6 @@ ul.tag-in li a:hover{
 .page-header h3{
 	font-size: 3em;
 	color:#000;
-	font-family: 'Ubuntu-Regular';
 }
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
   padding: 8px;

@@ -25,6 +25,16 @@
 <div class="content">
     <div class="container">
 
+<br>
+        <ul class="breadcrumb">
+
+            <li><a href="/">Trang chủ</a></li>
+
+            <li><a href="#">{{current_cate}}</a></li>
+
+        </ul>
+
+
         <!--products-->
         <div class="content-mid">
             <h3>{{current_cate}}</h3>
@@ -40,7 +50,7 @@
                         <div class="pro-img">
                             <img src="{{this.hinhanh.[0]}}" class="img-myresponsive" alt="">
                             <div class="zoom-icon ">
-                                <a class="picture" href="{{this.hinhanh.[0]}}" rel="title" class="b-link-stripe b-animate-go  thickbox"><i class="glyphicon glyphicon-search icon "></i></a>
+                                <a class="picture" href="{{this.hinhanh.[0]}}" rel="{{this.ten}}" class="b-link-stripe b-animate-go  thickbox"><i class="glyphicon glyphicon-search icon "></i></a>
                                 <a href="/product/detail/{{this._id}}"><i class="glyphicon glyphicon-menu-right icon"></i></a>
                             </div>
                         </div>
@@ -74,6 +84,10 @@
     {{/each}}
 {{else}}
 
+    <div class="alert alert-danger">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        Không tìm thấy sản phẩm .
+    </div>
 {{/if}}
 
 
