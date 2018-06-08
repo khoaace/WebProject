@@ -1,11 +1,7 @@
 //===================== product-add.hbs =======================
 $(document).ready(function() {
 
-    $("#loadingimg").hide();    
-
-    $("form-horizontal").submit(function(event){
-        event.preventDefault();
-    });
+    $("#loadingimg").hide();
 
     // process the form
     $("#smbutton").on('click',function(event) {
