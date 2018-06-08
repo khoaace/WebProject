@@ -1,7 +1,8 @@
 var mongoose= require('mongoose');
 var schemaLoai = new mongoose.Schema(
     {
-        ten:{type:String,required:true, trim:true}
+        ten:{type:String,required:true, trim:true},
+        tenTimKiem:{type:String,required:true, trim:true}
     }
 );
 

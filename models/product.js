@@ -5,7 +5,8 @@ var Schema  = mongoose.Schema;
 var schemaProduct = new Schema(
     {
         ten:{type:String,required:true, trim:true},
-        gia:{type:Number, min:0,required:true,},
+        gia:{type:Number, min:0,required:true},
+        tenTimKiem:{type:String,required:true, trim:true},
         loai:{type: Schema.ObjectId, ref: 'loai'},
         nhanhieu:{type:String,required:true},
         hinhanh:[{type:String}],

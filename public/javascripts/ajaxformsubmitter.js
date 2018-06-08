@@ -81,9 +81,6 @@ $(document).ready(function() {
 
 //========================= category-list.hbs ==================
 $(document).ready(function(){
-    $("form[id!='submittable-form'").submit(function(event){
-        event.preventDefault();
-    });
     /* thêm danh mục mới */
     $("#smbutton_addcategory").on('click', function(event){
         event.preventDefault();
