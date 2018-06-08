@@ -665,13 +665,13 @@ router.post('/product/generate',function (req,res,next) {
             for(var j=0;j < count;j++)
             {
                 products.push(new Product({
-                    ten: "Ghế test",
-                    tenTimKiem:"ghe test",
+                    ten: "Zô Bốt Tét",
+                    tenTimKiem:"zo bot tet",
                     gia: 50000,
                     loai: loai,
-                    nhanhieu: "Ghế hòa phát",
+                    nhanhieu: "Robot dỏm",
                     xuatxu: "Việt Nam",
-                    hinhanh: ["/images/gheXoay.PNG", "/images/gheChanQuy.png"]
+                    hinhanh: ["/images/robot.PNG", "/images/robot.png"]
                 }));
             }
             for (var i = 0; i < products.length; i++) {
