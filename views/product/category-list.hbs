@@ -42,52 +42,7 @@
                                 <div class="pull-right action-buttons">
                                     <a class="smbutton_editcategory" id="{{this.id}}" name="{{this.ten}}"><span class="glyphicon glyphicon-pencil"></span></a>
                                     <a class="smbutton_deletecategory" id="{{this._id}}" name="{{this.ten}}"><span class="glyphicon glyphicon-trash"></span></a>
-                                    <!-------- Dialog Delete-------------->
-                                    <div id="{{this._id}}_delete" class="modal fade" role="dialog">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    <h4 class="modal-title">Xoá loại sản phẩm</h4>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Bạn có chắc chắn xoá {{this.ten}}. Mọi sản phẩm thuộc loại này sẽ bị xoá.</p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <a href="/dashboard/category/delete/{{this._id}}"> <button type="button" class="btn-danger btn">Xoá</button></a>
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--------- End Dialog Delete---------->
-                                    <!-------- Dialog Edit-------------->
-                                    <div id="{{this._id}}_edit" class="modal fade" role="dialog">
-                                        <div class="modal-dialog">
-                                            <form method="post" action="/dashboard/category/edit" class="form-horizontal">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    <h4 class="modal-title">Chỉnh sửa loại sản phẩm</h4>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="form-group">
-                                                        <label class="col-md-4 control-label" for="textinput">Tên loại sản phẩm</label>
-                                                        <div class="col-md-4">
-                                                            <input id="textinput" name="ten" type="text" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập tên')" oninput="setCustomValidity('')" value="{{this.ten}}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <input name="id" value="{{this._id}}" type="hidden">
-                                                <div class="modal-footer">
-                                                     <button type="submit" class="btn-warning btn">Cập nhật</button>
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
-                                                </div>
-                                            </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <!--------- End Dialog Edit---------->
+                                   
                                 </div>
                             </li>
                          {{/each}}
