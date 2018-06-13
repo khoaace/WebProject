@@ -53,7 +53,7 @@ $(document).ready(function() {
             // Handles successful responses only
             //$("#smbutton").html('saved');
             //$("#testbutton").click();
-            $("#main_modal_header").attr("style","background-color: #00810b")
+            $("#main_modal_header").attr("style","background-color: #00810b");
             $("#main_modal_body_alert").html('Sản Phẩm Đã Được Thêm Mới');
             $("#main_modal_footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
             $("#modalbox").modal('show');
@@ -67,7 +67,7 @@ $(document).ready(function() {
         })
         .fail(function(data){
             var nulllist = data.responseJSON;
-            $("#main_modal_header").attr("style","background-color: red")
+            $("#main_modal_header").attr("style","background-color: red");
             $("#main_modal_body_alert").html('Vui lòng điền đủ các thông tin');
             $("#main_modal_footer").html('<button type="button" class="btn btn-warning" data-dismiss="modal">OK</button>');
             $("#modalbox").modal('show');
@@ -76,7 +76,6 @@ $(document).ready(function() {
         $("#loadingimg").slideUp();
     });
 });
-
 
 
 //========================= category-list.hbs ==================
@@ -92,7 +91,7 @@ $(document).ready(function(){
         .done(function(data){
             $("#newgenres_textinput").val('');
             $("#main_modal_header").attr("style",'background-color: #00810b');
-            $("#main_modal_body_alert").html('Thêm mới thành công')
+            $("#main_modal_body_alert").html('Thêm mới thành công');
             $("#main_modal_footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
             $("#modalbox").modal('show');
             //reload page content

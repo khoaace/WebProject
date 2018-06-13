@@ -9,9 +9,6 @@ var back = require('express-back');
 var passport = require('passport');
 
 
-
-
-
 var session = require('express-session');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');

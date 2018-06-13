@@ -90,7 +90,6 @@
                             </li>
 
                             <li><a class="color3" href="/contact">Liên hệ</a></li>
-                            <li><a class="color4" href="/info">Thông tin</a></li>
                             {{#if user}}
                                 <li class="dropdown mega-dropdown active">
                                     <a class="color1" href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>Xin chào : <strong>{{user.fullname}}</strong><span class="caret"></span></a>
@@ -113,7 +112,42 @@
                                         </div>
                                     </div>
                                 </li>
+
+
                             {{/if}}
+                            <li><a class="color4" data-toggle="modal" data-target="#myModal"><label><span class="glyphicon glyphicon-shopping-cart"></span> Giỏ hàng <span class="badge" id="countProduct">0</span></label></a></li>
+                            <!-- Modal Checkout -->
+                            <div id="myModal" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title"><center><strong>Giỏ hàng</strong></center></h4>
+                                        </div>
+                                       <table class="table table-striped" id="productTable">
+                                           <tr>
+                                               <th>Tên sản phẩm</th>
+                                               <th>Số lượng</th>
+                                               <th>Giá</th>
+                                               <th>Xoá</th>
+                                           </tr>
+                                       </table>
+                                        <hr>
+                                       <div class="price-sum">Tổng tiền : <span id="yourPrice">0</span> VND</div>
+                                        <br>
+                                        <br>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-warning"  id="resetProduct">Xoá hết sản phẩm</button>
+                                            <button type="button" class="btn btn-success" data-dismiss="modal">Thanh toán</button>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!--End Model checkout-->
 
                         </ul>
                     </div><!-- /.navbar-collapse -->
@@ -122,20 +156,9 @@
             </div>
             <div class="col-sm-2 search-right">
                 <ul class="heart">
-                    <li><a class="play-icon popup-with-zoom-anim" href="#small-dialog"><i class="glyphicon glyphicon-search"> </i></a></li>
+                    <li><a class="play-icon popup-with-zoom-anim" href="#small-dialog"><i class="glyphicon glyphicon-search icon-search"> </i></a></li>
                 </ul>
-                <div class="cart box_1">
-                    <a href="checkout.html">
-                        <h3> <div class="total">
-                            <span class="simpleCart_total"></span></div>
-                            <img src="/images/cart.png" alt=""/></h3>
-                    </a>
-                    <p><a href="javascript:;" class="simpleCart_empty">Làm trống giỏ</a></p>
-
-                </div>
                 <div class="clearfix"> </div>
-
-                <!----->
 
                 <!---pop-up-box---->
                 <link href="/stylesheets/popuo-box.css" rel="stylesheet" type="text/css" media="all"/>

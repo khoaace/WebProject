@@ -196,7 +196,7 @@ router.get("/search",function (req,res) {
                     }
                     var productChuck = initPage(1,result);
                     var arrPage = createArrPage(result,currentpage,1);
-                    res.render('index', { title: 'eShop',products:productChuck,pages:arrPage,loai:result1,current_cate:'Toàn bộ sản phẩm',user:req.user,message:req.flash('info')});
+                    res.render('index', { title: 'eShop',products:productChuck,pages:arrPage,loai:result1,current_cate:'Tất cả kết quả về '+req.query.search,user:req.user,message:req.flash('info')});
                 }
             });
 
