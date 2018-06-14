@@ -4,7 +4,6 @@ var Product =  require('../models/product');
 var Loai = require('../models/loai');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 /*------------------Trang hiển thị toàn bộ sản phẩm--------------------------*/
@@ -251,6 +250,20 @@ router.get("/error",function (req,res,next) {
 });
 
 
+
+
+
+/*-----------------Test -----------------------*/
+
+
+
+router.get("/test",function (req,res,next) {
+    Loai.find(function (err,result) {
+
+
+        res.render('error', {message: req.flash('info'),user:req.user,loai:result});
+    });
+});
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
 function initPage(page,docs) {
     page =(page-1)*12;

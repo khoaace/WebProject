@@ -3,8 +3,10 @@ module.exports = function (app, passport) {
     var Loai = require('../models/loai');
     var User  =require('../models/user');
     var bodyParser = require('body-parser');
-
+    var jwt = require('jsonwebtoken');
+    var email = require('mailer');
     var urlencodedParser = bodyParser.urlencoded({ extended: false });
+    var nodemailer = require('nodemailer');
     var date;
 
 /*----------------------Đăng kí--------------------------*/
@@ -87,7 +89,154 @@ module.exports = function (app, passport) {
     });
 
 
+   /* Kích hoạt tài khoản và gmail*/
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'panda.a7c21@gmail.com',
+            pass: 'Bestteamever'
+        }
+    });
 
+    var mailOptions = {
+        from: 'eShop - Kích hoạt tài khoản',
+        to: 'someone@gmail.com',
+        subject: 'Sending Email from Eshop',
+        html: 'Content'
+    };
+
+    app.get('/active/:id',function (req,res) {
+        var id = req.params.id;
+       User.findOne({_id:id},function (err,myuser) {
+          if(myuser.active)
+          {
+              req.flash('info','Tài khoản đã được kích hoạt.');
+              res.redirect('/error');
+          }
+          else
+          {
+              const payloadActive =  {
+                  resetPassword:false
+              };
+              var activeToken = jwt.sign(payloadActive,'active', {
+                  expiresIn: 900 // token tồn tại trong 15 phút
+              });
+             /* Gửi mail*/
+             mailOptions.to = myuser.email;
+             mailOptions.html='Để kích hoạt tài khoản .Vui lòng nhấn vào <h1><a href="shop-pandateam.herokuapp.com/user/'+myuser.id+'/active/'+activeToken+'">đây</a></h1>. Lưu ý Link kích hoạt chỉ tồn tại trong 15 phút.';
+              transporter.sendMail(mailOptions, function(error, info){
+                  if (error) {
+                      req.flash('info','Đã có lỗi xảy ra.');
+                      res.redirect('/error');
+                      console.log(error);
+                  } else {
+                      console.log('Email sent: ' + info.response);
+                      req.flash('info','Thư kích hoạt đã được gửi.Vui lòng kiểm tra hòm thư.');
+                      res.redirect('/error');
+                  }
+              });
+          }
+        });
+    });
+    app.get('/user/:id/active/:token',function (req,res) {
+        var id = req.params.id;
+        var token = req.params.token;
+            // verifies secret and checks exp
+            jwt.verify(token, 'active', function(err, decoded) {
+                if (err) {
+                    req.flash('info','Hết hiệu lực vui lòng thử lại.');
+                    res.redirect('/error');
+                } else {
+                    req.decoded = decoded;
+                        User.where({_id: id}).update({
+                            active:true
+                        }).exec(function (err, doc) {
+                        });
+                        req.flash('info', 'Kích hoạt tài khoản thành công.');
+                        res.redirect('/error');
+                }
+            });
+
+    });
+
+    app.get('/forgotpassword',isUnLoggedIn,function (req,res) {
+        Loai.find(function (err,result) {
+            res.render('user/forgotPassword',{title:'eShop - Quên mật khẩu',Loai:result,message: req.flash('info')});
+        });
+    });
+
+    app.post('/forgotpassword',urlencodedParser,isUnLoggedIn,function (req,res) {
+        var username = req.body.username;
+        var email = req.body.email;
+        var password = req.body.password;
+        User.findOne({username:username},function (err,result) {
+           if(result == null)
+           {
+               req.flash('info', 'Không tìm thấy tên đăng nhập này.');
+               res.redirect('/forgotpassword');
+           }
+           else
+           {
+               if(result.email != email)
+               {
+                   req.flash('info', 'Email bạn nhập không trùng khớp.');
+                   res.redirect('/forgotpassword');
+               }
+               if(!result.active)
+               {
+                   req.flash('info', 'Tài khoản hiện chưa được kích hoạt Không thể sử dụng tính năng này.');
+                   res.redirect('/forgotpassword');
+               }
+               else
+               {
+                   const payloadActive =  {
+                       id:result._id,
+                       password:password
+                   };
+                   var activeToken = jwt.sign(payloadActive,'active', {
+                       expiresIn: 900 // token tồn tại trong 15 phút
+                   });
+                   /* Gửi mail*/
+                   mailOptions.from="eShop - Lấy lại mật khẩu";
+                   mailOptions.to = result.email;
+                   mailOptions.html='Để lấy lại mật khẩu. Vui lòng nhấn vào <h1><a href="shop-pandateam.herokuapp.com/user/'+result.id+'/reset/'+activeToken+'">đây</a></h1>. Lưu ý Link kích hoạt chỉ tồn tại trong 15 phút.';
+                   transporter.sendMail(mailOptions, function(error, info){
+                       if (error) {
+                           req.flash('info','Đã có lỗi xảy ra.');
+                           res.redirect('/error');
+                           console.log(error);
+                       } else {
+                           console.log('Email sent: ' + info.response);
+                           req.flash('info','Vui lòng kiểm tra hòm thư để lấy lại mật khẩu.');
+                           res.redirect('/error');
+                       }
+                   });
+               }
+           }
+        });
+    });
+
+    app.get('/user/:id/reset/:token',isUnLoggedIn,function (req,res) {
+        var id = req.params.id;
+        var token = req.params.token;
+        // verifies secret and checks exp
+        jwt.verify(token, 'active', function(err, decoded) {
+            if (err) {
+                req.flash('info','Hết hiệu lực vui lòng thử lại.');
+                res.redirect('/error');
+            } else {
+                req.decoded = decoded;
+                var tempUser = new User();
+                var password =tempUser.generateHash(decoded.password);
+                User.where({_id: decoded.id}).update({
+                    password:password
+                }).exec(function (err, doc) {
+                });
+                    req.flash('info', 'Đổi mật khẩu thành công.');
+                    res.redirect('/error');
+            }
+        });
+    });
 
 /*-------------------Các hàm hỗ trợ xác thực-------------------------*/
     function isLoggedIn(req, res, next) {
@@ -111,8 +260,9 @@ module.exports = function (app, passport) {
 
 
 
+/*
 // Tạo tài khoản Admin
-/*    app.get('/setup', function (req, res) {
+    app.get('/setup', function (req, res) {
         // create a sample user
         var date = new Date();
         var user = new User();
@@ -124,12 +274,14 @@ module.exports = function (app, passport) {
         user.fullname='Admin';
         user.birthDay="1997-1-1";
         user.createDate = date;
-        user.email = "admin@eshop.com";
+        user.email = "khoaace@gmail.com";
+        user.active = true;
         // save the sample user
         user.save(function (err) {
             if (err) throw err;
             console.log('User saved successfully');
         });
-    });*/
+    });
+*/
 
 };
