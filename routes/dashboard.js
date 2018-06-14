@@ -170,7 +170,7 @@ router.get('/product/edit/:id',function (req,res) {
     var id = req.params.id;
 
     Product.findOne({_id:id},function (err,product) {
-        res.render('product/product-edit',{title:'Dashboard-'+product.ten,product:product,layout:'dashboard_layout',message: req.flash('info')});
+        res.render('product/product-edit',{title:'Dashboard-'+product.ten,product:product,layout:'dashboard_layout',message: req.flash('info'),user:req.user});
     });
 });
 router.get('/product/edit/:id/success',function (req,res,next) {
@@ -209,7 +209,7 @@ router.get('/product/add', function(req, res, next) {
             res.redirect('/dashboard/category');
         }
         else{
-            res.render('product/product-add',{title:'Dashboard-Thêm sản phẩm mới',loai:loai,message: req.flash('info'),layout:'dashboard_layout'});
+            res.render('product/product-add',{title:'Dashboard-Thêm sản phẩm mới',loai:loai,message: req.flash('info'),layout:'dashboard_layout',user:req.user});
         }
     });
 });
@@ -418,7 +418,7 @@ router.get('/category',function (req,res,next) {
             pages: arrPage,
             loai_count: size,
             layout: 'dashboard_layout',
-            message: req.flash('info')
+            message: req.flash('info'),user:req.user
         });
     });
 });
@@ -634,7 +634,8 @@ router.get('/product/generate',function (req,res,next) {
             loai: loai,
             title:'Dashboard - Phát sinh sản phẩm',
             layout: 'dashboard_layout',
-            message: req.flash('info')
+            message: req.flash('info'),
+            user:req.user
         })
     });
 });

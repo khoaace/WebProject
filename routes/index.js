@@ -257,11 +257,9 @@ router.get("/error",function (req,res,next) {
 
 
 
-router.get("/test",function (req,res,next) {
+router.get("/todolist",function (req,res,next) {
     Loai.find(function (err,result) {
-
-
-        res.render('error', {message: req.flash('info'),user:req.user,loai:result});
+        res.render('toDolist', {title:'eShop - Bảng chức năng',message: req.flash('info'),user:req.user,loai:result});
     });
 });
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
