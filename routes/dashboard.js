@@ -13,7 +13,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 /*-----------------------------------Xác thực tài khoản----------------------------*/
-/*router.use(function(req, res, next) {
+router.use(function(req, res, next) {
     // check header or url parameters or post parameters for token
     var token = req.session.token;
     //req.body.token || req.query.token || req.headers['x-access-token']
@@ -41,7 +41,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
         req.flash('info','Chưa thực hiện đăng nhập.');
         res.redirect('/error');
     }
-});*/
+});
 
 router.get("/",function (req,res,next) {
     res.render('dashboard',{layout:'dashboard_layout',user:req.user});
@@ -917,7 +917,7 @@ router.get('/user/search/:input/page/:number',isAdmin,function (req,res,next) {
 });
 
 /*--------------------------->Đơn Hàng, Thống Kê<-------------------------------------------*/
-
+/* generate đơn hàng */
 router.get("/order/generate", function(){
     var randomproducts = [];
     var prices = [];
@@ -958,8 +958,107 @@ router.get("/order/generate", function(){
             }
         });
     });
-
 });
+
+
+router.get("/order",function (req,res,next) {
+    
+});
+
+/*
+router.get('/product/page/:number',function (req,res,next) {
+    var page = parseInt(req.params.number);
+    Loai.find(function (err,loai) {
+        var currentpage = '/dashboard/product';
+        Product.find(function (err, product) {
+            var allPage = countPage(product);
+            if(page > allPage || page <1)
+            {
+                if(page>allPage)
+                    page=allPage;
+                if(page<1)
+                    page=1;
+                res.redirect(currentpage+'/page/'+page);
+            }
+            else {
+                var size = product.length;
+                var productChuck = initPage(page, product);
+                var arrPage = createArrPage(product, currentpage, page);
+                res.render('product/product-list', {
+                    title: 'Dashboard-Toàn bộ sản phẩm',
+                    products: productChuck,
+                    pages: arrPage,
+                    Table_name: 'Toàn bộ sản phẩm',
+                    product_count: size,
+                    layout: 'dashboard_layout',
+                    loai: loai,
+                    message: req.flash('info'), user: req.user
+                });
+            } });
+    });
+});*/
+
+/*--------------------------------------------Xem sản phẩm theo loại-----------------------------------------*/
+/*router.get("/product/category/:id",function (req,res,next) {
+    var id = req.params.id;
+    Loai.find(function (err, loai1) {
+        Loai.findOne({_id: id}, function (err, loai2) {
+            Product.find({loai: id}, function (err, product) {
+                var currentPage = '/dashboard/product/category/' + id;
+                var size = product.length;
+                var productChuck = initPage(1, product);
+                var arrPage = createArrPage(product, currentPage,1);
+                res.render('product/product-list', {
+                    title: 'DashBoard-' + loai2.ten,
+                    products: productChuck,
+                    pages: arrPage,
+                    Table_name: loai2.ten,
+                    product_count: size,
+                    layout: 'dashboard_layout',
+                    loai: loai1,
+                    message: req.flash('info'),user:req.user
+                });
+            });
+        });
+    });
+});*/
+/*
+router.get("/product/category/:id/page/:number", function (req, res, next) {
+    var id = req.params.id;
+    var page = parseInt(req.params.number);
+    console.log(page);
+    Loai.find(function (err, loai1) {
+        Loai.findOne({_id: id}, function (err, loai2) {
+            var currentPage = '/dashboard/product/category/' + id;
+            Product.find({loai: id}, function (err, product) {
+                var allPage = countPage(product);
+                if(page > allPage || page <1)
+                {
+                    if(page>allPage)
+                        page=allPage;
+                    if(page<1)
+                        page=1;
+                    res.redirect(currentPage+'/page/'+page);
+                }
+                else {
+                    var size = product.length;
+                    var productChuck = initPage(page, product);
+                    var arrPage = createArrPage(product, currentPage, page);
+                    res.render('product/product-list', {
+                        title: 'DashBoard-' + loai2.ten,
+                        products: productChuck,
+                        pages: arrPage,
+                        Table_name: loai2.ten,
+                        product_count: size,
+                        layout: 'dashboard_layout',
+                        loai: loai1,
+                        message: req.flash('info'), user: req.user
+                    });
+                }});
+        });
+    });
+});*/
+//-----------------------------------
 
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
 function initPage(page,docs) {

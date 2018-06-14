@@ -54,7 +54,7 @@ app.use('/dashboard',dashBoard);
 HandlebarsIntl.registerWith(Handlebars);
 
 //connect to database
-mongodb.connect(configDB.database_local, function(err)
+mongodb.connect(configDB.database, function(err)
 {
     if (err)
     {
