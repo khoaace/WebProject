@@ -9,6 +9,7 @@ var schemaDonHang = new Schema({
     thanhtoan: {type: String, enum: ['COD', 'BANK'],require :true},
     trangthai: {type: String, enum: ['Chưa Xử Lý','Đang Giao','Thành Công','Hủy']},
     sanpham: [{type: Schema.ObjectId, ref: 'product'}],
+    soluong: [{type: Number}],
     gia: [{type: Number}],
     ngaygio: {type:Date},
     ghichu: {type:String}

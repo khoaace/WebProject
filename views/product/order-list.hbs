@@ -1,108 +1,61 @@
-{{#if message}}
-    <div class="alert {{message.[0]}}">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        {{message.[1]}}
-    </div>
-{{/if}}
-<form method="get" action="/dashboard/product/search" type="submittable-form">
-    <div class="input-group">
-        <input type="text" name="search" id="search" class="form-control" placeholder="Tìm kiếm tên sản phẩm">
-        <div class="input-group-btn">
-            <button class="btn btn-default" type="submit">
-                <i class="glyphicon glyphicon-search"></i>
-            </button>
-        </div>
-    </div>
-</form>
-<br>
 <div class="dropdown">
-    <button class="btn3d btn btn-default btn-lg" type="button" data-toggle="dropdown">Phân loại sản phẩm
+    <button class="btn3d btn btn-primary btn-lg" type="button" data-toggle="dropdown">Phân loại đơn theo tình trạng
         <span class="caret"></span></button>
     <ul class="dropdown-menu">
-        {{# each loai}}
-            {{#if this.ten}}
-                <li><a href="/dashboard/product/category/{{this._id}}">▶{{this.ten}}</a></li>
-            {{/if}}
-        {{/each}}
+        <li><a href="/dashboard/order/state/waiting">▶ Chưa Xử Lý</a></li>
+        <li><a href="/dashboard/order/state/delivering">▶ Đang Giao</a></li>
+        <li><a href="/dashboard/order/state/delivered">▶ Giao Hàng Thành Công</a></li>
+        <li><a href="/dashboard/order/state/canceled">▶ Đã Hủy</a></li>
         <li class="divider"></li>
-        <li><a href="/dashboard/product">▶Toàn bộ sản phẩm</a></li>
+        <li><a href="/dashboard/order">▶ Toàn bộ đơn hàng</a></li>
     </ul>
 </div>
-<form class="product_table" method="post" action="/dashboard/product/select-delete">
+
 <div class="panel panel-primary">
-    <div class="panel-heading">
-        <span class="glyphicon glyphicon-list"></span>{{Table_name}}
-        <!--<div class="pull-right action-buttons">
-            <div class="btn-group pull-right">
-                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-cog" style="margin-right: 0px;"></span>
-                </button>
-                <ul class="dropdown-menu slidedown">
-                    <li><a type="submit" ><span class="glyphicon glyphicon-trash"></span>Delete</a></li>
-                </ul>
-            </div>
-        </div>-->
-        <div class="btn-group pull-right">
-            <button id="sm_button_selectdel_product" type="submit" class="btn-danger">Xoá các mục đã chọn</button>
-        </div>
-    </div>
-
-    <div class="panel-body">
-        <ul class="list-group">
-
-            {{#if products}}
-                {{# each products}}
-                    {{# each this}}
-
-                        <li class="list-group-item">
-                            <div class="checkbox">
-                                <input type="checkbox" name="checkbox" value="{{this._id}}" />
-                                <label>
-                                    <strong><a data-toggle="tooltip" class="white-tooltip" title="<img class='img-responsive' src='{{this.hinhanh.[0]}}' width='300' height='300' />">{{this.ten}}</a></strong>
-                                </label>
-
+<table class="table">
+    <thead>
+      <tr>
+        <th>Tình trạng</th>
+        <th>Mã đơn hàng</th>
+        <th>SP</th>
+        <th>Thời gian</th>
+        <th>Tổng tiền</th>
+      </tr>
+    </thead>
+    <tbody>
+        {{#if order}}
+            {{# each order}}
+                {{# each this}}
+                    <tr class={{this.trangthai_color}} id="{{this._id}}_row"> <!-- recal -->
+                        <th href="#">
+                            <div class="dropdown">
+                                <button class="btn btn-{{this.trangthai_color}} btn-block" style="max-width:200px" type="button" data-toggle="dropdown" style="margin: 0" id="{{this._id}}_btn">{{this.trangthai}}
+                                </button>
+                                <ul class="dropdown-menu" style="padding: 0">
+                                    <li><a href="#" class="order_changestate" id="{{this._id}}" name="Chưa Xử Lý" style="background-color: #f0ad4e; color: white">Chưa Xử Lý</a></li>
+                                    <li><a href="#" class="order_changestate" id="{{this._id}}" name="Đang Giao" style="background-color: #5bc0de; color: white">Đang Giao </a></li>
+                                    <li><a href="#" class="order_changestate" id="{{this._id}}" name="Thành Công" style="background-color: #5cb85c; color: white">Thành Công</a></li>
+                                    <li><a href="#" class="order_changestate" id="{{this._id}}" name="Hủy" style="background-color: #d9534f; color: white">Đã Hủy    </a></li>
+                                </ul>
                             </div>
-                            <div class="pull-right action-buttons">
-                                <a href="/dashboard/product/edit/{{this._id}}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                <a class="smbutton_deleteproduct" id="{{this._id}}" name="{{this.ten}}"><span class="glyphicon glyphicon-trash"></span></a>
-                               <!-------- Dialog-------------->
-                                <div id="{{this._id}}" class="modal fade" role="dialog">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                <h4 class="modal-title">Xoá sản phẩm</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>Bạn có chắc chắn xoá sản phẩm {{this.ten}}</p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <a href="/dashboard/product/delete/{{this._id}}"> <button type="button" class="btn-danger btn">Xoá</button></a>
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                               <!--------- End Dialog---------->
-
-                            </div>
-                        </li>
-
-                    {{/each}}
+                        </th>
+                        <th><a data-toggle="modal" data-target="#order_detailmodal" id="{{this._id}}"><strong>#{{this._id}}</strong></a></th>
+                        <th>{{this.soluongsp}}</th> <!-- recal -->
+                        <th>{{this.ngaygio}}</th> 
+                        <th>{{this.tongtien}}</th> <!-- recal -->
+                    </tr>
                 {{/each}}
-            {{else}}
-                <div class="alert alert-danger">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    Không tìm thấy sản phẩm .
-                </div>
-            {{/if}}
-        </ul>
-    </div>
-    <div class="panel-footer">
+            {{/each}}
+        {{else}}
+            <tr class="warning"><th><a href="/dashboard/order/generate">Không có đơn hàng, phát sinh ngẫu nhiên tự động</a></th><th></th><th></th><th></th><th></th></tr>
+         {{/if}}
+    </tbody>
+  </table>
+<div class="panel-footer">
         <div class="row">
             <div class="col-md-6">
                 <h6>
-                    Tổng số sản phẩm <span class="label label-info">{{product_count}}</span></h6>
+                    Tổng số đơn hàng <span class="label label-info">{{orders_count}}</span></h6>
             </div>
             <div class="col-md-6">
                 <ul class="pagination pagination-sm pull-right">
@@ -114,50 +67,34 @@
         </div>
     </div>
 </div>
-</form>
 
-<!-- dialogedit -->
-<div id="dialog_edit" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <form method="post" action="/dashboard/category/edit" class="form-horizontal">
+
+
+<!-- dialog chi tiết đơn hàng -->
+<div id="order_detailmodal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 id="dialog_edit_title" class="modal-title">Chỉnh sửa loại sản phẩm</h4>
+                <div id="order_modal_header" class="modal-header" style="background-color: #2072be">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <!-- modal-title -->
+                    <h4 id="order_modal_title" class="modal-title" style="color:white">Chi Tiết Đơn Hàng</h4>
                 </div>
-                <div class="modal-body" id="dialog_edit_body">
-                    <div class="row">
-                        <label class="col-md-4 control-label" for="textinput">Tên loại sản phẩm</label>
-                        <div class="col-md-4"><input id="dialog_edit_body_textinput" value="" type="text" placeholder="" class="form-control input-md"></div>
-                    </div>
+                    <!-- modal-title -->
+                <div id="order_modal_body" class="modal-body clearfix">
+                    <div class="order_modal_body_loadedcontent"></div>
+                    
+                    <div id="order_modal_body_loading"></div>   
+
+
+                    <!-- #modalalert -->
+                    
                 </div>
-                <input id="dialog_edit_body_id" value="" type="hidden">
-                <div class="modal-footer">
-                    <button type="button" class="btn-success btn" id="smbutton_editcategory_modal">Cập nhật</button>
+                    <!-- modal-footer -->
+                <div id="order_modal_footer" class="modal-footer">
+                    <button class="order_modal_footer_updatebtn" type="button" class="btn btn-primary" data-dismiss="modal">Cập nhật thông tin</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
-</div>
 
-<!-- dialog delete -->
-<div id="dialog_delete" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <form method="post" action="/dashboard/category/edit" class="form-horizontal">
-            <div class="modal-content">
-                <div id="dialog_delete_header" class="modal-header" style="background-color: red">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 id="dialog_delete_title" class="modal-title">Chỉnh sửa loại sản phẩm</h4>
-                </div>
-                <div class="modal-body" id="dialog_delete_body">
-                    <!-- -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-danger btn" id="smbutton_deletecategory_modal">Xóa</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>

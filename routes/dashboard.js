@@ -13,7 +13,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 /*-----------------------------------Xác thực tài khoản----------------------------*/
-router.use(function(req, res, next) {
+/*router.use(function(req, res, next) {
     // check header or url parameters or post parameters for token
     var token = req.session.token;
     //req.body.token || req.query.token || req.headers['x-access-token']
@@ -41,7 +41,7 @@ router.use(function(req, res, next) {
         req.flash('info','Chưa thực hiện đăng nhập.');
         res.redirect('/error');
     }
-});
+});*/
 
 router.get("/",function (req,res,next) {
     res.render('dashboard',{layout:'dashboard_layout',user:req.user});
@@ -917,148 +917,527 @@ router.get('/user/search/:input/page/:number',isAdmin,function (req,res,next) {
 });
 
 /*--------------------------->Đơn Hàng, Thống Kê<-------------------------------------------*/
-/* generate đơn hàng */
-router.get("/order/generate", function(){
-    var randomproducts = [];
-    var prices = [];
-    var randomproductnumber = parseInt(Math.random() * 9) + 1; //ngẫu nhiên 1 giá trị từ 1->10
-   
-    Product.findRandom({}, {}, {limit: randomproductnumber},function (err, result){
+/* generate đơn hàng -okey-*/
+router.get("/order/generate", function(req,res){
+    for(var loop = 0; loop < 20; loop++)
+    {
+        var randomproducts = [];
+        var randomval = []
+        var prices = [];
+        var randomproductnumber = parseInt(Math.random() * 3) + 1; //ngẫu nhiên 1 giá trị từ 1->10
+    
+        Product.findRandom({}, {}, {limit: randomproductnumber},function (err, result){
+            
+            for (var i = 0; i < result.length; i++) {
+                var whatID = result[i]._id;
+                var whatPrice = result[i].gia;
+                randomproducts.push(whatID);
+                prices.push(whatPrice);
+                randomval.push(parseInt(Math.random() * 2) + 1);
+            }
+
+
+            var neworder = new Order({
+                tenkhachhang: "Lê Trí Khoa",
+                sodienthoai: '0123456789',
+                diachinhanhang: "227, Nguyễn Văn Cừ",
+                thanhtoan: "COD",
+                trangthai: "Chưa Xử Lý",
+                sanpham: randomproducts,
+                soluong: randomval,
+                gia: prices,
+                ngaygio: Date(),
+                ghichu: "đơn hàng phát sinh tự động"
+            });
+
+            neworder.save(function(err){
+                if (err)
+                {
+                    console.log(err);
+                }
+                else
+                {
+                    console.log("saved");
+                }
+            });
+        });
+    }
+    res.redirect('/dashboard/order/');
+    return;
+});
+
+/*okey*/
+router.get("/order",function (req,res,next) {
+        var curentPage = '/dashboard/order';
+        Order.find({}).sort({ngaygio: -1}).exec(function (err, orders) {
+            if(err)
+            {
+                return;
+            }
+            var orderspara = [];
+            var donhangchuaxuly = 0;
+            
+            for (i = 0; i < orders.length; i++)
+            {
+                var thisOrder = orders[i];
+
+                var linecolor = "";
+                var sumBill = 0;
+                var sumProduct = 0;
+                var dateformat;
+
+                switch(thisOrder.trangthai) {
+                    case "Chưa Xử Lý":
+                    {
+                        linecolor = "warning";
+                        donhangchuaxuly++;
+                    }
+                        break;
+                    case "Đang Giao":
+                    linecolor = "info";
+                        break;
+                    case "Thành Công":
+                    linecolor = "success";
+                        break;
+                    case "Hủy":
+                        linecolor = "danger";
+                        break;
+                    default:
+                    linecolor = "active";
+                }
+                
+                for (var j = 0; j < thisOrder.sanpham.length; j++)
+                {
+                    sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
+                    sumProduct += thisOrder.soluong[j];
+                }
+
+                dateformat = thisOrder.ngaygio.toLocaleString();
+                
+                var orderspara_element = {
+                    trangthai_color: linecolor,
+                    trangthai: thisOrder.trangthai,
+                    _id : thisOrder['_id'],
+                    soluongsp : sumProduct,
+                    ngaygio : dateformat,
+                    tongtien : sumBill
+                }
+                
+                orderspara.push(orderspara_element)
+            }
+
+            var ordersChuck = initPage(1, orderspara);
+            var arrPage = createArrPage(orderspara, curentPage,1);
+
+           
+
+            res.render('product/order-list', {
+                title: 'Dashboard-Quản lý đơn hàng',
+                order: ordersChuck,
+                pages: arrPage,
+                orders_count: donhangchuaxuly,
+                layout: 'dashboard_layout'
+            });
+        });
+});
+
+/*okey*/
+router.get('/order/page/:number',function (req,res,next) {
+        var curentPage = '/dashboard/order';
+        var page = req.params.number;
+        Order.find({}).sort({ngaygio: -1}).exec(function (err, orders) {
+            if(err)
+            {
+                return;
+            }
+            var orderspara = [];
+            var donhangchuaxuly = 0;
+            
+            for (i = 0; i < orders.length; i++)
+            {
+                var thisOrder = orders[i];
+
+                var linecolor = "";
+                var sumBill = 0;
+                var dateformat;
+
+                switch(thisOrder.trangthai) {
+                    case "Chưa Xử Lý":
+                    {
+                        linecolor = "warning";
+                        donhangchuaxuly++;
+                    }
+                        break;
+                    case "Đang Giao":
+                    linecolor = "info";
+                        break;
+                    case "Thành Công":
+                    linecolor = "success";
+                        break;
+                    case "Hủy":
+                        linecolor = "danger";
+                        break;
+                    default:
+                    linecolor = "active";
+                }
+                
+                for (var j = 0; j < thisOrder.sanpham.length; j++)
+                {
+                    sumBill += thisOrder.gia[j]
+                }
+
+                dateformat = thisOrder.ngaygio.toLocaleString();
+                
+                var orderspara_element = {
+                    trangthai_color: linecolor,
+                    trangthai: thisOrder.trangthai,
+                    _id : thisOrder['_id'],
+                    soluongsp : thisOrder.sanpham.length,
+                    ngaygio : dateformat,
+                    tongtien : sumBill
+                }
+                
+                orderspara.push(orderspara_element)
+            }
+
+            var ordersChuck = initPage(page, orderspara);
+            var arrPage = createArrPage(orderspara, curentPage,page);
+
+            res.render('product/order-list', {
+                title: 'Dashboard-Quản lý đơn hàng',
+                order: ordersChuck,
+                pages: arrPage,
+                orders_count: donhangchuaxuly,
+                layout: 'dashboard_layout'
+            });
+        });
+});
+
+/*--------------------------------------------theo trạng thái-----------------------------------------*/
+/*okey*/
+router.get("/order/state/:state",function (req,res,next) {
+    var state = req.params.state;
+    var query = "";
+
+    switch (state)
+    {
+        case 'waiting': {
+            query = "Chưa Xử Lý"
+        }
+        break;
+        case 'delivering': {
+            query = "Đang Giao"
+        }
+        break;
+        case 'delivered': {
+            query = "Thành Công"
+        }
+        break;
+        case 'canceled': {
+            query = "Hủy"
+        }
+        break;
+        default: break;
+    }
+    
+    
+    var curentPage = '/dashboard/order';
+    Order.find({trangthai: query}).sort({ngaygio: -1}).exec(function (err, orders) {
+        if(err)
+        {
+            return;
+        }
+        var orderspara = [];
+        var donhangchuaxuly = 0;
         
-        for (var i = 0; i < result.length; i++) {
-            var whatID = result[i]._id;
-            var whatPrice = result[i].gia;
-            randomproducts.push(whatID);
-            prices.push(whatPrice);
+        for (i = 0; i < orders.length; i++)
+        {
+            var thisOrder = orders[i];
+
+            var linecolor = "";
+            var sumBill = 0;
+            var dateformat;
+
+            switch(thisOrder.trangthai) {
+                case "Chưa Xử Lý":
+                {
+                    linecolor = "warning";
+                    donhangchuaxuly++;
+                }
+                    break;
+                case "Đang Giao":
+                linecolor = "info";
+                    break;
+                case "Thành Công":
+                linecolor = "success";
+                    break;
+                case "Hủy":
+                    linecolor = "danger";
+                    break;
+                default:
+                linecolor = "active";
+            }
+            
+            for (var j = 0; j < thisOrder.sanpham.length; j++)
+            {
+                sumBill += thisOrder.gia[j]
+            }
+
+            dateformat = thisOrder.ngaygio.toLocaleString();
+            
+            var orderspara_element = {
+                trangthai_color: linecolor,
+                trangthai: thisOrder.trangthai,
+                _id : thisOrder['_id'],
+                soluongsp : thisOrder.sanpham.length,
+                ngaygio : dateformat,
+                tongtien : sumBill
+            }
+            
+            orderspara.push(orderspara_element)
         }
 
+        var ordersChuck = initPage(1, orderspara);
+        var arrPage = createArrPage(orderspara, curentPage,1);
 
-        var neworder = new Order({
-            tenkhachhang: "Lê Trí Khoa",
-            sodienthoai: '0123456789',
-            diachinhanhang: "227, Nguyễn Văn Cừ",
-            thanhtoan: "COD",
-            trangthai: "Chưa Xử Lý",
-            sanpham: randomproducts,
-            gia: prices,
-            ngaygio: Date(),
-            ghichu: "đơn hàng phát sinh tự động"
+
+        res.render('product/order-list', {
+            title: 'Dashboard-Quản lý đơn hàng',
+            order: ordersChuck,
+            pages: arrPage,
+            orders_count: donhangchuaxuly,
+            layout: 'dashboard_layout'
         });
+    });
+});
+/*okey*/
+router.get("/order/state/:state/page/:number", function (req, res, next) {
+    var state = req.params.state;
+    var page = req.params.number;
+    var query = "";
 
-        console.log(neworder);
+    switch (state)
+    {
+        case 'waiting': {
+            query = "Chưa Xử Lý"
+        }
+        break;
+        case 'delivering': {
+            query = "Đang Giao"
+        }
+        break;
+        case 'delivered': {
+            query = "Thành Công"
+        }
+        break;
+        case 'canceled': {
+            query = "Hủy"
+        }
+        break;
+        default: break;
+    }
+    
+    var curentPage = '/dashboard/order';
+    Order.find({trangthai: query}).sort({ngaygio: -1}).exec(function (err, orders) {
+        if(err)
+        {
+            return;
+        }
+        var orderspara = [];
+        var donhangchuaxuly = 0;
+        
+        for (i = 0; i < orders.length; i++)
+        {
+            var thisOrder = orders[i];
 
-        neworder.save(function(err){
-            if (err)
+            var linecolor = "";
+            var sumBill = 0;
+            var dateformat;
+
+            switch(thisOrder.trangthai) {
+                case "Chưa Xử Lý":
+                {
+                    linecolor = "warning";
+                    donhangchuaxuly++;
+                }
+                    break;
+                case "Đang Giao":
+                linecolor = "info";
+                    break;
+                case "Thành Công":
+                linecolor = "success";
+                    break;
+                case "Hủy":
+                    linecolor = "danger";
+                    break;
+                default:
+                linecolor = "active";
+            }
+            
+            for (var j = 0; j < thisOrder.sanpham.length; j++)
             {
-                console.log(err);
+                sumBill += thisOrder.gia[j]
+            }
+
+            dateformat = thisOrder.ngaygio.toLocaleString();
+            
+            var orderspara_element = {
+                trangthai_color: linecolor,
+                trangthai: thisOrder.trangthai,
+                _id : thisOrder['_id'],
+                soluongsp : thisOrder.sanpham.length,
+                ngaygio : dateformat,
+                tongtien : sumBill
+            }
+            
+            orderspara.push(orderspara_element)
+        }
+
+        var ordersChuck = initPage(number, orderspara);
+        var arrPage = createArrPage(orderspara, curentPage,number);
+
+
+        res.render('product/order-list', {
+            title: 'Dashboard-Quản lý đơn hàng',
+            order: ordersChuck,
+            pages: arrPage,
+            orders_count: donhangchuaxuly,
+            layout: 'dashboard_layout'
+        });
+    });
+});
+
+/*okey*/
+router.post('/order/changestate', function(req, res, next){
+    var orderId = req.body.id;
+    var toState = req.body.toState;
+    console.log(toState);
+    if (toState === undefined)
+    {
+        console.log("state swrong");
+        res.status(400).send(toState + ' is not an enum');
+        return;
+    }
+    else{
+        
+        Order.findOne({_id: orderId }, function (err, doc){
+            
+            if (err || doc == null)
+            {
+                res.status(404).send('order not founded');
+                return;
             }
             else
             {
-                console.log("saved");
+                console.log(doc);
+                doc.trangthai = toState;
+                doc.save(function(err){
+                    if (err)
+                    {
+                        res.status(409).send(toState + ' is not an enum');
+                    }
+                    else
+                    {
+                        res.send(toState);
+                    }
+                });
             }
-        });
-    });
+          });
+    }    
 });
-
-
-router.get("/order",function (req,res,next) {
-    
-});
-
-/*
-router.get('/product/page/:number',function (req,res,next) {
-    var page = parseInt(req.params.number);
-    Loai.find(function (err,loai) {
-        var currentpage = '/dashboard/product';
-        Product.find(function (err, product) {
-            var allPage = countPage(product);
-            if(page > allPage || page <1)
+/* ----------------------- ------------------ */
+/* query đơn hàng*/
+router.post('/order/query', function(req, res, next){
+        var orderId = req.body.id;
+        Order.findOne({_id: orderId }, function (err, doc){
+            if (err)
             {
-                if(page>allPage)
-                    page=allPage;
-                if(page<1)
-                    page=1;
-                res.redirect(currentpage+'/page/'+page);
+                res.status(404).send('order not founded');
+                return;
             }
-            else {
-                var size = product.length;
-                var productChuck = initPage(page, product);
-                var arrPage = createArrPage(product, currentpage, page);
-                res.render('product/product-list', {
-                    title: 'Dashboard-Toàn bộ sản phẩm',
-                    products: productChuck,
-                    pages: arrPage,
-                    Table_name: 'Toàn bộ sản phẩm',
-                    product_count: size,
-                    layout: 'dashboard_layout',
-                    loai: loai,
-                    message: req.flash('info'), user: req.user
-                });
-            } });
-    });
-});*/
+            else
+            {
+                res.send(doc);
+            }
+          });
+});
 
-/*--------------------------------------------Xem sản phẩm theo loại-----------------------------------------*/
-/*router.get("/product/category/:id",function (req,res,next) {
-    var id = req.params.id;
-    Loai.find(function (err, loai1) {
-        Loai.findOne({_id: id}, function (err, loai2) {
-            Product.find({loai: id}, function (err, product) {
-                var currentPage = '/dashboard/product/category/' + id;
-                var size = product.length;
-                var productChuck = initPage(1, product);
-                var arrPage = createArrPage(product, currentPage,1);
-                res.render('product/product-list', {
-                    title: 'DashBoard-' + loai2.ten,
-                    products: productChuck,
-                    pages: arrPage,
-                    Table_name: loai2.ten,
-                    product_count: size,
-                    layout: 'dashboard_layout',
-                    loai: loai1,
-                    message: req.flash('info'),user:req.user
-                });
-            });
-        });
-    });
-});*/
-/*
-router.get("/product/category/:id/page/:number", function (req, res, next) {
-    var id = req.params.id;
-    var page = parseInt(req.params.number);
-    console.log(page);
-    Loai.find(function (err, loai1) {
-        Loai.findOne({_id: id}, function (err, loai2) {
-            var currentPage = '/dashboard/product/category/' + id;
-            Product.find({loai: id}, function (err, product) {
-                var allPage = countPage(product);
-                if(page > allPage || page <1)
+router.get('/order/query/:id', function(req, res, next){
+    var orderId = req.params.id;
+    console.log(orderId);
+    Order.findOne({_id: orderId }, function (err, doc){
+        if (err)
+        {
+            res.status(404).send('order not founded');
+            return;
+        }
+        else if (doc != null)
+        {
+            var products = [];
+            var thanhtien1mathang = [];
+            var tongcong = 0;
+            var linecolor;
+
+            switch(doc.trangthai) {
+                case "Chưa Xử Lý":
                 {
-                    if(page>allPage)
-                        page=allPage;
-                    if(page<1)
-                        page=1;
-                    res.redirect(currentPage+'/page/'+page);
+                    linecolor = "warning";
                 }
-                else {
-                    var size = product.length;
-                    var productChuck = initPage(page, product);
-                    var arrPage = createArrPage(product, currentPage, page);
-                    res.render('product/product-list', {
-                        title: 'DashBoard-' + loai2.ten,
-                        products: productChuck,
-                        pages: arrPage,
-                        Table_name: loai2.ten,
-                        product_count: size,
-                        layout: 'dashboard_layout',
-                        loai: loai1,
-                        message: req.flash('info'), user: req.user
-                    });
-                }});
-        });
-    });
-});*/
-//-----------------------------------
+                    break;
+                case "Đang Giao":
+                linecolor = "info";
+                    break;
+                case "Thành Công":
+                linecolor = "success";
+                    break;
+                case "Hủy":
+                    linecolor = "danger";
+                    break;
+                default:
+                linecolor = "active";
+            }
+            
+            console.log(doc.sanpham.length);
+            for (var i = 0; i < doc.sanpham.length; i++)
+            {
+                var whatid = doc.sanpham[i];
+                Product.findOne({_id: whatid}, function(err,doc2){
+                    if(err || doc2 == null)
+                    {
+                    }
+                    else
+                    {
+                        products.push(doc2);
+                    }
+                });
+                var thanhtien = doc.gia[i] * doc.soluong[i];
+                thanhtien1mathang.push(thanhtien);
+                tongcong += thanhtien;
+            }
+            
+            console.log(products);
+            var dateformat = doc.ngaygio.toLocaleString();
+            res.render('product/order-detail', {
+                tenkhachhang: doc.tenkhachhang,
+                sodienthoai: doc.sodienthoai,
+                id: doc._id,
+                diachi: doc.diachinhanhang,
+                ngaynhandon: dateformat,
+                ghichu: doc.ghichu,
+                sanpham: products,
+                soluong: doc.soluong,
+                gia: doc.gia,
+                thanhtien: thanhtien1mathang,
+                trangthai_color: linecolor,
+                trangthai: doc.trangthai,
+
+                tongcong: tongcong
+            });
+
+        }
+      });
+});
+
 
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
 function initPage(page,docs) {
@@ -1132,4 +1511,5 @@ function change_alias(alias) {
 function escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
+
 module.exports = router;
