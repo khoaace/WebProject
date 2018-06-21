@@ -49,7 +49,9 @@ module.exports = function (app, passport) {
     });
 /*----------------------------Thông tin cá nhân---------------------------*/
     app.get('/profile', isLoggedIn,function (req, res) {
-        res.render('user/profile',{title:'eShop - Profile',user:req.user,message: req.flash('info')});
+        Loai.find(function (err,result) {
+            res.render('user/profile', {title: 'eShop - Profile', loai:result,user: req.user, message: req.flash('info')});
+        });
     });
 
     app.post('/changepassword',urlencodedParser,isLoggedIn,function (req, res) {

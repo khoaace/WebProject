@@ -39,7 +39,7 @@
             <h3>{{current_cate}}</h3>
             <label class="line"></label>
 
-
+<div id="indexProduct">
 {{#if products}}
     {{# each products}}
     <div class="mid-popular">
@@ -88,7 +88,7 @@
         Không tìm thấy sản phẩm .
     </div>
 {{/if}}
-
+</div>
 
 
                 <!--end-->
@@ -98,13 +98,15 @@
         <!--//products-->
         <!--brand-->
         <div class="brand">
+            <div id="listPageIndex">
             <center>
             <ul class="pagination">
                 {{#each pages}}
-                    <li class="{{this.[2]}}"><a href="{{this.[1]}}/page/{{this.[0]}}">{{this.[0]}}</a></li>
+                    <li class="{{this.[2]}}" onclick="getPagingIndex({{this.[0]}});" value="{{this.[0]}}"><a class="someclass">{{this.[0]}}</a></li>
                 {{/each}}
             </ul>
             </center>
+            </div>
         </div>
         <!--//brand-->
     </div>

@@ -19,6 +19,7 @@
 
         </ul>
         <br>
+        <input type="hidden" id="IDProduct" value="{{product._id}}">
 
         <div class="col-md-9">
             <div class="col-md-5 grid">
@@ -94,23 +95,101 @@
             <div class="tab-head">
                 <nav class="nav-sidebar">
                     <ul class="nav tabs">
-                        <li class="active"><a href="#tab1" data-toggle="tab">Đánh giá sản phẩm</a></li>
-                        <li class=""><a href="#tab2" data-toggle="tab">Bình luận sản phẩm</a></li>
+                        <li class="active"><a href="#tab1" data-toggle="tab">Bình luận sản phẩm</a></li>
+                        <li class=""><a href="#tab2" data-toggle="tab">Đánh giá sản phẩm</a></li>
                     </ul>
                 </nav>
+                    {{#if user.mod}}
+                        <input type="hidden" id="userMod" value="1">
+                        {{/if}}
                 <div class="tab-content one">
                     <div class="tab-pane active text-style" id="tab1">
                         <div class="facts">
-                            <p> Đánh giá sản phẩm tại đây</p>
+
+                                <form method="post">
+                                    <input type="hidden" id="idProduct" value="{{product._id}}">
+                                    {{#if user}}
+                                        <input type="hidden" id="userCurCmt" value="{{user.username}}">
+                                        <h4>Bình luận dưới tên : <strong>{{user.username}}</strong></h4>
+                                        {{else}}
+                                        <h4>Bình luận dưới tên : <strong>[Khách]<input type="text" id="userCurCmt" placeholder="Nhập Tên hiển thị"></strong></h4><br>
+                                    {{/if}}
+
+                                    <textarea placeholder="Viết bình luận cho sản phẩm này" id="comment" maxlength="500" style="width:100%;"></textarea>
+                                    <br>
+                                    <center><button type="submit" id="sendComment" class="btn btn-success green"><span class="glyphicon glyphicon-send"></span> Gửi bình luận</button></center>
+                                </form>
+
+                            <br><hr>
+
+                            <center><h3>Các bình luận mới nhất</h3></center><br><hr>
+                            <div id="productComment">
+                                {{#if binhluan}}
+                                    {{#each binhluan}}
+                                            <div class="panel panel-default" id="productComment">
+                                                <div class="panel-heading">
+                                                    <strong><span class="glyphicon glyphicon-comment"></span> {{this.nguoibinhluan}}</strong> <span class="text-muted">{{this.thoigian}}</span>
+                                                </div>
+                                                <div class="panel-body" style="word-break: break-all;">
+                                                    <h5>   {{this.noidung}}</h5>
+                                                </div><!-- /panel-body -->
+                                                <hr>
+                                                <a onclick="editComment('{{this._id}}','{{this.nguoibinhluan}}','{{this.noidung}}')"><center><h5 style="color: grey;"><span class="glyphicon glyphicon-edit"></span>Sửa bình luận</h5></center></a>
+                                            </div>
+
+                                        <!-- Modal -->
+
+                                    {{/each}}
+
+                                {{/if}}
+
+                            </div>
+                            <div id="commentModal" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Chỉnh sửa bình luận</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" id="userCmt" value="">
+                                            <input type="hidden" id="idCmt" value="">
+                                            <textarea placeholder="Viết bình luận cho sản phẩm này" id="contentCmt" maxlength="500" style="width:100%;"></textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-warning" id="updateCmt">Cập nhật</button>
+                                            <button type="button" class="btn btn-danger" id="deleteCmt">Xoá bình luận</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <center>
+                                <div id="listPage">
+                                <ul class="pagination">
+
+                                    {{#each pages}}
+                                        {{#if this.[2]}}
+                                            <input type="hidden" value="{{this.[0]}}" id="curPage">
+                                            {{/if}}
+                                        <li class="{{this.[2]}}" onclick="getPaging({{this.[0]}});" value="{{this.[0]}}"><a class="someclass">{{this.[0]}}</a></li>
+                                    {{/each}}
+
+                                </ul>
+                                </div>
+                            </center>
+
+
+
 
                         </div>
 
                     </div>
                     <div class="tab-pane text-style" id="tab2">
-
-                        <div class="facts">
-                            <p>Bình luận cho sản phẩm</p>
-                        </div>
+                        <p>Không có đánh giá</p>
                     </div>
 
                 </div>

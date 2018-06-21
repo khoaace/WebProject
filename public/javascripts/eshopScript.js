@@ -50,5 +50,27 @@ $(document).ready(function()
 
 
 
+function getPagingIndex(page) {
+    $("#snackbar").html('Đang chuyển trang');
+    var x = document.getElementById("snackbar");
+    // Add the "show" class to DIV
+    x.className = "show";
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    var dataComment = {'page':page
+    };
+    $.ajax({
+        type:'POST',
+        url:'/index/page',
+        data:dataComment
+    }).done(function (data) {
+        $("#indexProduct").load(window.location.href +  ' #indexProduct');
+        $("#listPageIndex").load(window.location.href +  ' #listPageIndex');
+    }).fail(function (data) {
+        $("#indexProduct").load(window.location.href +  ' #indexProduct');
+        $("#listPageIndex").load(window.location.href +  ' #listPageIndex');
+    });
+}
+
 // Xử lý của trang dashboard user
 
