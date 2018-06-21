@@ -546,7 +546,7 @@ $(document).ready(function(){
         var todate = $('#datepicker2').val();
         var bywhat = $("#selectbasic").val();
         console.log(fromdate);
-        console.log(todate);
+        console.log(bywhat);
         var formData = {
             'fromdate'      : fromdate,
             'todate'        : todate,
@@ -557,7 +557,7 @@ $(document).ready(function(){
             url         : '/dashboard/statistic/process', // the url where we want to POST
             data        : formData, // our data object
         }).done(function(data){
-            
+            console.log(data);
         }).fail(function(data){
 
         });

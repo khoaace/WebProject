@@ -1017,7 +1017,7 @@ router.get('/order/by/:sortby/page/:number',function (req,res,next) {
                 
                 for (var j = 0; j < thisOrder.sanpham.length; j++)
                 {
-                    sumBill += thisOrder.gia[j]
+                    sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
                 }
 
                 dateformat = thisOrder.ngaygio.toLocaleString();
@@ -1130,7 +1130,7 @@ router.get("/order/state/:state/by/:sortby/page/:number", function (req, res, ne
             
             for (var j = 0; j < thisOrder.sanpham.length; j++)
             {
-                sumBill += thisOrder.gia[j]
+                sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
             }
 
             dateformat = thisOrder.ngaygio.toLocaleString();
@@ -1309,31 +1309,99 @@ router.post('/statistic/process', function(req, res, next){
     var startDate = new Date(req.body.fromdate);
     var endDate = new Date(req.body.todate);
 
+    if(isNaN(startDate.getTime()) || isNaN(endDate.getTime()))
+    {
+        res.send('invalid time');
+    }
+
+    var bywhat  = req.body.bywhat;
+    console.log(bywhat);
     console.log(req.body.fromdate);
     console.log(req.body.todate);
     console.log(startDate);
     console.log(endDate);
-    Order.find({
-        ngaygio: {
-            $gte:  startDate,
-            $lte:  endDate
-        }
-    }, function(err, docs) {
-        if (err) {
-            console.log("1");
-            console.log(err);
-        }
-        else {
-            if (docs != null && docs != [])
-            {
-                console.log(docs);
-                console.log(docs.length);
-            }
-            //res.json(positions);
-        }
+
+
+
+    endDate.setDate(endDate.getDate() + 1);
+
+    
+    var dateIndex = new Date(startDate);
+    console.log(1);
+    var result = [];
+
+    var query = {$and: [
+                {trangthai: 'Thành Công'},
+                {$and: [{ngaygio: {$gte: startDate}},{ngaygio: {$lte: endDate}}]}
+             ]
+             };
+             console.log(dateIndex);
+    Order.find(query, function(err, docs) {
+        console.log(2);
+        res.send(docs);
     });
-    console.log("1");
-    //res.render('product/stat',{layout:'dashboard_layout'});
+        //         if (err) {
+        //             console.log(err);
+        //         }
+        //         else if (docs != null && docs != [])
+        //         {
+        //             //console.log(docs);
+        //             console.log(docs.length);
+    
+
+
+    //result = stepquery(result, dateIndex, endDate);
+    //console.log("sending");
+    //res.send(result);
+
+    // while (dateIndex < endDate)
+    // {
+    //     resultElementVal = 0;
+
+    //     var tomorow = new Date(dateIndex);
+    //     tomorow.setFullYear(dateIndex.getFullYear());
+    //     tomorow.setMonth(dateIndex.getMonth());
+    //     tomorow.setDate(dateIndex.getDate()+1);
+    //     var query = /*{$and: [
+    //         {trangthai: 'Thành Công'},
+    //         {$and: [{ngaygio: {$gte: dateIndex}},{ngaygio: {$lte: tomorow}}]}
+    //     ]
+    //     }*/{"ngaygio": {$lt: tomorow}};
+
+    //     Order.find(query, function(err, docs) {
+    //         if (err) {
+    //             console.log(err);
+    //         }
+    //         else if (docs != null && docs != [])
+    //         {
+    //             //console.log(docs);
+    //             console.log(docs.length);
+
+    //             for (var bill = 0; bill <docs.length; bill++)
+    //             {
+    //                 var sumBill = 0;
+    //                 var thisOrder = docs[bill];
+    //                 for (var j = 0; j < thisOrder.sanpham.length; j++)
+    //                 {
+    //                     sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
+    //                 }
+    //                 resultElementVal += sumBill;
+    //             }
+    //         }
+    //         console.log("today");
+    //         console.log(dateIndex);
+    //         console.log("romorow");
+    //         console.log(tomorow);
+    //         console.log(result);
+    //     });
+    //     var thisDate = dateIndex.toDateString();
+    //     var element = [thisDate, resultElementVal];
+
+    //     result.push(element);
+    //     dateIndex.setDate(dateIndex.getDate() + 1);
+    // }
+
+    //res.send(stepquery(result, dateIndex, endDate));
 });
 
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
@@ -1407,6 +1475,63 @@ function change_alias(alias) {
 }
 function escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+
+function stepquery(result, dateIndex, endDate)
+{
+    if (dateIndex >= endDate)
+    {
+        return result;
+    }
+    else {
+        var resultElementVal = 0;
+
+        var tomorow = new Date(dateIndex);
+        tomorow.setFullYear(dateIndex.getFullYear());
+        tomorow.setMonth(dateIndex.getMonth());
+        tomorow.setDate(dateIndex.getDate()+1);
+        var query = /*{$and: [
+            {trangthai: 'Thành Công'},
+            {$and: [{ngaygio: {$gte: dateIndex}},{ngaygio: {$lte: tomorow}}]}
+        ]
+        }*/{trangthai: 'Thành Công', ngaygio: {$lt: tomorow, $gte: dateIndex}};
+
+        Order.find(query, function(err, docs) {
+            if (err) {
+                console.log(err);
+            }
+            else 
+            {
+                //console.log(docs);
+                console.log(docs.length);
+
+                for (var bill = 0; bill <docs.length; bill++)
+                {
+                    var sumBill = 0;
+                    var thisOrder = docs[bill];
+                    for (var j = 0; j < thisOrder.sanpham.length; j++)
+                    {
+                        sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
+                    }
+                    resultElementVal += sumBill;
+                }
+            }
+            console.log("today");
+            console.log(dateIndex);
+            console.log("romorow");
+            console.log(tomorow);
+            console.log(result);
+
+            
+            var thisDate = dateIndex.toDateString();
+            var element = [thisDate, resultElementVal];
+
+            result.push(element);
+            console.log(result);
+            dateIndex.setDate(dateIndex.getDate() + 1);
+            return result;
+        });
+    }
 }
 
 module.exports = router;
