@@ -14,13 +14,23 @@
 <div class="panel panel-primary">
 <table class="table">
     <thead>
-      <tr>
-        <th>Tình trạng</th>
-        <th>Mã đơn hàng</th>
-        <th>SP</th>
-        <th>Thời gian</th>
-        <th>Tổng tiền</th>
-      </tr>
+        {{#if state}}
+        <tr>
+            <th><a href="/dashboard/order/state/{{state}}/by/trangthai/page/1">Tình trạng</a></th>
+            <th><a href="/dashboard/order/state/{{state}}/by/_id/page/1">Mã đơn hàng</a></th>
+            <th><a href="/dashboard/order/state/{{state}}/by/sp/page/1">SP</a></th>
+            <th><a href="/dashboard/order/state/{{state}}/by/ngaygio/page/1">Thời gian</a></th>
+            <th><a href="/dashboard/order/state/{{state}}/by/tongtien/page/1">Tổng tiền</a></th>
+        </tr>
+        {{else}}
+        <tr>
+            <th><a href="/dashboard/order/by/trangthai/page/1">Tình trạng</a></th>
+            <th><a href="/dashboard/order/by/_id/page/1">Mã đơn hàng</a></th>
+            <th><a href="/dashboard/order/by/sp/page/1">SP</a></th>
+            <th><a href="/dashboard/order/by/ngaygio/page/1">Thời gian</a></th>
+            <th><a href="/dashboard/order/by/tongtien/page/1">Tổng tiền</a></th>
+        </tr>
+        {{/if}}
     </thead>
     <tbody>
         {{#if order}}
@@ -55,7 +65,7 @@
         <div class="row">
             <div class="col-md-6">
                 <h6>
-                    Tổng số đơn hàng <span class="label label-info">{{orders_count}}</span></h6>
+                     <span class="label label-info">{{orders_count}}</span></h6>
             </div>
             <div class="col-md-6">
                 <ul class="pagination pagination-sm pull-right">
@@ -91,7 +101,6 @@
                 </div>
                     <!-- modal-footer -->
                 <div id="order_modal_footer" class="modal-footer">
-                    <button class="order_modal_footer_updatebtn" type="button" class="btn btn-primary" data-dismiss="modal">Cập nhật thông tin</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
                 </div>
             </div>

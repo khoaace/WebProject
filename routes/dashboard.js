@@ -13,7 +13,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 /*-----------------------------------Xác thực tài khoản----------------------------*/
-router.use(function(req, res, next) {
+/*router.use(function(req, res, next) {
     // check header or url parameters or post parameters for token
     var token = req.session.token;
     //req.body.token || req.query.token || req.headers['x-access-token']
@@ -41,7 +41,7 @@ router.use(function(req, res, next) {
         req.flash('info','Chưa thực hiện đăng nhập.');
         res.redirect('/error');
     }
-});
+});*/
 
 router.get("/",function (req,res,next) {
     res.render('dashboard',{layout:'dashboard_layout',user:req.user});
@@ -916,7 +916,7 @@ router.get('/user/search/:input/page/:number',isAdmin,function (req,res,next) {
         }});
 });
 
-/*--------------------------->Đơn Hàng, Thống Kê<-------------------------------------------*/
+/*-------------------------------->Đơn Hàng<-------------------------------------------*/
 /* generate đơn hàng -okey-*/
 router.get("/order/generate", function(req,res){
     for(var loop = 0; loop < 20; loop++)
@@ -968,84 +968,18 @@ router.get("/order/generate", function(req,res){
 
 /*okey*/
 router.get("/order",function (req,res,next) {
-        var curentPage = '/dashboard/order';
-        Order.find({}).sort({ngaygio: -1}).exec(function (err, orders) {
-            if(err)
-            {
-                return;
-            }
-            var orderspara = [];
-            var donhangchuaxuly = 0;
-            
-            for (i = 0; i < orders.length; i++)
-            {
-                var thisOrder = orders[i];
-
-                var linecolor = "";
-                var sumBill = 0;
-                var sumProduct = 0;
-                var dateformat;
-
-                switch(thisOrder.trangthai) {
-                    case "Chưa Xử Lý":
-                    {
-                        linecolor = "warning";
-                        donhangchuaxuly++;
-                    }
-                        break;
-                    case "Đang Giao":
-                    linecolor = "info";
-                        break;
-                    case "Thành Công":
-                    linecolor = "success";
-                        break;
-                    case "Hủy":
-                        linecolor = "danger";
-                        break;
-                    default:
-                    linecolor = "active";
-                }
-                
-                for (var j = 0; j < thisOrder.sanpham.length; j++)
-                {
-                    sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
-                    sumProduct += thisOrder.soluong[j];
-                }
-
-                dateformat = thisOrder.ngaygio.toLocaleString();
-                
-                var orderspara_element = {
-                    trangthai_color: linecolor,
-                    trangthai: thisOrder.trangthai,
-                    _id : thisOrder['_id'],
-                    soluongsp : sumProduct,
-                    ngaygio : dateformat,
-                    tongtien : sumBill
-                }
-                
-                orderspara.push(orderspara_element)
-            }
-
-            var ordersChuck = initPage(1, orderspara);
-            var arrPage = createArrPage(orderspara, curentPage,1);
-
-           
-
-            res.render('product/order-list', {
-                title: 'Dashboard-Quản lý đơn hàng',
-                order: ordersChuck,
-                pages: arrPage,
-                orders_count: donhangchuaxuly,
-                layout: 'dashboard_layout'
-            });
-        });
+    var link = '/dashboard/order/by/ngaygio' + '/page/1';
+    res.redirect(link);
+    return;
 });
 
 /*okey*/
-router.get('/order/page/:number',function (req,res,next) {
-        var curentPage = '/dashboard/order';
+router.get('/order/by/:sortby/page/:number',function (req,res,next) {
         var page = req.params.number;
-        Order.find({}).sort({ngaygio: -1}).exec(function (err, orders) {
+        var sortby = String(req.params.sortby);
+
+        var curentPage = '/dashboard/order/by/' + sortby;
+        Order.find({}).sort([[sortby, -1]]).exec(function (err, orders) {
             if(err)
             {
                 return;
@@ -1097,7 +1031,15 @@ router.get('/order/page/:number',function (req,res,next) {
                     tongtien : sumBill
                 }
                 
-                orderspara.push(orderspara_element)
+                orderspara.push(orderspara_element);
+                if (sortby == 'tongtien')
+                {
+                    orderspara.sort((a, b) => Number(a.tongtien) - Number(b.tongtien));
+                }
+                if (sortby == 'sp')
+                {
+                    orderspara.sort((a, b) => Number(a.soluongsp) - Number(b.soluongsp));
+                }
             }
 
             var ordersChuck = initPage(page, orderspara);
@@ -1116,104 +1058,16 @@ router.get('/order/page/:number',function (req,res,next) {
 /*--------------------------------------------theo trạng thái-----------------------------------------*/
 /*okey*/
 router.get("/order/state/:state",function (req,res,next) {
-    var state = req.params.state;
-    var query = "";
-
-    switch (state)
-    {
-        case 'waiting': {
-            query = "Chưa Xử Lý"
-        }
-        break;
-        case 'delivering': {
-            query = "Đang Giao"
-        }
-        break;
-        case 'delivered': {
-            query = "Thành Công"
-        }
-        break;
-        case 'canceled': {
-            query = "Hủy"
-        }
-        break;
-        default: break;
-    }
-    
-    
-    var curentPage = '/dashboard/order';
-    Order.find({trangthai: query}).sort({ngaygio: -1}).exec(function (err, orders) {
-        if(err)
-        {
-            return;
-        }
-        var orderspara = [];
-        var donhangchuaxuly = 0;
-        
-        for (i = 0; i < orders.length; i++)
-        {
-            var thisOrder = orders[i];
-
-            var linecolor = "";
-            var sumBill = 0;
-            var dateformat;
-
-            switch(thisOrder.trangthai) {
-                case "Chưa Xử Lý":
-                {
-                    linecolor = "warning";
-                    donhangchuaxuly++;
-                }
-                    break;
-                case "Đang Giao":
-                linecolor = "info";
-                    break;
-                case "Thành Công":
-                linecolor = "success";
-                    break;
-                case "Hủy":
-                    linecolor = "danger";
-                    break;
-                default:
-                linecolor = "active";
-            }
-            
-            for (var j = 0; j < thisOrder.sanpham.length; j++)
-            {
-                sumBill += thisOrder.gia[j]
-            }
-
-            dateformat = thisOrder.ngaygio.toLocaleString();
-            
-            var orderspara_element = {
-                trangthai_color: linecolor,
-                trangthai: thisOrder.trangthai,
-                _id : thisOrder['_id'],
-                soluongsp : thisOrder.sanpham.length,
-                ngaygio : dateformat,
-                tongtien : sumBill
-            }
-            
-            orderspara.push(orderspara_element)
-        }
-
-        var ordersChuck = initPage(1, orderspara);
-        var arrPage = createArrPage(orderspara, curentPage,1);
-
-
-        res.render('product/order-list', {
-            title: 'Dashboard-Quản lý đơn hàng',
-            order: ordersChuck,
-            pages: arrPage,
-            orders_count: donhangchuaxuly,
-            layout: 'dashboard_layout'
-        });
-    });
+    var link = '/dashboard/order/state/' + req.params.state + '/by/trangthai/page/1';
+    res.redirect(link);
+    return;
 });
+
 /*okey*/
-router.get("/order/state/:state/page/:number", function (req, res, next) {
+router.get("/order/state/:state/by/:sortby/page/:number", function (req, res, next) {
     var state = req.params.state;
-    var page = req.params.number;
+    var sortby = String(req.params.sortby);
+    var number = req.params.number;
     var query = "";
 
     switch (state)
@@ -1237,8 +1091,8 @@ router.get("/order/state/:state/page/:number", function (req, res, next) {
         default: break;
     }
     
-    var curentPage = '/dashboard/order';
-    Order.find({trangthai: query}).sort({ngaygio: -1}).exec(function (err, orders) {
+    var curentPage = '/dashboard/order/state/' + state + '/by/' + sortby;
+    Order.find({trangthai: query}).sort([[sortby, -1]]).exec(function (err, orders) {
         if(err)
         {
             return;
@@ -1290,7 +1144,15 @@ router.get("/order/state/:state/page/:number", function (req, res, next) {
                 tongtien : sumBill
             }
             
-            orderspara.push(orderspara_element)
+            orderspara.push(orderspara_element);
+            if (sortby == 'tongtien')
+            {
+                orderspara.sort((a, b) => Number(a.tongtien) - Number(b.tongtien));
+            }
+            if (sortby == 'sp')
+            {
+                orderspara.sort((a, b) => Number(a.soluongsp) - Number(b.soluongsp));
+            }
         }
 
         var ordersChuck = initPage(number, orderspara);
@@ -1302,7 +1164,8 @@ router.get("/order/state/:state/page/:number", function (req, res, next) {
             order: ordersChuck,
             pages: arrPage,
             orders_count: donhangchuaxuly,
-            layout: 'dashboard_layout'
+            layout: 'dashboard_layout',
+            state: state
         });
     });
 });
@@ -1437,7 +1300,41 @@ router.get('/order/query/:id', function(req, res, next){
         }
       });
 });
+/*--------------------------------->Thống Kê<------------------------------------------*/
+router.get('/statistic', function(req, res, next){
+    res.render('product/stat',{layout:'dashboard_layout'});
+});
 
+router.post('/statistic/process', function(req, res, next){
+    var startDate = new Date(req.body.fromdate);
+    var endDate = new Date(req.body.todate);
+
+    console.log(req.body.fromdate);
+    console.log(req.body.todate);
+    console.log(startDate);
+    console.log(endDate);
+    Order.find({
+        ngaygio: {
+            $gte:  startDate,
+            $lte:  endDate
+        }
+    }, function(err, docs) {
+        if (err) {
+            console.log("1");
+            console.log(err);
+        }
+        else {
+            if (docs != null && docs != [])
+            {
+                console.log(docs);
+                console.log(docs.length);
+            }
+            //res.json(positions);
+        }
+    });
+    console.log("1");
+    //res.render('product/stat',{layout:'dashboard_layout'});
+});
 
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
 function initPage(page,docs) {

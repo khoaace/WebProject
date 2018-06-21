@@ -537,78 +537,30 @@ $(document).ready(function(){
         });
 
     });
+});
 
-    // $(document).on('click','.order_modal_footer_updatebtn',function(event){
+//==============================Trang thống kê==============
+$(document).ready(function(){
+    $(document).on('click','#stat_smbutton', function(event){
+        var fromdate = $('#datepicker1').val();
+        var todate = $('#datepicker2').val();
+        var bywhat = $("#selectbasic").val();
+        console.log(fromdate);
+        console.log(todate);
+        var formData = {
+            'fromdate'      : fromdate,
+            'todate'        : todate,
+            'bywhat'        : bywhat
+        };
+        $.ajax({
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url         : '/dashboard/statistic/process', // the url where we want to POST
+            data        : formData, // our data object
+        }).done(function(data){
+            
+        }).fail(function(data){
+
+        });
         
-    //     var myid = $("#orderdetail_id_textinput").val();
-    //     var theDay = Date($("#orderdetail_time_textinput").val());
-
-    //     var selector = '[id="' + myid + '_btn]';
-    //     var state = $(selector).html();
-
-    //     var sanpham = [];
-    //     var soluong = [];
-    //     var gia = [];
-        
-
-
-    //     var formData = {
-    //         'tenkhachhang': $("#orderdetail_name_textinput").val(),
-    //         'sodienthoai': $("#orderdetail_add_textinput").val(),
-    //         'diachinhanhang': $("#orderdetail_name_textinput").val(),
-    //         'thanhtoan': "COD",
-    //         'trangthai': state,
-    //         'sanpham': ,
-    //         'soluong': ,
-    //         'gia': ,
-    //         'ngaygio': theDay,
-    //         'ghichu': $("#orderdetail_name_textinput").val(),
-    //     };
-
-    //     var formData = {
-    //         'ten'              : $("#name_textinput").val(),
-    //         'loai'             : $("#selectbasic").val(),
-    //         'nhanhieu'         : $("#brand_textinput").val(),
-    //         'xuatxu'           : $("#made_textinput").val(),
-    //         'gia'              : $("#price_textinput").val(),
-    //         'mota'             : $("#desc_textarea").val(),
-    //         'hinhanh'          : imglist
-    //     };
-
-    //     // process the form
-    //     $.ajax({
-    //         type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
-    //         url         : '/dashboard/product/add', // the url where we want to POST
-    //         data        : formData, // our data object
-    //         //dataType    : 'json', // what type of data do we expect back from the server
-    //         //encode      : true,
-
-    //         /*success : function( data, textStatus, jqXHR ) {
-    //             // Handle data transformation or DOM manipulation in here.
-    //         }*/
-    //     })
-    //     .done( function( data ) {
-    //         // Handles successful responses only
-    //         //$("#smbutton").html('saved');
-    //         //$("#testbutton").click();
-    //         $("#main_modal_header").attr("style","background-color: #00810b");
-    //         $("#main_modal_body_alert").html('Sản Phẩm Đã Được Thêm Mới');
-    //         $("#main_modal_footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
-    //         $("#modalbox").modal('show');
-
-    //         $("#name_textinput").val('');
-    //         $("#link1_textinput").val('');
-    //         $("#link2_textinput").val('');
-    //         $("#link3_textinput").val('');
-
-    //         $("#name_textinput").focus();
-    //     })
-    //     .fail(function(data){
-    //         var nulllist = data.responseJSON;
-    //         $("#main_modal_header").attr("style","background-color: red");
-    //         $("#main_modal_body_alert").html('Vui lòng điền đủ các thông tin');
-    //         $("#main_modal_footer").html('<button type="button" class="btn btn-warning" data-dismiss="modal">OK</button>');
-    //         $("#modalbox").modal('show');
-    //     });
-    // });
+    });
 });

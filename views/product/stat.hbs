@@ -1,0 +1,39 @@
+<div class="form-horizontal">
+    <h1>Thống Kê</h1>
+    <fieldset>
+        <div class="form-group row">
+            <label class="col-md-4 control-label" for="datepicker1">Từ ngày: </label>
+            <div class="col-md-4">
+                <input id="datepicker1" name="fromdate" type="date" placeholder="" class="form-control input-md" required="" oninvalid="this.setCustomValidity('Chọn mốc thời gian')"  oninput="setCustomValidity('')">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-4 control-label" for="datepicker2">Đến ngày: </label>
+            <div class="col-md-4">
+                <input id="datepicker2" name="todate" type="date" placeholder="" class="form-control input-md" required="" oninvalid="this.setCustomValidity('Chọn mốc thời gian')"  oninput="setCustomValidity('')">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="selectbasic">Theo</label>
+            <div class="col-md-4">
+                <select id="selectbasic" name="loai" class="form-control">
+                    <option value="day">Theo ngày</option>
+                    <option value="week">Theo tuần</option>
+                    <option value="month">Theo tháng</option>
+                    <option value="season">Theo quý</option>
+                    <option value="year">Theo năm</option>
+                </select>
+            </div>
+        </div>
+
+        <center>
+            <div id="stat_smbutton" class="btn3d btn btn-success btn-lg">Thống Kê</div>
+        </center>
+
+        <div id="stat_chart"></div>
+        <div id="stat_pie1"></div>
+        <div id="stat_pie2"></div>
+    </fieldset>
+</div>
