@@ -54,15 +54,6 @@ app.use('/dashboard',dashBoard);
 HandlebarsIntl.registerWith(Handlebars);
 
 //connect to database
-<<<<<<< HEAD
-mongodb.connect(configDB.database_local, function(err){
-    if (err)
-    {
-        console.log('[!] - Khong the ket noi toi DATABASE');
-    }
-    else{
-        console.log('[i] - Ket noi database thanh cong');
-=======
 mongodb.connect(configDB.database, function(err)
 {
     if (err)
@@ -71,7 +62,6 @@ mongodb.connect(configDB.database, function(err)
     }
     else{
         console.log("[i] - ket noi den Database thanh cong!");
->>>>>>> c401c7a1afcb0c9b7dfb940934548899c3a4b5de
     }
 });
 
@@ -91,9 +81,6 @@ app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error');
 });
-<<<<<<< HEAD
 // Print notify in console
 
-=======
->>>>>>> c401c7a1afcb0c9b7dfb940934548899c3a4b5de
 module.exports = app;
