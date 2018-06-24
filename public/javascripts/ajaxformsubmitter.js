@@ -556,11 +556,70 @@ $(document).ready(function(){
             type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
             url         : '/dashboard/statistic/process', // the url where we want to POST
             data        : formData, // our data object
-        }).done(function(data){
-            console.log(data);
-        }).fail(function(data){
+        }).done(function(resRe){
+            console.log(resRe);
+            stat_ajaxdata = resRe.stat_chart;
+            stat_pei1_ajaxdata = resRe.toppro1;
+            stat_pei2_ajaxdata = resRe.toppro2;
 
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawPie1Chart);
+            google.charts.setOnLoadCallback(drawChart);
+            google.charts.setOnLoadCallback(drawPie2Chart);
+
+        }).fail(function(data){
+            $("#modalbox").modal('show');
+            $("#main_modal_header").attr("style","background-color: red");
+            $("#main_modal_body").html('<p id="modalalert">Chọn lại ngày hợp lệ để tiến hành thống kê</p>');
+            //$("#order_modal_footer").html('<button role="button" class="btn btn-danger" data-dismiss="modal>Hủy</button>');
         });
         
     });
+    var stat_ajaxdata;
+    var stat_pei1_ajaxdata;
+    var stat_pei2_ajaxdata;
+    /*chart*/
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable(stat_ajaxdata);
+
+        var options = {
+          title: 'Doanh thu',
+          hAxis: {title: 'Khoảng thời gian',  titleTextStyle: {color: '#333'}},
+          vAxis: {minValue: 0}
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('stat_chart'));
+        chart.draw(data, options);
+      }
+    /*chart*/
+    function drawPie1Chart() {
+
+        var data = google.visualization.arrayToDataTable(
+            stat_pei1_ajaxdata);
+
+        var options = {
+          title: 'Top sản phẩm bán chạy',
+          is3D: true
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('stat_pie1'));
+
+        chart.draw(data, options);
+    }
+    /*chart*/
+    function drawPie2Chart() {
+
+        var data = google.visualization.arrayToDataTable(
+            stat_pei2_ajaxdata);
+
+        var options = {
+          title: 'Top Danh mục bán chạy',
+          is3D: true
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('stat_pie2'));
+
+        chart.draw(data, options);
+    }
+
 });

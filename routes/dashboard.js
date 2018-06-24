@@ -1305,103 +1305,183 @@ router.get('/statistic', function(req, res, next){
     res.render('product/stat',{layout:'dashboard_layout'});
 });
 
+function checkDate(date) {
+    return date[0].valueOf() === this.valueOf();
+}
+
+function stat_checkproduct(arrayPro) {
+    return arrayPro[0].toString() == this.toString();
+}
+
 router.post('/statistic/process', function(req, res, next){
     var startDate = new Date(req.body.fromdate);
     var endDate = new Date(req.body.todate);
 
-    if(isNaN(startDate.getTime()) || isNaN(endDate.getTime()))
+    if(isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || startDate >= endDate)
     {
-        res.send('invalid time');
+        res.status(400).send('invalid time');
+        return;
     }
 
     var bywhat  = req.body.bywhat;
-    console.log(bywhat);
-    console.log(req.body.fromdate);
-    console.log(req.body.todate);
-    console.log(startDate);
-    console.log(endDate);
-
-
 
     endDate.setDate(endDate.getDate() + 1);
 
-    
-    var dateIndex = new Date(startDate);
-    console.log(1);
-    var result = [];
+    var dssanpham4topdanhmuc = [];
 
+    var topdanhmuc = [];
+    var topsanpham = [];
+    var doanhthu = [];
+    doanhthu.push(["thời gian", "Doanh Thu"]);
+    for (var i = new Date(startDate); i < endDate; i.setDate(i.getDate() + 1))
+    {
+        doanhthu.push([new Date(i), 0]);
+    }
+   
     var query = {$and: [
-                {trangthai: 'Thành Công'},
-                {$and: [{ngaygio: {$gte: startDate}},{ngaygio: {$lte: endDate}}]}
-             ]
-             };
-             console.log(dateIndex);
-    Order.find(query, function(err, docs) {
-        console.log(2);
-        res.send(docs);
+        {trangthai: 'Thành Công'},
+        {$and: [{ngaygio: {$gte: startDate}},{ngaygio: {$lte: endDate}}]}
+    ]};
+    Order.find(query).sort([['ngaygio', 1]]).exec(function(err, docs) {
+        for (var i = 0; i < docs.length; i++)
+        {
+            thisOrder = docs[i];
+            thisOrderDay = new Date(0);
+            thisOrderDay.setFullYear(thisOrder.ngaygio.getFullYear());
+            thisOrderDay.setMonth(thisOrder.ngaygio.getMonth());
+            thisOrderDay.setDate(thisOrder.ngaygio.getDate());
+            
+            var element = doanhthu.find(checkDate, thisOrderDay);
+            var sumBill = 0;
+            if (element != undefined)
+            {
+                for (var j = 0; j < thisOrder.sanpham.length; j++)
+                {
+                    sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
+                    
+                    var sp = topsanpham.find(stat_checkproduct, thisOrder.sanpham[j]);
+                    
+                    if (typeof sp !== "undefined")
+                    {
+                        sp[1] += thisOrder.soluong[j];
+                    }
+                    else
+                    {
+                        topsanpham.push([thisOrder.sanpham[j], thisOrder.soluong[j]])
+                    }
+                    
+                    dssanpham4topdanhmuc.push(thisOrder.sanpham[j]);
+                }
+                
+                element[1] += sumBill;
+            }
+        }
+
+        for (var j = 1; j < doanhthu.length; j++)
+        {
+            var temp = doanhthu[j][0];
+            doanhthu[j][0] = temp.toISOString().slice(0,10);
+        }
+
+        topsanpham.sort(function(a, b) {
+            return b[1] - a[1];
+        });
+
+        var topsanpham_clone = topsanpham.slice();
+
+        if (topsanpham.length >= 11)
+        {
+            while (topsanpham.length > 11)
+            {
+                var poped = topsanpham.pop();
+                topsanpham[10][1] += poped[1];
+            }
+
+            topsanpham[10][0] = 'khác';
+        }
+
+        var topsanphamquerier = [];
+        for (var j = 0; j < topsanpham.length && j < 10; j++)
+        {
+            var temp = topsanpham[j][0].toString();
+            topsanphamquerier.push(temp);
+        }
+        topsanpham.unshift(['sản phẩm','số lượng hàng bán']);
+        
+        Product.find({_id: { $in: topsanphamquerier}}, function(err, products){
+            Product.find({_id: { $in: dssanpham4topdanhmuc}}, 'loai', function(err, genresofallproducts){
+                
+                for (var i = 0; i < genresofallproducts.length; i++)
+                {
+                    var thisProd = genresofallproducts[i];
+                    console.log(thisProd);
+                    var gen = topdanhmuc.find(stat_checkproduct, thisProd.loai);
+                    
+                    if (typeof gen !== "undefined")
+                    {
+                        gen[1] += 1;
+                    }
+                    else
+                    {
+                        topdanhmuc.push([thisProd.loai, 1])
+                    }
+                }
+                console.log(topdanhmuc);
+                for (var i = 0; i < products.length; i++)
+                {
+                    var element = topsanpham.find(stat_checkproduct, products[i]._id);
+
+                    if (typeof element !== "undefined")
+                        {
+                            element[0] = products[i].ten;
+                        }
+                }
+
+                topdanhmuc.sort(function(a, b) {
+                    return b[1] - a[1];
+                });
+        
+                if (topdanhmuc.length >= 11)
+                {
+                    while (topdanhmuc.length > 11)
+                    {
+                        var poped = topdanhmuc.pop();
+                        topdanhmuc[10][1] += poped[1];
+                    }
+        
+                    topdanhmuc[10][0] = 'khác';
+                }
+
+                var topdanhmucquerier = [];
+                for (var j = 0; j < topdanhmuc.length && j < 10; j++)
+                {
+                    var temp = topdanhmuc[j][0].toString();
+                    topdanhmucquerier.push(temp);
+                }
+
+                Loai.find({_id: { $in: topdanhmucquerier}}, 'ten', function(err, danhmucdocs)
+                {
+                    for (var j = 0; j < danhmucdocs.length; j++)
+                    {
+                        var temp  = danhmucdocs[j].ten;
+                        topdanhmuc[j][0] = temp;
+                    }
+                    
+                    topdanhmuc.unshift(['Danh mục','số lượng hàng bán']);
+
+                    var resvalue = {
+                        'stat_chart': doanhthu,
+                        'toppro1': topsanpham,
+                        'toppro2':topdanhmuc,
+                    };
+                    res.send(resvalue);
+                });
+                
+            });
+        });
     });
-        //         if (err) {
-        //             console.log(err);
-        //         }
-        //         else if (docs != null && docs != [])
-        //         {
-        //             //console.log(docs);
-        //             console.log(docs.length);
-    
 
 
-    //result = stepquery(result, dateIndex, endDate);
-    //console.log("sending");
-    //res.send(result);
-
-    // while (dateIndex < endDate)
-    // {
-    //     resultElementVal = 0;
-
-    //     var tomorow = new Date(dateIndex);
-    //     tomorow.setFullYear(dateIndex.getFullYear());
-    //     tomorow.setMonth(dateIndex.getMonth());
-    //     tomorow.setDate(dateIndex.getDate()+1);
-    //     var query = /*{$and: [
-    //         {trangthai: 'Thành Công'},
-    //         {$and: [{ngaygio: {$gte: dateIndex}},{ngaygio: {$lte: tomorow}}]}
-    //     ]
-    //     }*/{"ngaygio": {$lt: tomorow}};
-
-    //     Order.find(query, function(err, docs) {
-    //         if (err) {
-    //             console.log(err);
-    //         }
-    //         else if (docs != null && docs != [])
-    //         {
-    //             //console.log(docs);
-    //             console.log(docs.length);
-
-    //             for (var bill = 0; bill <docs.length; bill++)
-    //             {
-    //                 var sumBill = 0;
-    //                 var thisOrder = docs[bill];
-    //                 for (var j = 0; j < thisOrder.sanpham.length; j++)
-    //                 {
-    //                     sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
-    //                 }
-    //                 resultElementVal += sumBill;
-    //             }
-    //         }
-    //         console.log("today");
-    //         console.log(dateIndex);
-    //         console.log("romorow");
-    //         console.log(tomorow);
-    //         console.log(result);
-    //     });
-    //     var thisDate = dateIndex.toDateString();
-    //     var element = [thisDate, resultElementVal];
-
-    //     result.push(element);
-    //     dateIndex.setDate(dateIndex.getDate() + 1);
-    // }
-
-    //res.send(stepquery(result, dateIndex, endDate));
 });
 
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
@@ -1531,6 +1611,37 @@ function stepquery(result, dateIndex, endDate)
             dateIndex.setDate(dateIndex.getDate() + 1);
             return result;
         });
+    }
+}
+
+function addDateIndex(i, bywhat)
+{
+    switch(bywhat) {
+        case "year":
+        {
+            i.setDate(i.get)
+        }
+            break;
+        case "year":
+        {
+        }
+            break;
+        case "year":
+        {
+        }
+            break;
+        case "year":
+        {
+        }
+            break;
+        case "year":
+        {
+        }
+            break;
+        default:
+        {
+        }
+            break;
     }
 }
 
