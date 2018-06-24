@@ -957,9 +957,7 @@ router.get("/order/generate", function(){
         });
     });
 
-<<<<<<< HEAD
 });
-=======
 /*-------------------------------->Đơn Hàng<-------------------------------------------*/
 /* generate đơn hàng -okey-*/
 router.get("/order/generate", function(req,res){
@@ -1528,7 +1526,6 @@ router.post('/statistic/process', function(req, res, next){
 
 });
 
->>>>>>> c401c7a1afcb0c9b7dfb940934548899c3a4b5de
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
 function initPage(page,docs) {
     page =(page-1)*12;
