@@ -11,7 +11,6 @@ var jwt = require('jsonwebtoken');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
-
 /*-----------------------------------Xác thực tài khoản----------------------------*/
 /*router.use(function(req, res, next) {
     // check header or url parameters or post parameters for token
@@ -915,7 +914,52 @@ router.get('/user/search/:input/page/:number',isAdmin,function (req,res,next) {
             })
         }});
 });
+/*--------------------------->Đơn Hàng, Thống Kê<-------------------------------------------*/
 
+router.get("/order/generate", function(){
+    var randomproducts = [];
+    var prices = [];
+    var randomproductnumber = parseInt(Math.random() * 9) + 1; //ngẫu nhiên 1 giá trị từ 1->10
+   
+    Product.findRandom({}, {}, {limit: randomproductnumber},function (err, result){
+        
+        for (var i = 0; i < result.length; i++) {
+            var whatID = result[i]._id;
+            var whatPrice = result[i].gia;
+            randomproducts.push(whatID);
+            prices.push(whatPrice);
+        }
+
+
+        var neworder = new Order({
+            tenkhachhang: "Lê Trí Khoa",
+            sodienthoai: '0123456789',
+            diachinhanhang: "227, Nguyễn Văn Cừ",
+            thanhtoan: "COD",
+            trangthai: "Chưa Xử Lý",
+            sanpham: randomproducts,
+            gia: prices,
+            ngaygio: Date(),
+            ghichu: "đơn hàng phát sinh tự động"
+        });
+
+        console.log(neworder);
+
+        neworder.save(function(err){
+            if (err)
+            {
+                console.log(err);
+            }
+            else
+            {
+                console.log("saved");
+            }
+        });
+    });
+
+<<<<<<< HEAD
+});
+=======
 /*-------------------------------->Đơn Hàng<-------------------------------------------*/
 /* generate đơn hàng -okey-*/
 router.get("/order/generate", function(req,res){
@@ -1484,6 +1528,7 @@ router.post('/statistic/process', function(req, res, next){
 
 });
 
+>>>>>>> c401c7a1afcb0c9b7dfb940934548899c3a4b5de
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
 function initPage(page,docs) {
     page =(page-1)*12;
