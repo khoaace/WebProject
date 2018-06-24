@@ -1,0 +1,109 @@
+<div class="dropdown">
+    <button class="btn3d btn btn-primary btn-lg" type="button" data-toggle="dropdown">Phân loại đơn theo tình trạng
+        <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+        <li><a href="/dashboard/order/state/waiting">▶ Chưa Xử Lý</a></li>
+        <li><a href="/dashboard/order/state/delivering">▶ Đang Giao</a></li>
+        <li><a href="/dashboard/order/state/delivered">▶ Giao Hàng Thành Công</a></li>
+        <li><a href="/dashboard/order/state/canceled">▶ Đã Hủy</a></li>
+        <li class="divider"></li>
+        <li><a href="/dashboard/order">▶ Toàn bộ đơn hàng</a></li>
+    </ul>
+</div>
+
+<div class="panel panel-primary">
+<table class="table">
+    <thead>
+        {{#if state}}
+        <tr>
+            <th><a href="/dashboard/order/state/{{state}}/by/trangthai/page/1">Tình trạng</a></th>
+            <th><a href="/dashboard/order/state/{{state}}/by/_id/page/1">Mã đơn hàng</a></th>
+            <th><a href="/dashboard/order/state/{{state}}/by/sp/page/1">SP</a></th>
+            <th><a href="/dashboard/order/state/{{state}}/by/ngaygio/page/1">Thời gian</a></th>
+            <th><a href="/dashboard/order/state/{{state}}/by/tongtien/page/1">Tổng tiền</a></th>
+        </tr>
+        {{else}}
+        <tr>
+            <th><a href="/dashboard/order/by/trangthai/page/1">Tình trạng</a></th>
+            <th><a href="/dashboard/order/by/_id/page/1">Mã đơn hàng</a></th>
+            <th><a href="/dashboard/order/by/sp/page/1">SP</a></th>
+            <th><a href="/dashboard/order/by/ngaygio/page/1">Thời gian</a></th>
+            <th><a href="/dashboard/order/by/tongtien/page/1">Tổng tiền</a></th>
+        </tr>
+        {{/if}}
+    </thead>
+    <tbody>
+        {{#if order}}
+            {{# each order}}
+                {{# each this}}
+                    <tr class={{this.trangthai_color}} id="{{this._id}}_row"> <!-- recal -->
+                        <th href="#">
+                            <div class="dropdown">
+                                <button class="btn btn-{{this.trangthai_color}} btn-block" style="max-width:200px" type="button" data-toggle="dropdown" style="margin: 0" id="{{this._id}}_btn">{{this.trangthai}}
+                                </button>
+                                <ul class="dropdown-menu" style="padding: 0">
+                                    <li><a href="#" class="order_changestate" id="{{this._id}}" name="Chưa Xử Lý" style="background-color: #f0ad4e; color: white">Chưa Xử Lý</a></li>
+                                    <li><a href="#" class="order_changestate" id="{{this._id}}" name="Đang Giao" style="background-color: #5bc0de; color: white">Đang Giao </a></li>
+                                    <li><a href="#" class="order_changestate" id="{{this._id}}" name="Thành Công" style="background-color: #5cb85c; color: white">Thành Công</a></li>
+                                    <li><a href="#" class="order_changestate" id="{{this._id}}" name="Hủy" style="background-color: #d9534f; color: white">Đã Hủy    </a></li>
+                                </ul>
+                            </div>
+                        </th>
+                        <th><a data-toggle="modal" data-target="#order_detailmodal" id="{{this._id}}"><strong>#{{this._id}}</strong></a></th>
+                        <th>{{this.soluongsp}}</th> <!-- recal -->
+                        <th>{{this.ngaygio}}</th> 
+                        <th>{{this.tongtien}}</th> <!-- recal -->
+                    </tr>
+                {{/each}}
+            {{/each}}
+        {{else}}
+            <tr class="warning"><th><a href="/dashboard/order/generate">Không có đơn hàng, phát sinh ngẫu nhiên tự động</a></th><th></th><th></th><th></th><th></th></tr>
+         {{/if}}
+    </tbody>
+  </table>
+<div class="panel-footer">
+        <div class="row">
+            <div class="col-md-6">
+                <h6>
+                     <span class="label label-info">{{orders_count}}</span></h6>
+            </div>
+            <div class="col-md-6">
+                <ul class="pagination pagination-sm pull-right">
+                    {{#each pages}}
+                        <li class="{{this.[2]}}"><a href="{{this.[1]}}/page/{{this.[0]}}">{{this.[0]}}</a></li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- dialog chi tiết đơn hàng -->
+<div id="order_detailmodal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div id="order_modal_header" class="modal-header" style="background-color: #2072be">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <!-- modal-title -->
+                    <h4 id="order_modal_title" class="modal-title" style="color:white">Chi Tiết Đơn Hàng</h4>
+                </div>
+                    <!-- modal-title -->
+                <div id="order_modal_body" class="modal-body clearfix">
+                    <div class="order_modal_body_loadedcontent"></div>
+                    
+                    <div id="order_modal_body_loading"></div>   
+
+
+                    <!-- #modalalert -->
+                    
+                </div>
+                    <!-- modal-footer -->
+                <div id="order_modal_footer" class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+

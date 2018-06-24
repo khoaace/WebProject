@@ -416,3 +416,151 @@ $(document).ready(function(){
         $("#modalbox").modal('show');
     });
 });
+
+//================ order-list ====================
+$(document).ready(function(){
+    $(document).on('click','.order_changestate', function(event){
+        var myid = $(this).attr('id');
+        var mystate = $(this).attr('name');
+        var formData = {
+            'id'             : myid,
+            'toState'        : mystate
+        };
+        
+        // process the form
+        $.ajax({
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url         : '/dashboard/order/changestate', // the url where we want to POST
+            data        : formData, // our data object
+            //dataType    : 'json', // what type of data do we expect back from the server
+            encode      : true,
+
+            /*success : function( data, textStatus, jqXHR ) {
+                // Handle data transformation or DOM manipulation in here.
+            }*/
+        })
+        .done( function( data ) {
+            var newcolor;
+            switch(data) {
+                case "Chưa Xử Lý":
+                {
+                    newcolor = 'warning';
+                }
+                    break;
+                case "Đang Giao":
+                    newcolor = 'info';
+                    break;
+                case "Thành Công":
+                    newcolor = 'success';
+                    break;
+                case "Hủy":
+                    newcolor = 'danger';
+                    break;
+                default:
+                newcolor = "active";
+            }
+
+            var selector = '#' +  myid + '_row';
+            $(selector).attr("class",newcolor);
+
+            $('input[name="checkbox"]')
+
+            selector = '[id="' + myid + '_btn"]';
+            var btnclass = 'btn btn-' + newcolor + ' btn-block';
+            $(selector).each(function(){
+                $(this).attr("class",btnclass);
+                $(this).html(data);
+            });
+        })
+        .fail(function(data){
+            switch (data.status){
+                case 400: {
+                    $("#main_modal_body").html('<p id="modalalert">Xảy ra lỗi, hãy thử lại!</p>');
+                    $("#main_modal_footer").html('<button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>');
+                } break;
+                case 404: {
+                    $("#main_modal_body").html('<p id="modalalert">Không tìm thấy danh mục</p>');
+                    $("#main_modal_footer").html('<a onclick="location.reload()" class="btn btn-warning" role="button">Tải lại trang</a><button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>');
+                } break;
+                default:
+                {
+                    console.log('def');
+                    $("#main_modal_body").html('<p id="modalalert">Xảy ra lỗi, xin thử lại!</p>');
+                    $("#main_modal_footer").html('<button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>');
+                }
+            }
+            $("#main_modal_header").attr("style","background-color: red");
+            $("#modalbox").modal('show');
+        });
+    });
+
+    $(document).on('click',"a[data-target='#order_detailmodal']", function(event){
+        var myid = $(this).attr('id');
+
+        $("#order_detailmodal").modal('show');
+        $(".order_modal_body_loadedcontent").hide();
+        $("#order_modal_body_loading").show();
+        $("#order_modal_body_loading").html('<center><img id="loadingimg" src="/images/loading1.gif" alt="loading..."></center>');
+        //$("#order_modal_footer").html('<button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>');
+
+        formData =  {
+            'id'               : myid
+        };
+        $.ajax({
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url         : '/dashboard/order/query', // the url where we want to POST
+            data        : formData, // our data object
+        }).done(function(data){
+            console.log(data);
+            console.log(data.diachinhanhang);
+            console.log(data.gia);
+            console.log(data.gia[0]);
+
+            var fetchlink = '/dashboard/order/query/' + myid;
+
+            $(".order_modal_body_loadedcontent").load(fetchlink +  ' .order_modal_body_loadedcontent');
+
+            $(".order_modal_body_loadedcontent").show();
+            $("#order_modal_body_loading").hide();
+            
+            //reload page content
+            $(".category_table").load(window.location.pathname +  ' .category_table');
+            
+
+        }).fail(function(data){
+
+            $("#main_detailmodal").modal('show');
+            $("#main_modal_header").attr("style","background-color: red");
+            $("#main_modal_body").html('<p id="modalalert">Lỗi</p>');
+            //$("#order_modal_footer").html('<button role="button" class="btn btn-danger" data-dismiss="modal>Hủy</button>');
+
+        });
+
+    });
+});
+
+//==============================Trang thống kê==============
+$(document).ready(function(){
+    $(document).on('click','#stat_smbutton', function(event){
+        var fromdate = $('#datepicker1').val();
+        var todate = $('#datepicker2').val();
+        var bywhat = $("#selectbasic").val();
+        console.log(fromdate);
+        console.log(bywhat);
+        var formData = {
+            'fromdate'      : fromdate,
+            'todate'        : todate,
+            'bywhat'        : bywhat
+        };
+        $.ajax({
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url         : '/dashboard/statistic/process', // the url where we want to POST
+            data        : formData, // our data object
+        }).done(function(data){
+            console.log(data);
+        }).fail(function(data){
+
+        });
+        
+    });
+});

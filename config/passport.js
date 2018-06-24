@@ -41,6 +41,7 @@ module.exports = function (passport) {
                         newUser.gender = req.body.gender;
                         newUser.fullname = req.body.fullname;
                         newUser.birthDay = req.body.birthday;
+                        newUser.active = false;
                         // lưu user
                         newUser.save(function (err) {
                             if (err)
@@ -49,10 +50,11 @@ module.exports = function (passport) {
                                 admin: newUser.admin,
                                 mod: newUser.mod
                             };
+
                             var token = jwt.sign(payload,'verysecret', {
                                 expiresIn: 900 // token tồn tại trong 15 phút
                             });
-
+                         /*   Tạo token active tài khoản*/
                             // return the information including token as JSON
                             req.session.token = token;
                             req.session.user = newUser;

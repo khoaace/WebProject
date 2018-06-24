@@ -18,6 +18,10 @@
         <div class="col-md-3">
             <ul class="nav nav-pills nav-stacked admin-menu" >
                 <li class="active"><a href="" data-target-id="profile"><i class="glyphicon glyphicon-user"></i>Thông tin</a></li>
+                {{#if user.active}}
+                    {{else}}
+                    <li><a href="" data-target-id="activeAccount"><i class="glyphicon glyphicon-level-up"></i> Kích hoạt tài khoản</a></li>
+                {{/if}}
                 <li><a href="" data-target-id="change-password"><i class="glyphicon glyphicon-lock"></i> Đổi mật khẩu</a></li>
                 <li><a href="" data-target-id="settings"><i class="glyphicon glyphicon-cog"></i> Chỉnh sửa thông tin</a></li>
                 {{#if user.mod}}
@@ -108,7 +112,7 @@
 
                 </div>
                 <div class="panel-body">
-                    {{#if user.mod}}
+                    {{#if user.active}}
                         <div class="label label-success">Rồi</div>
                     {{else}}
                         <div class="label label-warning">Chưa</div>
@@ -262,14 +266,29 @@
         </div>
 
         <div class="col-md-9  admin-content" id="dashboard">
+        <div class="panel panel-info" style="margin: 1em;">
+            <div class="panel-heading">
+                <h3 class="panel-title">Xác nhận</h3>
+            </div>
+            <div class="panel-body">
+                Bạn muốn truy cập trang dành cho quản trị viên ?  
+                <a href="/dashboard" class="label label-danger"> <span >  Có  </span></a>
+                <a href="/profile" class="label label-success"> <span >  Không   </span></a>
+            </div>
+            <form id="logout-form" action="#" method="POST" style="display: none;">
+            </form>
+
+
+        </div>
+    </div>
+        <div class="col-md-9  admin-content" id="activeAccount">
             <div class="panel panel-info" style="margin: 1em;">
                 <div class="panel-heading">
                     <h3 class="panel-title">Xác nhận</h3>
                 </div>
                 <div class="panel-body">
-                    Bạn muốn truy cập trang dành cho quản trị viên ?  
-                    <a href="/dashboard" class="label label-danger"> <span >  Có  </span></a>
-                    <a href="/profile" class="label label-success"> <span >  Không   </span></a>
+                    Hệ thống sẽ gửi mail kích hoạt vào hòm thư của bạn. Khi kích hoạt thành công bạn có thể sử dụng chức năng quên mật khẩu và mua hàng tại shop.  
+                    <a href="/active/{{user._id}}" class="label label-danger"> <span >  Kích hoạt  </span></a>
                 </div>
                 <form id="logout-form" action="#" method="POST" style="display: none;">
                 </form>
@@ -277,6 +296,9 @@
 
             </div>
         </div>
+
+
+
     </div>
 </div>
 <!--//login--><br><br>

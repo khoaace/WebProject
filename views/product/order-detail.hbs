@@ -1,0 +1,93 @@
+<div class="order_modal_body_loadedcontent">
+
+<div>
+    <label class="col-md-4 control-label" for="orderdetail_id_textinput">Mã đơn hàng</label>
+    <div class="col-md-8">
+        <input id="orderdetail_id_textinput" name="id" type="text" value="{{id}}" class="form-control input-md" disabled>
+    </div>
+</div>
+
+<div>
+    <label class="col-md-4 control-label" for="orderdetail_name_textinput">Họ tên khách hàng</label>
+    <div class="col-md-8">
+        <input id="orderdetail_name_textinput" name="ten" type="text" value="{{tenkhachhang}}" class="form-control input-md">
+    </div>
+</div>
+
+<div>
+    <label class="col-md-4 control-label" for="orderdetail_add_textinput">Địa chỉ giao</label>
+    <div class="col-md-8">
+        <input id="orderdetail_add_textinput" name="diachi" type="text" value="{{diachi}}" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập tên nhãn hiệu')" oninput="setCustomValidity('')">
+    </div>
+</div>
+
+<div>
+    <label class="col-md-4 control-label" for="orderdetail_phone_textinput">Số điện thoại</label>
+    <div class="col-md-8">
+        <input id="orderdetail_phone_textinput" name="sodienthoai" type="text" value="{{sodienthoai}}" class="form-control input-md">
+    </div>
+</div>
+
+<div>
+    <label class="col-md-4 control-label" for="orderdetail_time_textinput">Thời gian nhận đơn</label>
+    <div class="col-md-8">
+        <input id="orderdetail_time_textinput" name="thoigian" type="text" value="{{ngaynhandon}}" class="form-control input-md">
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-md-4 control-label" for="orderdetail_note_textinput">Ghi chú</label>
+    <div class="col-md-8">
+        <textarea class="form-control" id="orderdetail_note_textinput" value="{{ghichu}}" name="note">{{ghichu}}</textarea>
+    </div>
+</div>
+
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Tên Sản Phẩm</th>
+        <th>Số Lượng</th>
+        <th>Đơn Giá</th>
+        <th>Thành Tiền</th>
+        <th> </th>
+      </tr>
+    </thead>
+    <tbody>
+        {{#if sanpham}}
+            {{#each sanpham}}
+                    <tr id="{{this._id}}_productrow"> <!-- recal -->
+                        <th class="order_detail_namecell" id="{{this._id}}">{{this.ten}}</th>
+                        <th class="order_detail_valcell">{{#with (lookup ../soluong @index)}}
+                                {{.}}
+                            {{/with}}</th>
+                        <th class="order_detail_giacell">{{#with (lookup ../gia @index)}}
+                                {{.}}
+                            {{/with}}
+                        </th> <!-- recal -->
+                        <th>{{#with (lookup ../thanhtien @index)}}
+                                {{.}}
+                            {{/with}}</th> 
+                        <th>4</th> <!-- recal -->
+                    </tr>
+            {{/each}}
+        {{else}}
+            <tr class="warning"><th><a>Không có sản phẩm</a></th><th></th><th></th><th></th><th></th></tr>
+        {{/if}}
+    </tbody>
+</table>
+
+<div>
+    <div class="dropdown">
+        <button class="btn btn-{{trangthai_color}} btn-block" style="max-width:200px" type="button" data-toggle="dropdown" style="margin: 0" id="{{id}}_btn">{{this.trangthai}}
+        </button>
+        <ul class="dropdown-menu" style="padding: 0">
+            <li><a href="#" class="order_changestate" id="{{id}}" name="Chưa Xử Lý" style="background-color: #f0ad4e; color: white">Chưa Xử Lý</a></li>
+            <li><a href="#" class="order_changestate" id="{{id}}" name="Đang Giao" style="background-color: #5bc0de; color: white">Đang Giao </a></li>
+            <li><a href="#" class="order_changestate" id="{{id}}" name="Thành Công" style="background-color: #5cb85c; color: white">Thành Công</a></li>
+            <li><a href="#" class="order_changestate" id="{{id}}" name="Hủy" style="background-color: #d9534f; color: white">Đã Hủy    </a></li>
+        </ul>
+    </div>
+    <div class="pull-right"><h3>Tổng cộng: {{tongcong}}</h3></div>
+</div>
+
+</div>

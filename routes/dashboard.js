@@ -40,7 +40,6 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
         req.flash('info','Chưa thực hiện đăng nhập.');
         res.redirect('/error');
     }
-
 });*/
 
 router.get("/",function (req,res,next) {
@@ -173,7 +172,7 @@ router.get('/product/edit/:id',function (req,res) {
     var id = req.params.id;
 
     Product.findOne({_id:id},function (err,product) {
-        res.render('product/product-edit',{title:'Dashboard-'+product.ten,product:product,layout:'dashboard_layout',message: req.flash('info')});
+        res.render('product/product-edit',{title:'Dashboard-'+product.ten,product:product,layout:'dashboard_layout',message: req.flash('info'),user:req.user});
     });
 });
 router.get('/product/edit/:id/success',function (req,res,next) {
@@ -212,7 +211,7 @@ router.get('/product/add', function(req, res, next) {
             res.redirect('/dashboard/category');
         }
         else{
-            res.render('product/product-add',{title:'Dashboard-Thêm sản phẩm mới',loai:loai,message: req.flash('info'),layout:'dashboard_layout'});
+            res.render('product/product-add',{title:'Dashboard-Thêm sản phẩm mới',loai:loai,message: req.flash('info'),layout:'dashboard_layout',user:req.user});
         }
     });
 });
@@ -421,7 +420,7 @@ router.get('/category',function (req,res,next) {
             pages: arrPage,
             loai_count: size,
             layout: 'dashboard_layout',
-            message: req.flash('info')
+            message: req.flash('info'),user:req.user
         });
     });
 });
@@ -637,7 +636,8 @@ router.get('/product/generate',function (req,res,next) {
             loai: loai,
             title:'Dashboard - Phát sinh sản phẩm',
             layout: 'dashboard_layout',
-            message: req.flash('info')
+            message: req.flash('info'),
+            user:req.user
         })
     });
 });
@@ -957,7 +957,498 @@ router.get("/order/generate", function(){
         });
     });
 
+<<<<<<< HEAD
 });
+=======
+/*-------------------------------->Đơn Hàng<-------------------------------------------*/
+/* generate đơn hàng -okey-*/
+router.get("/order/generate", function(req,res){
+    for(var loop = 0; loop < 20; loop++)
+    {
+        var randomproducts = [];
+        var randomval = []
+        var prices = [];
+        var randomproductnumber = parseInt(Math.random() * 3) + 1; //ngẫu nhiên 1 giá trị từ 1->10
+    
+        Product.findRandom({}, {}, {limit: randomproductnumber},function (err, result){
+            
+            for (var i = 0; i < result.length; i++) {
+                var whatID = result[i]._id;
+                var whatPrice = result[i].gia;
+                randomproducts.push(whatID);
+                prices.push(whatPrice);
+                randomval.push(parseInt(Math.random() * 2) + 1);
+            }
+
+
+            var neworder = new Order({
+                tenkhachhang: "Lê Trí Khoa",
+                sodienthoai: '0123456789',
+                diachinhanhang: "227, Nguyễn Văn Cừ",
+                thanhtoan: "COD",
+                trangthai: "Chưa Xử Lý",
+                sanpham: randomproducts,
+                soluong: randomval,
+                gia: prices,
+                ngaygio: Date(),
+                ghichu: "đơn hàng phát sinh tự động"
+            });
+
+            neworder.save(function(err){
+                if (err)
+                {
+                    console.log(err);
+                }
+                else
+                {
+                    console.log("saved");
+                }
+            });
+        });
+    }
+    res.redirect('/dashboard/order/');
+    return;
+});
+
+/*okey*/
+router.get("/order",function (req,res,next) {
+    var link = '/dashboard/order/by/ngaygio' + '/page/1';
+    res.redirect(link);
+    return;
+});
+
+/*okey*/
+router.get('/order/by/:sortby/page/:number',function (req,res,next) {
+        var page = req.params.number;
+        var sortby = String(req.params.sortby);
+
+        var curentPage = '/dashboard/order/by/' + sortby;
+        Order.find({}).sort([[sortby, -1]]).exec(function (err, orders) {
+            if(err)
+            {
+                return;
+            }
+            var orderspara = [];
+            var donhangchuaxuly = 0;
+            
+            for (i = 0; i < orders.length; i++)
+            {
+                var thisOrder = orders[i];
+
+                var linecolor = "";
+                var sumBill = 0;
+                var dateformat;
+
+                switch(thisOrder.trangthai) {
+                    case "Chưa Xử Lý":
+                    {
+                        linecolor = "warning";
+                        donhangchuaxuly++;
+                    }
+                        break;
+                    case "Đang Giao":
+                    linecolor = "info";
+                        break;
+                    case "Thành Công":
+                    linecolor = "success";
+                        break;
+                    case "Hủy":
+                        linecolor = "danger";
+                        break;
+                    default:
+                    linecolor = "active";
+                }
+                
+                for (var j = 0; j < thisOrder.sanpham.length; j++)
+                {
+                    sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
+                }
+
+                dateformat = thisOrder.ngaygio.toLocaleString();
+                
+                var orderspara_element = {
+                    trangthai_color: linecolor,
+                    trangthai: thisOrder.trangthai,
+                    _id : thisOrder['_id'],
+                    soluongsp : thisOrder.sanpham.length,
+                    ngaygio : dateformat,
+                    tongtien : sumBill
+                }
+                
+                orderspara.push(orderspara_element);
+                if (sortby == 'tongtien')
+                {
+                    orderspara.sort((a, b) => Number(a.tongtien) - Number(b.tongtien));
+                }
+                if (sortby == 'sp')
+                {
+                    orderspara.sort((a, b) => Number(a.soluongsp) - Number(b.soluongsp));
+                }
+            }
+
+            var ordersChuck = initPage(page, orderspara);
+            var arrPage = createArrPage(orderspara, curentPage,page);
+
+            res.render('product/order-list', {
+                title: 'Dashboard-Quản lý đơn hàng',
+                order: ordersChuck,
+                pages: arrPage,
+                orders_count: donhangchuaxuly,
+                layout: 'dashboard_layout'
+            });
+        });
+});
+
+/*--------------------------------------------theo trạng thái-----------------------------------------*/
+/*okey*/
+router.get("/order/state/:state",function (req,res,next) {
+    var link = '/dashboard/order/state/' + req.params.state + '/by/trangthai/page/1';
+    res.redirect(link);
+    return;
+});
+
+/*okey*/
+router.get("/order/state/:state/by/:sortby/page/:number", function (req, res, next) {
+    var state = req.params.state;
+    var sortby = String(req.params.sortby);
+    var number = req.params.number;
+    var query = "";
+
+    switch (state)
+    {
+        case 'waiting': {
+            query = "Chưa Xử Lý"
+        }
+        break;
+        case 'delivering': {
+            query = "Đang Giao"
+        }
+        break;
+        case 'delivered': {
+            query = "Thành Công"
+        }
+        break;
+        case 'canceled': {
+            query = "Hủy"
+        }
+        break;
+        default: break;
+    }
+    
+    var curentPage = '/dashboard/order/state/' + state + '/by/' + sortby;
+    Order.find({trangthai: query}).sort([[sortby, -1]]).exec(function (err, orders) {
+        if(err)
+        {
+            return;
+        }
+        var orderspara = [];
+        var donhangchuaxuly = 0;
+        
+        for (i = 0; i < orders.length; i++)
+        {
+            var thisOrder = orders[i];
+
+            var linecolor = "";
+            var sumBill = 0;
+            var dateformat;
+
+            switch(thisOrder.trangthai) {
+                case "Chưa Xử Lý":
+                {
+                    linecolor = "warning";
+                    donhangchuaxuly++;
+                }
+                    break;
+                case "Đang Giao":
+                linecolor = "info";
+                    break;
+                case "Thành Công":
+                linecolor = "success";
+                    break;
+                case "Hủy":
+                    linecolor = "danger";
+                    break;
+                default:
+                linecolor = "active";
+            }
+            
+            for (var j = 0; j < thisOrder.sanpham.length; j++)
+            {
+                sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
+            }
+
+            dateformat = thisOrder.ngaygio.toLocaleString();
+            
+            var orderspara_element = {
+                trangthai_color: linecolor,
+                trangthai: thisOrder.trangthai,
+                _id : thisOrder['_id'],
+                soluongsp : thisOrder.sanpham.length,
+                ngaygio : dateformat,
+                tongtien : sumBill
+            }
+            
+            orderspara.push(orderspara_element);
+            if (sortby == 'tongtien')
+            {
+                orderspara.sort((a, b) => Number(a.tongtien) - Number(b.tongtien));
+            }
+            if (sortby == 'sp')
+            {
+                orderspara.sort((a, b) => Number(a.soluongsp) - Number(b.soluongsp));
+            }
+        }
+
+        var ordersChuck = initPage(number, orderspara);
+        var arrPage = createArrPage(orderspara, curentPage,number);
+
+
+        res.render('product/order-list', {
+            title: 'Dashboard-Quản lý đơn hàng',
+            order: ordersChuck,
+            pages: arrPage,
+            orders_count: donhangchuaxuly,
+            layout: 'dashboard_layout',
+            state: state
+        });
+    });
+});
+
+/*okey*/
+router.post('/order/changestate', function(req, res, next){
+    var orderId = req.body.id;
+    var toState = req.body.toState;
+    console.log(toState);
+    if (toState === undefined)
+    {
+        console.log("state swrong");
+        res.status(400).send(toState + ' is not an enum');
+        return;
+    }
+    else{
+        
+        Order.findOne({_id: orderId }, function (err, doc){
+            
+            if (err || doc == null)
+            {
+                res.status(404).send('order not founded');
+                return;
+            }
+            else
+            {
+                console.log(doc);
+                doc.trangthai = toState;
+                doc.save(function(err){
+                    if (err)
+                    {
+                        res.status(409).send(toState + ' is not an enum');
+                    }
+                    else
+                    {
+                        res.send(toState);
+                    }
+                });
+            }
+          });
+    }    
+});
+/* ----------------------- ------------------ */
+/* query đơn hàng*/
+router.post('/order/query', function(req, res, next){
+        var orderId = req.body.id;
+        Order.findOne({_id: orderId }, function (err, doc){
+            if (err)
+            {
+                res.status(404).send('order not founded');
+                return;
+            }
+            else
+            {
+                res.send(doc);
+            }
+          });
+});
+
+router.get('/order/query/:id', function(req, res, next){
+    var orderId = req.params.id;
+    console.log(orderId);
+    Order.findOne({_id: orderId }, function (err, doc){
+        if (err)
+        {
+            res.status(404).send('order not founded');
+            return;
+        }
+        else if (doc != null)
+        {
+            var products = [];
+            var thanhtien1mathang = [];
+            var tongcong = 0;
+            var linecolor;
+
+            switch(doc.trangthai) {
+                case "Chưa Xử Lý":
+                {
+                    linecolor = "warning";
+                }
+                    break;
+                case "Đang Giao":
+                linecolor = "info";
+                    break;
+                case "Thành Công":
+                linecolor = "success";
+                    break;
+                case "Hủy":
+                    linecolor = "danger";
+                    break;
+                default:
+                linecolor = "active";
+            }
+            
+            console.log(doc.sanpham.length);
+            for (var i = 0; i < doc.sanpham.length; i++)
+            {
+                var whatid = doc.sanpham[i];
+                Product.findOne({_id: whatid}, function(err,doc2){
+                    if(err || doc2 == null)
+                    {
+                    }
+                    else
+                    {
+                        products.push(doc2);
+                    }
+                });
+                var thanhtien = doc.gia[i] * doc.soluong[i];
+                thanhtien1mathang.push(thanhtien);
+                tongcong += thanhtien;
+            }
+            
+            console.log(products);
+            var dateformat = doc.ngaygio.toLocaleString();
+            res.render('product/order-detail', {
+                tenkhachhang: doc.tenkhachhang,
+                sodienthoai: doc.sodienthoai,
+                id: doc._id,
+                diachi: doc.diachinhanhang,
+                ngaynhandon: dateformat,
+                ghichu: doc.ghichu,
+                sanpham: products,
+                soluong: doc.soluong,
+                gia: doc.gia,
+                thanhtien: thanhtien1mathang,
+                trangthai_color: linecolor,
+                trangthai: doc.trangthai,
+
+                tongcong: tongcong
+            });
+
+        }
+      });
+});
+/*--------------------------------->Thống Kê<------------------------------------------*/
+router.get('/statistic', function(req, res, next){
+    res.render('product/stat',{layout:'dashboard_layout'});
+});
+
+router.post('/statistic/process', function(req, res, next){
+    var startDate = new Date(req.body.fromdate);
+    var endDate = new Date(req.body.todate);
+
+    if(isNaN(startDate.getTime()) || isNaN(endDate.getTime()))
+    {
+        res.send('invalid time');
+    }
+
+    var bywhat  = req.body.bywhat;
+    console.log(bywhat);
+    console.log(req.body.fromdate);
+    console.log(req.body.todate);
+    console.log(startDate);
+    console.log(endDate);
+
+
+
+    endDate.setDate(endDate.getDate() + 1);
+
+    
+    var dateIndex = new Date(startDate);
+    console.log(1);
+    var result = [];
+
+    var query = {$and: [
+                {trangthai: 'Thành Công'},
+                {$and: [{ngaygio: {$gte: startDate}},{ngaygio: {$lte: endDate}}]}
+             ]
+             };
+             console.log(dateIndex);
+    Order.find(query, function(err, docs) {
+        console.log(2);
+        res.send(docs);
+    });
+        //         if (err) {
+        //             console.log(err);
+        //         }
+        //         else if (docs != null && docs != [])
+        //         {
+        //             //console.log(docs);
+        //             console.log(docs.length);
+    
+
+
+    //result = stepquery(result, dateIndex, endDate);
+    //console.log("sending");
+    //res.send(result);
+
+    // while (dateIndex < endDate)
+    // {
+    //     resultElementVal = 0;
+
+    //     var tomorow = new Date(dateIndex);
+    //     tomorow.setFullYear(dateIndex.getFullYear());
+    //     tomorow.setMonth(dateIndex.getMonth());
+    //     tomorow.setDate(dateIndex.getDate()+1);
+    //     var query = /*{$and: [
+    //         {trangthai: 'Thành Công'},
+    //         {$and: [{ngaygio: {$gte: dateIndex}},{ngaygio: {$lte: tomorow}}]}
+    //     ]
+    //     }*/{"ngaygio": {$lt: tomorow}};
+
+    //     Order.find(query, function(err, docs) {
+    //         if (err) {
+    //             console.log(err);
+    //         }
+    //         else if (docs != null && docs != [])
+    //         {
+    //             //console.log(docs);
+    //             console.log(docs.length);
+
+    //             for (var bill = 0; bill <docs.length; bill++)
+    //             {
+    //                 var sumBill = 0;
+    //                 var thisOrder = docs[bill];
+    //                 for (var j = 0; j < thisOrder.sanpham.length; j++)
+    //                 {
+    //                     sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
+    //                 }
+    //                 resultElementVal += sumBill;
+    //             }
+    //         }
+    //         console.log("today");
+    //         console.log(dateIndex);
+    //         console.log("romorow");
+    //         console.log(tomorow);
+    //         console.log(result);
+    //     });
+    //     var thisDate = dateIndex.toDateString();
+    //     var element = [thisDate, resultElementVal];
+
+    //     result.push(element);
+    //     dateIndex.setDate(dateIndex.getDate() + 1);
+    // }
+
+    //res.send(stepquery(result, dateIndex, endDate));
+});
+
+>>>>>>> c401c7a1afcb0c9b7dfb940934548899c3a4b5de
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
 function initPage(page,docs) {
     page =(page-1)*12;
@@ -1030,4 +1521,62 @@ function change_alias(alias) {
 function escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
+
+function stepquery(result, dateIndex, endDate)
+{
+    if (dateIndex >= endDate)
+    {
+        return result;
+    }
+    else {
+        var resultElementVal = 0;
+
+        var tomorow = new Date(dateIndex);
+        tomorow.setFullYear(dateIndex.getFullYear());
+        tomorow.setMonth(dateIndex.getMonth());
+        tomorow.setDate(dateIndex.getDate()+1);
+        var query = /*{$and: [
+            {trangthai: 'Thành Công'},
+            {$and: [{ngaygio: {$gte: dateIndex}},{ngaygio: {$lte: tomorow}}]}
+        ]
+        }*/{trangthai: 'Thành Công', ngaygio: {$lt: tomorow, $gte: dateIndex}};
+
+        Order.find(query, function(err, docs) {
+            if (err) {
+                console.log(err);
+            }
+            else 
+            {
+                //console.log(docs);
+                console.log(docs.length);
+
+                for (var bill = 0; bill <docs.length; bill++)
+                {
+                    var sumBill = 0;
+                    var thisOrder = docs[bill];
+                    for (var j = 0; j < thisOrder.sanpham.length; j++)
+                    {
+                        sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
+                    }
+                    resultElementVal += sumBill;
+                }
+            }
+            console.log("today");
+            console.log(dateIndex);
+            console.log("romorow");
+            console.log(tomorow);
+            console.log(result);
+
+            
+            var thisDate = dateIndex.toDateString();
+            var element = [thisDate, resultElementVal];
+
+            result.push(element);
+            console.log(result);
+            dateIndex.setDate(dateIndex.getDate() + 1);
+            return result;
+        });
+    }
+}
+
 module.exports = router;

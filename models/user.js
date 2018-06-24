@@ -11,7 +11,9 @@ var userSchema = new Schema({
         fullname: {type: String,require :true},
         gender: {type: String, enum: ['Nam', 'Nữ'],require :true},
         birthDay: {type: String,require :true},
-        createDate: {type: String,require :true}
+        createDate: {type: String,require :true},
+        active:{type: Boolean},
+        token:{type:String}
 });
 // Tạo mã hóa mật khẩu
 userSchema.methods.generateHash = function(password) {

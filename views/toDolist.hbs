@@ -1,0 +1,271 @@
+<!--banner-->
+<div class="banner-top">
+    <div class="container">
+        <h1>Bảng chức năng</h1>
+    </div>
+</div>
+<!--login-->
+<div class="container">
+    <div class="login">
+        {{#if message}}
+            <div class="alert alert-danger">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{message}}
+            </div>
+        {{/if}}
+
+        <form method="post">
+            <center>
+                <hr>
+                <h1>Phi chức năng</h1>
+            <div class="col-md-12 login-do">
+                <table class="table table-striped mytable" id="productTable">
+                    <tr>
+                        <th>Tên chức năng</th>
+                        <th>Đã làm</th>
+                    </tr>
+                    <tr>
+                        <td>Thiết kế CSDL</td>
+                        <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                    </tr>
+                    <tr>
+                        <td>Nội dung trong CSDL phong phú</td>
+                        <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                    </tr>
+                    <tr>
+                        <td>Thiết kế layout của Web</td>
+                        <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                    </tr>
+                    <tr>
+                        <td>Kiến trúc của website</td>
+                        <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                    </tr>
+                    <tr>
+                        <td>Báo cáo</td>
+                        <td> </td>
+                    </tr>
+                    <tr>
+                        <td>Phim hướng dẫn</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Quá trình thực hiện website được đăng lên Git</td>
+                        <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                    </tr>
+
+                </table>
+
+                <hr>
+
+                <h1>Chức năng khi chưa đăng nhập</h1>
+                <div class="col-md-12 login-do">
+                    <table class="table table-striped mytable" id="productTable">
+                        <tr>
+                            <th>Tên chức năng</th>
+                            <th>Đã làm</th>
+                        </tr>
+                        <tr>
+                            <td>Nội dung trang chủ</td>
+                            <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                        </tr>
+                        <tr>
+                            <td>Xem danh sách các sản phẩm theo từng loại sản phẩm/nhà sản xuất/phân loại</td>
+                            <td> <span class="glyphicon glyphicon-ok-circle"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Xem thông tin chi tiết sản phẩm</td>
+                            <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                        </tr>
+                        <tr>
+                            <td>Thêm bình luận bằng AJAX</td>
+                            <td> </td>
+                        </tr>
+                        <tr>
+                            <td>Phân trang bình luận bằng AJAX</td>
+                            <td> </td>
+                        </tr>
+                        <tr>
+                            <td>Tìm kiếm</td>
+                            <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                        </tr>
+                        <tr>
+                            <td>Tìm kiếm nâng cao</td>
+                            <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                        </tr>
+                        <tr>
+                            <td>Chọn sản phẩm vào giỏ hàng</td>
+                            <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                        </tr>
+                        <tr>
+                            <td>Quản lý giỏ hàng bằng AJAX</td>
+                            <td> </td>
+                        </tr>
+
+                    </table>
+
+                    <hr>
+
+
+                    <h1>Xác thực và phân quyền</h1>
+                    <div class="col-md-12 login-do">
+                        <table class="table table-striped mytable" id="productTable">
+                            <tr>
+                                <th>Tên chức năng</th>
+                                <th>Đã làm</th>
+                            </tr>
+                            <tr>
+                                <td>Sử dụng một thư viện chuyên về authentication</td>
+                                <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                            </tr>
+                            <tr>
+                                <td>Đăng ký tài khoản</td>
+                                <td><span class="glyphicon glyphicon-ok-circle"></span>  </td>
+                            </tr>
+                            <tr>
+                                <td>Kiểm tra các ràng buộc về tên đăng nhập, mật khẩu nhập lại, ...</td>
+                                <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                            </tr>
+                            <tr>
+                                <td>Kích hoạt tài khoản bằng email</td>
+                                <td> <span class="glyphicon glyphicon-ok-circle"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Đăng nhập hệ thống</td>
+                                <td> <span class="glyphicon glyphicon-ok-circle"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Ngăn cấm người chưa đăng nhập sử dụng các chức năng bắt buộc đăng nhập theo quyền hạn</td>
+                                <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                            </tr>
+                            <tr>
+                                <td>Quên mật khẩu và làm mới mật khẩu bằng email</td>
+                                <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                            </tr>
+
+                        </table>
+
+                        <hr>
+
+
+                        <h1>Chức năng khi đã đăng nhập</h1>
+                        <div class="col-md-12 login-do">
+                            <table class="table table-striped mytable" id="productTable">
+                                <tr>
+                                    <th>Tên chức năng</th>
+                                    <th>Đã làm</th>
+                                </tr>
+                                <tr>
+                                    <td>Cập nhật thông tin cá nhân của tài khoản</td>
+                                    <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                                </tr>
+                                <tr>
+                                    <td>Kiểm tra các ràng buộc</td>
+                                    <td><span class="glyphicon glyphicon-ok-circle"></span>  </td>
+                                </tr>
+                                <tr>
+                                    <td>Yêu cầu nhập lại mật khẩu cũ khi thay đổi mật khẩu</td>
+                                    <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                                </tr>
+                                <tr>
+                                    <td>Đặt hàng siêu thị và thanh toán</td>
+                                    <td> </td>
+                                </tr>
+                                <tr>
+                                    <td>Điền các thông tin về giao hàng</td>
+                                    <td> </td>
+                                </tr>
+                                <tr>
+                                    <td>Xem thông tin lịch sử quá trình và trạng thái mua hàng</td>
+                                    <td> </td>
+                                </tr>
+
+
+                            </table>
+
+                            <hr>
+
+
+                            <h1>Chức năng của quản trị viên</h1>
+                            <div class="col-md-12 login-do">
+                                <table class="table table-striped mytable" id="productTable">
+                                    <tr>
+                                        <th>Tên chức năng</th>
+                                        <th>Đã làm</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Quản lý các tài khoản của người dùng</td>
+                                        <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thay đổi thông tin cá nhân của người dùng</td>
+                                        <td><span class="glyphicon glyphicon-ok-circle"></span>  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cấp quyền cho tài khoản</td>
+                                        <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Quản lý hệ thống gian hàng</td>
+                                        <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Quản lý sản phẩm trên gian hàng</td>
+                                        <td><span class="glyphicon glyphicon-ok-circle"></span>  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kiểm tra các ràng buộc về sản phẩm</td>
+                                        <td><span class="glyphicon glyphicon-ok-circle"></span>  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cho phép đăng tải các hình đại diện của sản phẩm</td>
+                                        <td>  <span class="glyphicon glyphicon-ok-circle"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Quản lý đơn đặt hàng (đã giao, chưa giao, đang giao)</td>
+                                        <td> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thống kê doanh số bán hàng theo các ngày, tuần, tháng, năm, quý</td>
+                                        <td>  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thống kê số lượng bán top 10 của sản phẩm, của gian hàng</td>
+                                        <td>  </td>
+                                    </tr>
+
+
+                                </table>
+
+                                <hr>
+
+
+                                <h1>Các chức năng nâng cao</h1>
+                                <div class="col-md-12 login-do">
+                                    <table class="table table-striped mytable" id="productTable">
+                                        <tr>
+                                            <th>Tên chức năng</th>
+                                            <th>Đã làm</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Website đã được đăng và hoạt động tốt trên host thực tế</td>
+                                            <td><span class="glyphicon glyphicon-ok-circle"></span> </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Sử dụng Google Analytics</td>
+                                            <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Vẽ biểu đồ</td>
+                                            <td> </td>
+                                        </tr>
+
+                                    </table>
+
+            </div>
+            </center>
+        </form>
+    </div>
+    <br><br>
+</div>
+
+<!--//login-->

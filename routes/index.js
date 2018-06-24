@@ -4,15 +4,23 @@ var Product =  require('../models/product');
 var Loai = require('../models/loai');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
+var curpage=1;
+
+
 
 /*------------------Trang hiển thị toàn bộ sản phẩm--------------------------*/
 router.get('/', function(req, res, next) {
+    var page=1;
+    if(curpage != 1)
+    {
+        page=curpage;
+    }
     Loai.find(function (err,result) {
         Product.find(function (err,docs) {
-            var productChuck = initPage(1,docs);
-            var arrPage = createArrPage(docs,null,1);
+            var productChuck = initPage(page,docs);
+            var arrPage = createArrPage(docs,null,page);
+            curpage=1;
             res.render('index', { title: 'eShop',products:productChuck,pages:arrPage,loai:result,current_cate:'Toàn bộ sản phẩm',user:req.user,message:req.flash('info')});
         });
 
@@ -20,44 +28,30 @@ router.get('/', function(req, res, next) {
 
 });
 
-//Xử lý chuyển trang
-router.get('/page/:number',function (req,res,next) {
-    var page = req.params.number;
-    Loai.find(function (err,result) {
-        Product.find(function (err,docs) {
-            var allPage = countPage(docs);
-            if(page > allPage || page <1)
-            {
-                if(page>allPage)
-                    page=allPage;
-                if(page<1)
-                    page=1;
-                res.redirect('/page/'+page);
-            }
-            else {
-                var productChuck = initPage(page, docs);
-                var arrPage = createArrPage(docs, null, page);
-                res.render('index', {
-                    title: 'eShop',
-                    products: productChuck,
-                    pages: arrPage,
-                    loai: result,
-                    current_cate: 'Toàn bộ sản phẩm',
-                    user: req.user
-                });
-            }
-        });
-    });
+
+router.post('/index/page',function (req,res) {
+
+    curpage = parseInt(req.body.page);
+    if(curpage==1)
+        searching=1;
+    res.send('thanhcong');
 });
+
 
 /*--------------------Trang hiển thị sản phẩm theo loại---------------------------*/
 router.get("/category/loai/:id",function (req,res,next) {
+    var page=1;
+    if(curpage != 1)
+    {
+        page=curpage;
+    }
     var currentpage = '/category/loai/'+req.params.id;
     Loai.find(function (err,result) {
         Product.find({loai:req.params.id},function (err,docs) {
             Loai.findOne({_id:req.params.id},function (err,result1) {
-                var productChuck = initPage(1,docs);
-                var arrPage = createArrPage(docs,currentpage,1);
+                var productChuck = initPage(page,docs);
+                var arrPage = createArrPage(docs,currentpage,page);
+                curpage=1;
                 res.render('index', { title: 'eShop',products:productChuck,pages:arrPage,loai:result,current_cate:result1.ten,user:req.user});
             });
         });
@@ -65,117 +59,53 @@ router.get("/category/loai/:id",function (req,res,next) {
 });
 
 
-//Xử lý chuyển trang
-router.get("/category/loai/:id/page/:number",function (req,res,next) {
-    var currentpage = '/category/loai/'+req.params.id;
-    var page = req.params.number;
-    Loai.find(function (err,result) {
-        Product.find({loai:req.params.id},function (err,docs) {
-            Loai.findOne({_id:req.params.id},function (err,result1) {
-                var allPage = countPage(docs);
-                if(page > allPage || page <1)
-                {
-                    if(page>allPage)
-                        page=allPage;
-                    if(page<1)
-                        page=1;
-                    res.redirect(currentpage+'/page/'+page);
-                }
-                else
-                {
-                    var productChuck = initPage(page,docs);
-                    var arrPage = createArrPage(docs,currentpage,page);
-                    res.render('index', { title: 'eShop',products:productChuck,pages:arrPage,loai:result,current_cate:result1.ten,user:req.user});
-                }
-            });
-        });
-    });
-});
 
 /*--------------------------------Trang sản phẩm hiển thị theo giá tiền tăng giảm---------------------------*/
 router.get("/category/sort/inc",function (req,res,next) {
+    var page=1;
+    if(curpage != 1)
+    {
+        page=curpage;
+    }
     var currentpage = '/category/sort/inc';
     Loai.find(function (err,result) {
         Product.find().sort({gia:1}).exec(function (err,docs) {
-            var productChuck = initPage(1,docs);
-            var arrPage = createArrPage(docs,currentpage,1);
+            var productChuck = initPage(page,docs);
+            var arrPage = createArrPage(docs,currentpage,page);
+            curpage=1;
             res.render('index', { title: 'eShop',products:productChuck,pages:arrPage,loai:result,current_cate:'Giá tiền tăng dần',user:req.user});
         });
     });
 });
 
 router.get("/category/sort/dec",function (req,res,next) {
+    var page=1;
+    if(curpage != 1)
+    {
+        page=curpage;
+    }
     var currentpage = '/category/sort/dec';
     Loai.find(function (err,result) {
         Product.find().sort({gia:-1}).exec(function (err,docs) {
-            var productChuck = initPage(1,docs);
-            var arrPage = createArrPage(docs,currentpage,1);
+            var productChuck = initPage(page,docs);
+            var arrPage = createArrPage(docs,currentpage,page);
+            curpage=1;
             res.render('index', { title: 'eShop',products:productChuck,pages:arrPage,loai:result,current_cate:'Giá tiền giảm dần',user:req.user});
         });
     });
 });
 
-// xử lý chuyển trang
-router.get("/category/sort/inc/page/:number",function (req,res,next) {
-    var currentpage = '/category/sort/dec';
-    var page = req.params.number;
-    Loai.find(function (err,result) {
-        Product.find().sort({gia:1}).exec(function (err,docs) {
-            var allPage = countPage(docs);
-            if (page > allPage || page < 1) {
-                if (page > allPage)
-                    page = allPage;
-                if (page < 1)
-                    page = 1;
-                res.redirect(currentpage + '/page/' + page);
-            }
-            else {
-                var productChuck = initPage(page, docs);
-                var arrPage = createArrPage(docs, currentpage, page);
-                res.render('index', {
-                    title: 'eShop',
-                    products: productChuck,
-                    pages: arrPage,
-                    loai: result,
-                    current_cate: 'Toàn bộ sản phẩm',
-                    user: req.user
-                });
-            } });
-    });
-});
-router.get("/category/sort/dec/page/:number",function (req,res,next) {
-    var currentpage = '/category/sort/dec';
-    var page = req.params.number;
-    Loai.find(function (err,result) {
-        Product.find().sort({gia:-1}).exec(function (err,docs) {
-            var allPage = countPage(docs);
-            if(page > allPage || page <1)
-            {
-                if(page>allPage)
-                    page=allPage;
-                if(page<1)
-                    page=1;
-                res.redirect(currentpage+'/page/'+page);
-            }
-            else {
-                var productChuck = initPage(page, docs);
-                var arrPage = createArrPage(docs, currentpage, page);
-                res.render('index', {
-                    title: 'eShop',
-                    products: productChuck,
-                    pages: arrPage,
-                    loai: result,
-                    current_cate: 'Toàn bộ sản phẩm',
-                    user: req.user
-                });
-            } });
-    });
-});
-
 /*------------------------------Tìm kiếm sản phẩm---------------------------------*/
+
+
 router.get("/search",function (req,res) {
-    var input = change_alias(req.query.search);
-    var id = req.query.advance;
+    var page=1;
+    if(curpage != 1)
+    {
+        page=curpage;
+    }
+    input = change_alias(req.query.search);
+    id = req.query.advance;
     var currentpage = '/search/'+input;
         Loai.find(function (err,result1) {
             const regex = new RegExp(escapeRegex(input), 'gi');
@@ -194,8 +124,10 @@ router.get("/search",function (req,res) {
                             }
                         }
                     }
-                    var productChuck = initPage(1,result);
-                    var arrPage = createArrPage(result,currentpage,1);
+                    var productChuck = initPage(page,result);
+                    var arrPage = createArrPage(result,currentpage,page);
+                    curpage=1;
+                    console.log(arrPage);
                     res.render('index', { title: 'eShop',products:productChuck,pages:arrPage,loai:result1,current_cate:'Tất cả kết quả về '+req.query.search,user:req.user,message:req.flash('info')});
                 }
             });
@@ -205,52 +137,32 @@ router.get("/search",function (req,res) {
 
 
 });
-router.get("/search/:input/page/:number",function (req,res,next) {
-    var input = req.params.input;
-    var page = req.params.number;
-    var currentpage = '/search/'+input;
-    Loai.find(function (err,result1) {
-        const regex = new RegExp(escapeRegex(input), 'gi');
-        Product.find({tenTimKiem: regex}, function(err, result){
-            if(err){
-                console.log(err);
-            } else {
-                var allPage = countPage(result);
-                if(page > allPage || page <1)
-                {
-                    if(page>allPage)
-                        page=allPage;
-                    if(page<1)
-                        page=1;
-                    res.redirect(currentpage+'/page/'+page);
-                }
-                else {
-                    var productChuck = initPage(page, result);
-                    var arrPage = createArrPage(result, currentpage, page);
-                    res.render('index', {
-                        title: 'eShop',
-                        products: productChuck,
-                        pages: arrPage,
-                        loai: result1,
-                        current_cate: 'Toàn bộ sản phẩm',
-                        user: req.user,
-                        message: req.flash('info')
-                    });
 
-                }}
-        });
-
-    });
-
-});
 
 router.get("/error",function (req,res,next) {
     Loai.find(function (err,result) {
         res.render('error', {message: req.flash('info'),user:req.user,loai:result});
     });
 });
+router.post("/error",function (req,res,next) {
+   var data="Success";
+   console.log(JSON.stringify.parse(req.body.input1)+' '+JSON.parse(req.body.input2));
+   res.send(data);
+});
 
 
+
+
+
+/*-----------------Test -----------------------*/
+
+
+
+router.get("/todolist",function (req,res,next) {
+    Loai.find(function (err,result) {
+        res.render('toDolist', {title:'eShop - Bảng chức năng',message: req.flash('info'),user:req.user,loai:result});
+    });
+});
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
 function initPage(page,docs) {
     page =(page-1)*12;
