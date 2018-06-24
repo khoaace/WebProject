@@ -54,7 +54,15 @@ app.use('/dashboard',dashBoard);
 HandlebarsIntl.registerWith(Handlebars);
 
 //connect to database
-mongodb.connect(configDB.database);
+mongodb.connect(configDB.database_local, function(err){
+    if (err)
+    {
+        console.log('[!] - Khong the ket noi toi DATABASE');
+    }
+    else{
+        console.log('[i] - Ket noi database thanh cong');
+    }
+});
 
 // catch 404 and forward to error handler
 
@@ -73,5 +81,5 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 // Print notify in console
-console.log('Ket noi database thanh cong');
+
 module.exports = app;

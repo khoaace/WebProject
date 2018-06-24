@@ -1,12 +1,14 @@
 var express = require('express');
 var router = express.Router();
+
 var Product =  require('../models/product');
 var Loai = require('../models/loai');
 var User  = require('../models/user');
+var Order = require('../models/donhang');
+
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
-
 
 
 /*-----------------------------------Xác thực tài khoản----------------------------*/
@@ -912,7 +914,50 @@ router.get('/user/search/:input/page/:number',isAdmin,function (req,res,next) {
             })
         }});
 });
+/*--------------------------->Đơn Hàng, Thống Kê<-------------------------------------------*/
 
+router.get("/order/generate", function(){
+    var randomproducts = [];
+    var prices = [];
+    var randomproductnumber = parseInt(Math.random() * 9) + 1; //ngẫu nhiên 1 giá trị từ 1->10
+   
+    Product.findRandom({}, {}, {limit: randomproductnumber},function (err, result){
+        
+        for (var i = 0; i < result.length; i++) {
+            var whatID = result[i]._id;
+            var whatPrice = result[i].gia;
+            randomproducts.push(whatID);
+            prices.push(whatPrice);
+        }
+
+
+        var neworder = new Order({
+            tenkhachhang: "Lê Trí Khoa",
+            sodienthoai: '0123456789',
+            diachinhanhang: "227, Nguyễn Văn Cừ",
+            thanhtoan: "COD",
+            trangthai: "Chưa Xử Lý",
+            sanpham: randomproducts,
+            gia: prices,
+            ngaygio: Date(),
+            ghichu: "đơn hàng phát sinh tự động"
+        });
+
+        console.log(neworder);
+
+        neworder.save(function(err){
+            if (err)
+            {
+                console.log(err);
+            }
+            else
+            {
+                console.log("saved");
+            }
+        });
+    });
+
+});
 /*--------------------------------->Hàm xử lý<-----------------------------------------*/
 function initPage(page,docs) {
     page =(page-1)*12;
