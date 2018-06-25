@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 var schemaDonHang = new Schema({
     tenkhachhang: {type:String, require:true, trim: true},
+    idthanhvien: {type:String,trim:true},
     sodienthoai: {type:String, require:true},
     diachinhanhang:{ type:String, require:true, trim:true},
     thanhtoan: {type: String, enum: ['COD', 'BANK'],require :true},

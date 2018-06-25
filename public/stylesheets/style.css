@@ -2319,6 +2319,13 @@ td.add-check a {
 	font-weight: bold;
 	margin-right: 10px;
 }
+
+.shipPrice{
+	float : right;
+	font-size: 18px;
+	font-style: italic;
+	margin-right: 10px;
+}
 .icon-search{
 	font-size: 30px;
 }

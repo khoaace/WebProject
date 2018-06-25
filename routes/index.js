@@ -150,8 +150,20 @@ router.post("/error",function (req,res,next) {
    res.send(data);
 });
 
+/*------------------------Hàm quản lý đặt hàng-------------*/
+router.get("/checkout",function (req,res,next) {
+    Loai.find(function (err,result) {
+        res.render('checkout', {title:'eShop - Thanh toán',message: req.flash('info'),user:req.user,loai:result});
+    });
+});
 
 
+router.post("/checkout",function (req,res,next) {
+   var data = req.body;
+   //Data nhận từ Client
+   console.log(data);
+   res.send('thanhcong');
+});
 
 
 /*-----------------Test -----------------------*/
@@ -225,6 +237,16 @@ function change_alias(alias) {
 
 function escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+
+/*-------------------Các hàm hỗ trợ xác thực-------------------------*/
+function isLoggedIn(req, res, next) {
+    // Nếu một user đã xác thực, cho đi tiếp
+    if (req.isAuthenticated())
+        return next();
+    // Nếu chưa, đưa về trang chủ
+    req.flash('info','Bạn cần đăng nhập trước.');
+    res.redirect('/error');
 }
 
 module.exports = router;

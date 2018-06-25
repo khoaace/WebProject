@@ -1,0 +1,98 @@
+
+<!--banner-->
+<div class="banner-top">
+    <div class="container">
+        <h1>Thanh toán</h1>
+    </div>
+</div>
+<!--login-->
+<br><br>
+
+<div class="container">
+<div style="border: dashed 1px black">
+    <center>
+        <hr>
+        <h2>HOÁ ĐƠN </h2><hr>
+    <table class="table table-bordered " id="productTablecheckout">
+        <tr>
+            <th>Tên sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Giá</th>
+        </tr>
+    </table>
+    <hr>
+
+        <div class="shipPrice">Phí giao hàng : <span id="yourShipcheckout" style="color: red;"></span> (VND)</div>
+<br><br>
+    <div class="price-sum">Tổng tiền : <span id="yourPricecheckout" style="color: red;font-size: 30px;">0</span> (VND)</div>
+
+    <br>
+    </center>
+
+<br><hr>
+</div>
+    <br>
+    <div class="form-horizontal" style="border: dashed 1px black;padding: 20px;">
+        <form method="post">
+        <fieldset>
+            <!-- Form Name -->
+
+            <center> <hr><h2>THÔNG TIN NGƯỜI NHẬN</h2> <hr></center><br>
+
+     <div class="form-group">
+         <label class="col-md-4 control-label" for="made_textinput">Họ và tên</label>
+         <div class="col-md-4">
+             <input id="tenkhachhang" type="text" placeholder="Nhập họ và tên người nhận" class="form-control input-md" required="" oninvalid="this.setCustomValidity('Chưa nhập tên')" oninput="setCustomValidity('')" value="{{user.fullname}}">
+         </div>
+     </div>
+
+            <input type="hidden" name="idthanhvien" value="{{user._id}}">
+     <!-- Text input-->
+     <div class="form-group">
+         <label class="col-md-4 control-label" for="made_textinput">Số điện thoại</label>
+         <div class="col-md-4">
+             <input  name="xuatxu" type="text" id="sodienthoai" placeholder="Nhập số điện thoại người nhận" class="form-control input-md" required="" oninvalid="this.setCustomValidity('Chưa nhập số điện thoại')" oninput="setCustomValidity('')">
+         </div>
+     </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="made_textinput">Địa chỉ người nhận</label>
+                <div class="col-md-4">
+                    <input  name="xuatxu" type="text" id="diachinhanhang" placeholder="Nhập địa chỉ người nhận" class="form-control input-md" required="" oninvalid="this.setCustomValidity('Chưa nhập địa chỉ người nhận')" oninput="setCustomValidity('')">
+                </div>
+            </div>
+
+
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="made_textinput">Hình thức thanh toán</label>
+                <div class="col-md-4">
+                    <div class="radio">
+                        <label class="radio-inline"><input type="radio" name="radio" id="thanhtoan"  value="COD" checked="checked">Thanh toán lúc nhận hàng</label><br>
+                        <label class="radio-inline"><input type="radio" name="radio" id="thanhtoan"  value="BANK">Thanh toán qua thẻ Ngân Hàng</label>
+
+                    </div>
+                    <div id="bankInput"></div>
+                </div>
+
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="made_textinput">Ghi chú </label>
+                <div class="col-md-4">
+                   <textarea placeholder="Ghi chú cho nhân viên giao hàng.(Có thể để trống)" style="width: 358px;" id="ghichu"></textarea>
+                </div>
+            </div>
+        </fieldset>
+       <center> <button type="submit" class="btn3d btn btn-success btn-lg" id="dathang">Đặt hàng</button></center>
+</form>
+    </div>
+</div>
+
+<br><br>
+
+
+
