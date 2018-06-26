@@ -916,48 +916,6 @@ router.get('/user/search/:input/page/:number',isAdmin,function (req,res,next) {
 });
 /*--------------------------->Đơn Hàng, Thống Kê<-------------------------------------------*/
 
-router.get("/order/generate", function(){
-    var randomproducts = [];
-    var prices = [];
-    var randomproductnumber = parseInt(Math.random() * 9) + 1; //ngẫu nhiên 1 giá trị từ 1->10
-   
-    Product.findRandom({}, {}, {limit: randomproductnumber},function (err, result){
-        
-        for (var i = 0; i < result.length; i++) {
-            var whatID = result[i]._id;
-            var whatPrice = result[i].gia;
-            randomproducts.push(whatID);
-            prices.push(whatPrice);
-        }
-
-
-        var neworder = new Order({
-            tenkhachhang: "Lê Trí Khoa",
-            sodienthoai: '0123456789',
-            diachinhanhang: "227, Nguyễn Văn Cừ",
-            thanhtoan: "COD",
-            trangthai: "Chưa Xử Lý",
-            sanpham: randomproducts,
-            gia: prices,
-            ngaygio: Date(),
-            ghichu: "đơn hàng phát sinh tự động"
-        });
-
-        console.log(neworder);
-
-        neworder.save(function(err){
-            if (err)
-            {
-                console.log(err);
-            }
-            else
-            {
-                console.log("saved");
-            }
-        });
-    });
-
-});
 /*-------------------------------->Đơn Hàng<-------------------------------------------*/
 /* generate đơn hàng -okey-*/
 router.get("/order/generate", function(req,res){
@@ -1267,6 +1225,13 @@ router.post('/order/query', function(req, res, next){
           });
 });
 
+function orderdetails_checkproduct(arrayPro) {
+    var a = arrayPro['_id'];
+    var b = this.toString();
+    return a == b;
+}
+
+
 router.get('/order/query/:id', function(req, res, next){
     var orderId = req.params.id;
     console.log(orderId);
@@ -1305,7 +1270,7 @@ router.get('/order/query/:id', function(req, res, next){
             console.log(doc.sanpham.length);
             for (var i = 0; i < doc.sanpham.length; i++)
             {
-                var whatid = doc.sanpham[i];
+                /*var whatid = doc.sanpham[i];
                 Product.findOne({_id: whatid}, function(err,doc2){
                     if(err || doc2 == null)
                     {
@@ -1314,30 +1279,56 @@ router.get('/order/query/:id', function(req, res, next){
                     {
                         products.push(doc2);
                     }
-                });
+                });*/
+                products.push(doc.sanpham[i]);
+
+
                 var thanhtien = doc.gia[i] * doc.soluong[i];
                 thanhtien1mathang.push(thanhtien);
                 tongcong += thanhtien;
             }
-            
-            console.log(products);
-            var dateformat = doc.ngaygio.toLocaleString();
-            res.render('product/order-detail', {
-                tenkhachhang: doc.tenkhachhang,
-                sodienthoai: doc.sodienthoai,
-                id: doc._id,
-                diachi: doc.diachinhanhang,
-                ngaynhandon: dateformat,
-                ghichu: doc.ghichu,
-                sanpham: products,
-                soluong: doc.soluong,
-                gia: doc.gia,
-                thanhtien: thanhtien1mathang,
-                trangthai_color: linecolor,
-                trangthai: doc.trangthai,
 
-                tongcong: tongcong
+            var sortedRealProduct = [];
+            Product.find({_id: { $in: products}}, function(err,doc2){
+                realproducts = doc2.slice(0);
+                console.log(realproducts);
+                console.log(products);
+                for (var j = 0; j < products.length;j++)
+                {
+                    var thisProductid = products[j];
+                    var element = realproducts.find(orderdetails_checkproduct, thisProductid);
+                    
+                    if (typeof element == "undefined")
+                    {
+                        element = {
+                            ten: 'SP đã xóa'
+                        };
+                    }
+                    sortedRealProduct.push(element);
+                }
+
+                console.log(sortedRealProduct);
+                var dateformat = doc.ngaygio.toLocaleString();
+                res.render('product/order-detail', {
+                    tenkhachhang: doc.tenkhachhang,
+                    sodienthoai: doc.sodienthoai,
+                    id: doc._id,
+                    diachi: doc.diachinhanhang,
+                    ngaynhandon: dateformat,
+                    ghichu: doc.ghichu,
+                    sanpham: sortedRealProduct,
+                    soluong: doc.soluong,
+                    gia: doc.gia,
+                    thanhtien: thanhtien1mathang,
+                    trangthai_color: linecolor,
+                    trangthai: doc.trangthai,
+
+                    layout:'dashboard_layout',
+
+                    tongcong: tongcong
+                });
             });
+            
 
         }
       });

@@ -523,8 +523,6 @@ $(document).ready(function(){
             $(".order_modal_body_loadedcontent").show();
             $("#order_modal_body_loading").hide();
             
-            //reload page content
-            $(".category_table").load(window.location.pathname +  ' .category_table');
             
 
         }).fail(function(data){

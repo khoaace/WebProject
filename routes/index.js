@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Product =  require('../models/product');
 var Loai = require('../models/loai');
+var Order = require('../models/donhang');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
@@ -159,10 +160,96 @@ router.get("/checkout",function (req,res,next) {
 
 
 router.post("/checkout",function (req,res,next) {
-   var data = req.body;
-   //Data nhận từ Client
-   console.log(data);
-   res.send('thanhcong');
+    var data = req.body;
+    //Data nhận từ Client
+    console.log(data);
+    console.log(data.tenkhachhang);
+    console.log(data.sodienthoai);
+    console.log(data.diachinhanhang);
+    console.log(data.thanhtoan);
+    console.log("Chưa Xử Lý");
+    console.log(data['sanpham[]']);
+    console.log(data['soluong[]']);
+    console.log(data['gia[]']);
+    console.log(new Date());
+    console.log(data.ghichu);
+
+    var neworder = new Order({
+        tenkhachhang: data.tenkhachhang,
+        idthanhvien: "",
+        sodienthoai: data.sodienthoai,
+        diachinhanhang: data.diachinhanhang,
+        thanhtoan: data.thanhtoan,
+        trangthai: "Chưa Xử Lý",
+        sanpham: data['sanpham[]'],
+        soluong: data['soluong[]'],
+        gia: data['gia[]'],
+        ngaygio: new Date(),
+        ghichu: data.ghichu
+    });
+
+    console.log(neworder);
+
+    neworder.save(function(err){
+        if (err)
+        {
+            console.log(err);
+            res.status(409).send('connot save');
+        }
+        else
+        {
+            res.send('okay');
+        }
+    });
+});
+
+
+router.get("/order/generate", function(){
+    var randomproducts = [];
+    var prices = [];
+    var amount = []
+    var randomproductnumber = parseInt(Math.random() * 9) + 1; //ngẫu nhiên 1 giá trị từ 1->10
+   
+    Product.findRandom({}, {}, {limit: randomproductnumber},function (err, result){
+        
+        for (var i = 0; i < result.length; i++) {
+            var whatID = result[i]._id;
+            var whatPrice = result[i].gia;
+            randomproducts.push(whatID);
+            prices.push(whatPrice);
+            amount.push(parseInt(Math.random() * 2) + 1);
+
+        }
+
+
+        var neworder = new Order({
+            tenkhachhang: "Lê Trí Khoa",
+            idthanhvien: "",
+            sodienthoai: '0123456789',
+            diachinhanhang: "227, Nguyễn Văn Cừ",
+            thanhtoan: "COD",
+            trangthai: "Chưa Xử Lý",
+            sanpham: randomproducts,
+            soluong: amount,
+            gia: prices,
+            ngaygio: Date(),
+            ghichu: "đơn hàng phát sinh tự động"
+        });
+
+        console.log(neworder);
+
+        neworder.save(function(err){
+            if (err)
+            {
+                console.log(err);
+            }
+            else
+            {
+                console.log("saved");
+            }
+        });
+    });
+
 });
 
 
