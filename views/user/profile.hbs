@@ -22,6 +22,7 @@
                     {{else}}
                     <li><a href="" data-target-id="activeAccount"><i class="glyphicon glyphicon-level-up"></i> Kích hoạt tài khoản</a></li>
                 {{/if}}
+                <li><a href="" data-target-id="theodoidonhang"><i class="glyphicon glyphicon-lock"></i> Lịch sử mua hàng</a></li>
                 <li><a href="" data-target-id="change-password"><i class="glyphicon glyphicon-lock"></i> Đổi mật khẩu</a></li>
                 <li><a href="" data-target-id="settings"><i class="glyphicon glyphicon-cog"></i> Chỉnh sửa thông tin</a></li>
                 {{#if user.mod}}
@@ -289,6 +290,22 @@
                 <div class="panel-body">
                     Hệ thống sẽ gửi mail kích hoạt vào hòm thư của bạn. Khi kích hoạt thành công bạn có thể sử dụng chức năng quên mật khẩu và mua hàng tại shop.  
                     <a href="/active/{{user._id}}" class="label label-danger"> <span >  Kích hoạt  </span></a>
+                </div>
+                <form id="logout-form" action="#" method="POST" style="display: none;">
+                </form>
+
+
+            </div>
+        </div>
+
+
+        <div class="col-md-9  admin-content" id="theodoidonhang">
+            <div class="panel panel-info" style="margin: 1em;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Xác nhận</h3>
+                </div>
+                <div class="panel-body">
+
                 </div>
                 <form id="logout-form" action="#" method="POST" style="display: none;">
                 </form>

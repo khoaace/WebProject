@@ -1550,132 +1550,118 @@ function createArrPage(docs,currentPage,page) {
 }
 
 function countPage(docs) {
-    var allPage=1;
-    if(docs.length > 12)
-    {
-        allPage = parseInt( docs.length / 12);
-        var konorimono = parseInt( docs.length) - allPage * 12;
-        if(konorimono > 0)
+    var allPage = 1;
+    if (docs.length > 12) {
+        allPage = parseInt(docs.length / 12);
+        var konorimono = parseInt(docs.length) - allPage * 12;
+        if (konorimono > 0)
             allPage++;
     }
     return allPage;
 }
-
-function isAdmin(req, res, next) {
-    // Nếu một user đã xác thực, cho đi tiếp
-    if (req.user.admin)
-        return next();
-    // Nếu chưa, đưa về trang chủ
-    req.flash('info','Bạn không có quyền truy cập.');
-    res.redirect('/error');
-}
-
-
-function change_alias(alias) {
-    var str = alias;
-    str = str.toLowerCase();
-    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a");
-    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e");
-    str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i");
-    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o");
-    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u");
-    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y");
-    str = str.replace(/đ/g,"d");
-    str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g," ");
-    str = str.replace(/ + /g," ");
-    str = str.trim();
-    return str;
-}
-function escapeRegex(text) {
-    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-}
-
-function stepquery(result, dateIndex, endDate)
-{
-    if (dateIndex >= endDate)
-    {
-        return result;
+    function isAdmin(req, res, next) {
+        // Nếu một user đã xác thực, cho đi tiếp
+        if (req.user.admin)
+            return next();
+        // Nếu chưa, đưa về trang chủ
+        req.flash('info', 'Bạn không có quyền truy cập.');
+        res.redirect('/error');
     }
-    else {
-        var resultElementVal = 0;
 
-        var tomorow = new Date(dateIndex);
-        tomorow.setFullYear(dateIndex.getFullYear());
-        tomorow.setMonth(dateIndex.getMonth());
-        tomorow.setDate(dateIndex.getDate()+1);
-        var query = /*{$and: [
+
+    function change_alias(alias) {
+        var str = alias;
+        str = str.toLowerCase();
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+        str = str.replace(/đ/g, "d");
+        str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
+        str = str.replace(/ + /g, " ");
+        str = str.trim();
+        return str;
+    }
+
+    function escapeRegex(text) {
+        return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+    }
+
+    function stepquery(result, dateIndex, endDate) {
+        if (dateIndex >= endDate) {
+            return result;
+        }
+        else {
+            var resultElementVal = 0;
+
+            var tomorow = new Date(dateIndex);
+            tomorow.setFullYear(dateIndex.getFullYear());
+            tomorow.setMonth(dateIndex.getMonth());
+            tomorow.setDate(dateIndex.getDate() + 1);
+            var query = /*{$and: [
             {trangthai: 'Thành Công'},
             {$and: [{ngaygio: {$gte: dateIndex}},{ngaygio: {$lte: tomorow}}]}
         ]
         }*/{trangthai: 'Thành Công', ngaygio: {$lt: tomorow, $gte: dateIndex}};
 
-        Order.find(query, function(err, docs) {
-            if (err) {
-                console.log(err);
-            }
-            else 
-            {
-                //console.log(docs);
-                console.log(docs.length);
-
-                for (var bill = 0; bill <docs.length; bill++)
-                {
-                    var sumBill = 0;
-                    var thisOrder = docs[bill];
-                    for (var j = 0; j < thisOrder.sanpham.length; j++)
-                    {
-                        sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
-                    }
-                    resultElementVal += sumBill;
+            Order.find(query, function (err, docs) {
+                if (err) {
+                    console.log(err);
                 }
+                else {
+                    //console.log(docs);
+                    console.log(docs.length);
+
+                    for (var bill = 0; bill < docs.length; bill++) {
+                        var sumBill = 0;
+                        var thisOrder = docs[bill];
+                        for (var j = 0; j < thisOrder.sanpham.length; j++) {
+                            sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
+                        }
+                        resultElementVal += sumBill;
+                    }
+                }
+                console.log("today");
+                console.log(dateIndex);
+                console.log("romorow");
+                console.log(tomorow);
+                console.log(result);
+
+
+                var thisDate = dateIndex.toDateString();
+                var element = [thisDate, resultElementVal];
+
+                result.push(element);
+                console.log(result);
+                dateIndex.setDate(dateIndex.getDate() + 1);
+                return result;
+            });
+        }
+    }
+
+    function addDateIndex(i, bywhat) {
+        switch (bywhat) {
+            case "year": {
+                i.setDate(i.get)
             }
-            console.log("today");
-            console.log(dateIndex);
-            console.log("romorow");
-            console.log(tomorow);
-            console.log(result);
-
-            
-            var thisDate = dateIndex.toDateString();
-            var element = [thisDate, resultElementVal];
-
-            result.push(element);
-            console.log(result);
-            dateIndex.setDate(dateIndex.getDate() + 1);
-            return result;
-        });
+                break;
+            case "year": {
+            }
+                break;
+            case "year": {
+            }
+                break;
+            case "year": {
+            }
+                break;
+            case "year": {
+            }
+                break;
+            default: {
+            }
+                break;
+        }
     }
-}
-
-function addDateIndex(i, bywhat)
-{
-    switch(bywhat) {
-        case "year":
-        {
-            i.setDate(i.get)
-        }
-            break;
-        case "year":
-        {
-        }
-            break;
-        case "year":
-        {
-        }
-            break;
-        case "year":
-        {
-        }
-            break;
-        case "year":
-        {
-        }
-            break;
-        default:
-        {
-        }
-            break;
-    }
-}
-
 module.exports = router;
