@@ -5,6 +5,7 @@ module.exports = function (app, passport) {
     var bodyParser = require('body-parser');
     var jwt = require('jsonwebtoken');
     var email = require('mailer');
+    var Order = require('../models/donhang');
     var urlencodedParser = bodyParser.urlencoded({ extended: false });
     var nodemailer = require('nodemailer');
     var date;
@@ -50,7 +51,11 @@ module.exports = function (app, passport) {
 /*----------------------------Thông tin cá nhân---------------------------*/
     app.get('/profile', isLoggedIn,function (req, res) {
         Loai.find(function (err,result) {
-            res.render('user/profile', {title: 'eShop - Profile', loai:result,user: req.user, message: req.flash('info')});
+            Order.find({idthanhvien:req.session.user._id},function (err,donhang) {
+                res.render('user/profile', {title: 'eShop - Profile', loai:result,user: req.user,donhang:donhang, message: req.flash('info')});
+
+            });
+
         });
     });
 
