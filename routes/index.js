@@ -162,17 +162,6 @@ router.get("/checkout",function (req,res,next) {
 router.post("/checkout",function (req,res,next) {
     var data = req.body;
     //Data nhận từ Client
-    console.log(data);
-    console.log(data.tenkhachhang);
-    console.log(data.sodienthoai);
-    console.log(data.diachinhanhang);
-    console.log(data.thanhtoan);
-    console.log("Chưa Xử Lý");
-    console.log(data['sanpham[]']);
-    console.log(data['soluong[]']);
-    console.log(data['gia[]']);
-    console.log(new Date());
-    console.log(data.ghichu);
 
     var neworder = new Order({
         tenkhachhang: data.tenkhachhang,

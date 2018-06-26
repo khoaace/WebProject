@@ -56,7 +56,7 @@
         {{#if sanpham}}
             {{#each sanpham}}
                     <tr id="{{this._id}}_productrow"> <!-- recal -->
-                        <th class="order_detail_namecell" id="{{this._id}}">{{this.ten}}</th>
+                        <th class="order_detail_namecell" id="{{this._id}}"><strong><a data-toggle="tooltip" class="white-tooltip" title="" data-original-title="<img class='img-responsive' src='{{this.hinhanh.[0]}}' width='450' height='450' />">{{this.ten}}</a></strong></th>
                         <th class="order_detail_valcell">{{#with (lookup ../soluong @index)}}
                                 {{.}}
                             {{/with}}</th>
@@ -87,7 +87,10 @@
             <li><a href="#" class="order_changestate" id="{{id}}" name="Hủy" style="background-color: #d9534f; color: white">Đã Hủy    </a></li>
         </ul>
     </div>
-    <div class="pull-right"><h3>Tổng cộng: {{tongcong}}</h3></div>
+    <div class="pull-right">
+        {{#if shipfee}}<div class="pull-right">Phí giao hàng: <span id="yourShipcheckout" style="color: red;">{{shipfee}}</span> (VND)</div>{{/if}}
+        <div><h3>Tổng cộng: {{tongcong}}</h3></div>
+    </div>
 </div>
 
 </div>

@@ -1208,7 +1208,7 @@ router.post('/order/changestate', function(req, res, next){
           });
     }    
 });
-/* ----------------------- ------------------ */
+/* ----------------------------------------- */
 /* query đơn hàng*/
 router.post('/order/query', function(req, res, next){
         var orderId = req.body.id;
@@ -1270,22 +1270,23 @@ router.get('/order/query/:id', function(req, res, next){
             console.log(doc.sanpham.length);
             for (var i = 0; i < doc.sanpham.length; i++)
             {
-                /*var whatid = doc.sanpham[i];
-                Product.findOne({_id: whatid}, function(err,doc2){
-                    if(err || doc2 == null)
-                    {
-                    }
-                    else
-                    {
-                        products.push(doc2);
-                    }
-                });*/
                 products.push(doc.sanpham[i]);
 
 
                 var thanhtien = doc.gia[i] * doc.soluong[i];
                 thanhtien1mathang.push(thanhtien);
                 tongcong += thanhtien;
+            }
+
+            //tính phí ship
+            var ship;
+            if (tongcong <= 200000)
+            {
+                ship = 30000;
+                tongcong += ship;
+                ship = ship.toFixed(0).replace(/./g, function(c, i, a) {
+                    return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+                });
             }
 
             var sortedRealProduct = [];
@@ -1322,6 +1323,7 @@ router.get('/order/query/:id', function(req, res, next){
                     thanhtien: thanhtien1mathang,
                     trangthai_color: linecolor,
                     trangthai: doc.trangthai,
+                    shipfee: ship,
 
                     layout:'dashboard_layout',
 
