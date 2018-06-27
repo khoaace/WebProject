@@ -5,6 +5,7 @@ var Product =  require('../models/product');
 var Loai = require('../models/loai');
 var User  = require('../models/user');
 var Order = require('../models/donhang');
+var Brand = require('../models/brand');
 
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
@@ -211,7 +212,10 @@ router.get('/product/add', function(req, res, next) {
             res.redirect('/dashboard/category');
         }
         else{
-            res.render('product/product-add',{title:'Dashboard-Thêm sản phẩm mới',loai:loai,message: req.flash('info'),layout:'dashboard_layout',user:req.user});
+            Brand.find(function (err,brand) {
+                    res.render('product/product-add',{title:'Dashboard-Thêm sản phẩm mới',loai:loai, brand:brand,message: req.flash('info'),layout:'dashboard_layout',user:req.user});
+                    return;
+            });
         }
     });
 });
@@ -229,9 +233,15 @@ router.post("/product/add",urlencodedParser,function (req,res) {
     }
 
     var nhanhieu = req.body.nhanhieu;
+    if (typeof nhanhieu == "undefined" || nhanhieu == "")
+    {
+        res.status(400).send('err');
+        return;
+    }
+
     var xuatxu = req.body.xuatxu;
     var gia = req.body.gia;
-
+    console.log(nhanhieu);
     if (gia === undefined || gia == "")
     {
         res.status(400).send('err');
@@ -245,7 +255,7 @@ router.post("/product/add",urlencodedParser,function (req,res) {
         res.status(400).send('err');
         return;
     }
-
+    console.log('okay');
 
     if(mota.trim() === "")
         mota="Không có mô tả";
@@ -255,21 +265,77 @@ router.post("/product/add",urlencodedParser,function (req,res) {
         if (loai == null)
         {
             req.flash('info',['alert-warning','Không tồn tại LOẠI SẢN PHẨM nào, cần tạo LOẠI SẢN PHẨM trước']);
-            res.send('no');
+            res.status(409).send("failed");
+            return;
         }
         else{
-            var product = new Product({
-                ten: ten,
-                tenTimKiem:tenTimKiem,
-                gia: gia,
-                loai: loai,
-                nhanhieu: nhanhieu,
-                xuatxu: xuatxu,
-                hinhanh: hinhanh,
-                mota: mota
-            });
-            product.save(function (err, result) {
-                res.send('okey');
+            Brand.findOne({ten: req.body.nhanhieu}, function (err, foundnhanhhieu){
+                
+                if (foundnhanhhieu == null)
+                {
+                    var newbrand = new Brand({
+                        ten: nhanhieu
+                    });
+                    newbrand.save(function (err,orokey) {
+                        if (err){
+                            console.log(err);
+                            res.status(409).send("failed");
+                            return;
+                        }
+                        else{
+                            Brand.findOne({ten: req.body.nhanhieu}, function (err, foundnewnhanhhieu){
+                                if (foundnewnhanhhieu == null)
+                                {
+                                    res.status(409).send("failed found");
+                                    return;
+                                }
+                                else
+                                {
+                                    var product = new Product({
+                                        ten: ten,
+                                        tenTimKiem:tenTimKiem,
+                                        gia: gia,
+                                        loai: loai,
+                                        nhanhieu: foundnewnhanhhieu._id,
+                                        xuatxu: xuatxu,
+                                        hinhanh: hinhanh,
+                                        mota: mota
+                                    });
+                                    product.save(function (err) {
+                                        if (err){
+                                            console.log(err);
+                                            res.status(409).send("failed");
+                                            return;
+                                        }
+                                        else{
+                                            res.send('okey');
+                                        }
+                                    });
+                                }
+                            });
+                        }   
+                    });
+                }
+                else{
+                    var product = new Product({
+                        ten: ten,
+                        tenTimKiem:tenTimKiem,
+                        gia: gia,
+                        loai: loai,
+                        nhanhieu: foundnhanhhieu._id,
+                        xuatxu: xuatxu,
+                        hinhanh: hinhanh,
+                        mota: mota
+                    });
+                    product.save(function (err) {
+                        if (err){
+                            console.log(err);
+                            res.status(409).send("failed");
+                            return;
+                        }
+                        res.send('okey');
+                    });
+                }
             });
         }
 
@@ -1020,7 +1086,8 @@ router.get('/order/by/:sortby/page/:number',function (req,res,next) {
                     sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
                 }
 
-                dateformat = thisOrder.ngaygio.toLocaleString();
+                dateformat = new Date(thisOrder.ngaygio);
+                dateformat = dateformat.toLocaleString("en-US", {timeZone: 'Asia/Jakarta' });
                 
                 var orderspara_element = {
                     trangthai_color: linecolor,
@@ -1133,7 +1200,8 @@ router.get("/order/state/:state/by/:sortby/page/:number", function (req, res, ne
                 sumBill += thisOrder.gia[j] * thisOrder.soluong[j];
             }
 
-            dateformat = thisOrder.ngaygio.toLocaleString();
+            dateformat = new Date(thisOrder.ngaygio);
+            dateformat = dateformat.toLocaleString("en-US", {timeZone: 'Asia/Jakarta' });
             
             var orderspara_element = {
                 trangthai_color: linecolor,
@@ -1309,7 +1377,10 @@ router.get('/order/query/:id', function(req, res, next){
                 }
 
                 console.log(sortedRealProduct);
-                var dateformat = doc.ngaygio.toLocaleString();
+                
+                var dateformat = new Date(doc.ngaygio);
+                dateformat = dateformat.toLocaleString("en-US", {timeZone: 'Asia/Jakarta' });
+
                 res.render('product/order-detail', {
                     tenkhachhang: doc.tenkhachhang,
                     sodienthoai: doc.sodienthoai,
@@ -1643,27 +1714,4 @@ function countPage(docs) {
         }
     }
 
-    function addDateIndex(i, bywhat) {
-        switch (bywhat) {
-            case "year": {
-                i.setDate(i.get)
-            }
-                break;
-            case "year": {
-            }
-                break;
-            case "year": {
-            }
-                break;
-            case "year": {
-            }
-                break;
-            case "year": {
-            }
-                break;
-            default: {
-            }
-                break;
-        }
-    }
 module.exports = router;

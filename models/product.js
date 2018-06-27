@@ -8,7 +8,7 @@ var schemaProduct = new Schema(
         gia:{type:Number, min:0,required:true},
         tenTimKiem:{type:String,required:true, trim:true},
         loai:{type: Schema.ObjectId, ref: 'loai'},
-        nhanhieu:{type:String,required:true},
+        nhanhieu:{type:Schema.ObjectId, ref: 'brand'},
         hinhanh:[{type:String}],
         xuatxu:{type:String, default:'Không rõ', trim:true},
         mota:{type:String, default:'Không có mô tả'}

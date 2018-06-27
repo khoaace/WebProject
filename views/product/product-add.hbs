@@ -36,8 +36,21 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="brand_textinput">Nhãn hiệu</label>
             <div class="col-md-4">
-                <input id="brand_textinput" name="nhanhieu" type="text" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập tên nhãn hiệu')" oninput="setCustomValidity('')">
-
+                <div class="brand_selector_input">
+                    <div class="col-md-10" id="brand_selectbasic_box">
+                        <select id="brand_selectbasic" name="brand" class="form-control">
+                            {{# each brand}}
+                                    {{#if this.ten}}
+                            <option value="{{this.ten}}">{{this.ten}}</option>
+                                    {{/if}}
+                                {{/each}}
+                        </select>
+                    </div>
+                    <button class="col-md-2 btn btn-success" id="brand_btn">New</button>
+                    <div class="col-md-10" id="brand_textinput_box" hidden>
+                        <input class="form-control input-md" id="brand_textinput" name="nhanhieu" type="text" placeholder="Nhập nhãn hiệu mới"  required="" oninvalid="this.setCustomValidity('Chưa nhập tên nhãn hiệu')" oninput="setCustomValidity('')">
+                    </div>
+                </div>
             </div>
         </div>
 

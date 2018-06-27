@@ -2,6 +2,34 @@
 $(document).ready(function() {
 
     $("#loadingimg").hide();
+    $("#brand_textinput_box").hide();
+
+    function select2type(){
+        $("#brand_selectbasic_box").hide(1000);
+        $("#brand_btn").animate({"margin-left": '0px'},function(){
+                $("#brand_btn").html('Old');
+        });
+        $("#brand_textinput_box").show(1000);
+    }
+
+    function type2select(callback){
+        $("#brand_textinput_box").hide(1000);
+        $("#brand_btn").animate({"margin-right": '0px'},function(){
+            $("#brand_btn").html('New');
+        });
+        $("#brand_selectbasic_box").show(1000);
+    }
+
+    $(document).on("click","#brand_btn",function(){
+        if ($("#brand_selectbasic_box").is(":visible"))
+        {
+            select2type();
+        }
+        else
+        {
+            type2select();
+        }
+    });
 
     // process the form
     $("#smbutton").on('click',function(event) {
@@ -25,12 +53,22 @@ $(document).ready(function() {
             imglist.push($("#link3_textinput").val());
         }
 
+        var nhanhieu;
+        if ($("#brand_selectbasic_box").is(":visible"))
+        {
+            nhanhieu = $("#brand_selectbasic").val();
+        }
+        else
+        {
+            nhanhieu = $("#brand_textinput").val();
+        }
+
         // get the form data
         // there are many ways to get this data using jQuery (you can use the class or id also)
         var formData = {
             'ten'              : $("#name_textinput").val(),
             'loai'             : $("#selectbasic").val(),
-            'nhanhieu'         : $("#brand_textinput").val(),
+            'nhanhieu'         : nhanhieu,
             'xuatxu'           : $("#made_textinput").val(),
             'gia'              : $("#price_textinput").val(),
             'mota'             : $("#desc_textarea").val(),
@@ -57,6 +95,23 @@ $(document).ready(function() {
             $("#main_modal_body_alert").html('Sản Phẩm Đã Được Thêm Mới');
             $("#main_modal_footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
             $("#modalbox").modal('show');
+
+            if ($("#brand_selectbasic_box").is(":visible"))
+            {
+            }
+            else
+            {
+                $("#brand_textinput_box").hide(1000);
+                $("#brand_btn").animate({"margin-right": '0px'},function(){
+                    $("#brand_btn").html('New');
+                });
+                $("#brand_selectbasic_box").show(1000,function(){
+                    $(".brand_selector_input").load(window.location.pathname +  ' .brand_selector_input',function(){
+                        $("#brand_selectbasic").val(nhanhieu);
+                    });
+                    
+                });
+            }
 
             $("#name_textinput").val('');
             $("#link1_textinput").val('');
