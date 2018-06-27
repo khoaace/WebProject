@@ -128,7 +128,6 @@ router.get("/search",function (req,res) {
                     var productChuck = initPage(page,result);
                     var arrPage = createArrPage(result,currentpage,page);
                     curpage=1;
-                    console.log(arrPage);
                     res.render('index', { title: 'eShop',products:productChuck,pages:arrPage,loai:result1,current_cate:'Tất cả kết quả về '+req.query.search,user:req.user,message:req.flash('info')});
                 }
             });
@@ -147,12 +146,11 @@ router.get("/error",function (req,res,next) {
 });
 router.post("/error",function (req,res,next) {
    var data="Success";
-   console.log(JSON.stringify.parse(req.body.input1)+' '+JSON.parse(req.body.input2));
    res.send(data);
 });
 
 /*------------------------Hàm quản lý đặt hàng-------------*/
-router.get("/checkout",function (req,res,next) {
+router.get("/checkout",isLoggedIn,function (req,res,next) {
     Loai.find(function (err,result) {
         res.render('checkout', {title:'eShop - Thanh toán',message: req.flash('info'),user:req.user,loai:result});
     });
@@ -165,7 +163,7 @@ router.post("/checkout",function (req,res,next) {
 
     var neworder = new Order({
         tenkhachhang: data.tenkhachhang,
-        idthanhvien: "",
+        idthanhvien: data.idthanhvien,
         sodienthoai: data.sodienthoai,
         diachinhanhang: data.diachinhanhang,
         thanhtoan: data.thanhtoan,
@@ -177,7 +175,7 @@ router.post("/checkout",function (req,res,next) {
         ghichu: data.ghichu
     });
 
-    console.log(neworder);
+
 
     neworder.save(function(err){
         if (err)
@@ -225,7 +223,6 @@ router.get("/order/generate", function(){
             ghichu: "đơn hàng phát sinh tự động"
         });
 
-        console.log(neworder);
 
         neworder.save(function(err){
             if (err)

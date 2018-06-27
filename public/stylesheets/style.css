@@ -2401,3 +2401,7 @@ td.add-check a {
 	font-size: 30px;
 	font-weight: bold;
 }
+.theodoitable td{
+	color: black;
+	font-weight: bold;
+}

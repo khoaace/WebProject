@@ -52,6 +52,7 @@ module.exports = function (app, passport) {
     app.get('/profile', isLoggedIn,function (req, res) {
         Loai.find(function (err,result) {
             Order.find({idthanhvien:req.session.user._id},function (err,donhang) {
+                donhang.reverse();
                 res.render('user/profile', {title: 'eShop - Profile', loai:result,user: req.user,donhang:donhang, message: req.flash('info')});
 
             });
@@ -59,6 +60,81 @@ module.exports = function (app, passport) {
         });
     });
 
+    app.post('/profile/checkout',function (req,res) {
+        console.log(req.body.id);
+        Order.findOne({_id: req.body.id }, function (err, doc){
+            if (err)
+            {
+                res.status(404).send('order not founded');
+                return;
+            }
+            else if (doc != null)
+            {
+                var products = [];
+                var thanhtien1mathang = [];
+                var tongcong = 0;
+
+                for (var i = 0; i < doc.sanpham.length; i++)
+                {
+                    products.push(doc.sanpham[i]);
+
+
+                    var thanhtien = doc.gia[i] * doc.soluong[i];
+                    thanhtien1mathang.push(thanhtien);
+                    tongcong += thanhtien;
+                }
+
+                //tính phí ship
+                var ship=0;
+                if (tongcong <= 200000)
+                {
+                    ship = 30000;
+                    tongcong += ship;
+                    ship = ship.toFixed(0).replace(/./g, function(c, i, a) {
+                        return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+                    });
+                }
+                tongcong=tongcong.toFixed(0).replace(/./g, function(c, i, a) {
+                    return i && c !== "." && ((a.length - i) % 3 === 0) ? ',' + c : c;
+                });
+                var sortedRealProduct = [];
+                Product.find({_id: { $in: products}}, function(err,doc2){
+                    realproducts = doc2.slice(0);
+                    for (var j = 0; j < products.length;j++)
+                    {
+                        var thisProductid = products[j];
+                        var element = realproducts.find(orderdetails_checkproduct, thisProductid);
+
+                        if (typeof element == "undefined")
+                        {
+                            element = {
+                                ten: 'SP đã xóa'
+                            };
+                        }
+                        sortedRealProduct.push(element);
+                    }
+
+                    var dateformat = doc.ngaygio.toLocaleString();
+                    var dataCheckout={
+                        'tenkhachhang': doc.tenkhachhang,
+                        'sodienthoai': doc.sodienthoai,
+                        'id': doc._id,
+                        'diachi': doc.diachinhanhang,
+                        'ngaynhandon': dateformat,
+                        'ghichu': doc.ghichu,
+                        'sanpham': sortedRealProduct,
+                        'soluong': doc.soluong,
+                        'gia': doc.gia,
+                        'thanhtien': thanhtien1mathang,
+                        'shipfee': ship,
+                        'tongcong': tongcong};
+                    res.send(dataCheckout);
+                });
+
+            }
+        });
+
+    });
     app.post('/changepassword',urlencodedParser,isLoggedIn,function (req, res) {
             User.findOne({username:req.user.username},function (err, docs) {
                 if(req.body.newpassword != req.body.renewpassword){
@@ -126,11 +202,11 @@ module.exports = function (app, passport) {
                   resetPassword:false
               };
               var activeToken = jwt.sign(payloadActive,'active', {
-                  expiresIn: 900 // token tồn tại trong 15 phút
+                  expiresIn: 3600 // token tồn tại trong 15 phút
               });
              /* Gửi mail*/
              mailOptions.to = myuser.email;
-             mailOptions.html='Để kích hoạt tài khoản .Vui lòng nhấn vào <h1><a href="shop-pandateam.herokuapp.com/user/'+myuser.id+'/active/'+activeToken+'">đây</a></h1>. Lưu ý Link kích hoạt chỉ tồn tại trong 15 phút.';
+             mailOptions.html='Để kích hoạt tài khoản .Vui lòng nhấn vào <h1><a href="shop-pandateam.herokuapp.com/user/'+myuser.id+'/active/'+activeToken+'">đây</a></h1>. Lưu ý Link kích hoạt chỉ tồn tại trong 60 phút.';
               transporter.sendMail(mailOptions, function(error, info){
                   if (error) {
                       req.flash('info','Đã có lỗi xảy ra.');
@@ -201,12 +277,12 @@ module.exports = function (app, passport) {
                        password:password
                    };
                    var activeToken = jwt.sign(payloadActive,'active', {
-                       expiresIn: 900 // token tồn tại trong 15 phút
+                       expiresIn: 3600 // token tồn tại trong 15 phút
                    });
                    /* Gửi mail*/
                    mailOptions.from="eShop - Lấy lại mật khẩu";
                    mailOptions.to = result.email;
-                   mailOptions.html='Để lấy lại mật khẩu. Vui lòng nhấn vào <h1><a href="shop-pandateam.herokuapp.com/user/'+result.id+'/reset/'+activeToken+'">đây</a></h1>. Lưu ý Link kích hoạt chỉ tồn tại trong 15 phút.';
+                   mailOptions.html='Để lấy lại mật khẩu. Vui lòng nhấn vào <h1><a href="shop-pandateam.herokuapp.com/user/'+result.id+'/reset/'+activeToken+'">đây</a></h1>. Lưu ý Link đổi mật khẩu chỉ tồn tại trong 60 phút.';
                    transporter.sendMail(mailOptions, function(error, info){
                        if (error) {
                            req.flash('info','Đã có lỗi xảy ra.');
@@ -292,3 +368,8 @@ module.exports = function (app, passport) {
 */
 
 };
+function orderdetails_checkproduct(arrayPro) {
+    var a = arrayPro['_id'];
+    var b = this.toString();
+    return a == b;
+}
