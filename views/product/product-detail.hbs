@@ -41,7 +41,7 @@
                 <div class="span_2_of_a1 simpleCart_shelfItem">
                     <h3>{{product.ten}}</h3>
                     <p class="in-para"> <strong>Loại</strong> : {{product_loai.ten}} <br>
-                        <strong>Nhãn hiệu</strong> : {{product.nhanhieu}}<br>
+                        <strong>Nhãn hiệu</strong> : {{brandsp.ten}}<br>
                         <strong>Xuất xứ</strong> : {{product.xuatxu}}</p>
                     <div class="price_single">
                         <span class="reducedfrom item_price">{{formatNumber product.gia num}} VND</span>
@@ -202,7 +202,7 @@
 
         <div class="col-md-3 product-bottom product-at">
             <!--categories-->
-            <div class=" rsidebar span_1_of_left">
+            <div class=" rsidebar span_1_of_left" style="border: 1px dashed grey;padding: 10px;">
                 <h4 class="cate">Phân loại</h4>
 
                 {{#each loai}}
@@ -210,6 +210,25 @@
                 {{/each}}
 
 
+
+            </div>
+<br><br>
+
+            <div class=" rsidebar span_1_of_left" style="border: 1px dashed grey;padding: 10px;">
+                <h4 class="cate">Nhãn hiệu</h4>
+
+                {{#each brand}}
+                    <li class="menu-drop"><a href="/brand/{{this._id}}/">{{this.ten}}</a> </li>
+                {{/each}}
+
+            </div>
+            <br><br>
+            <div class=" rsidebar span_1_of_left" style="border: 1px dashed grey;padding: 10px;">
+                <h4 class="cate">Theo giá</h4>
+
+
+                    <li class="menu-drop"><a href="/category/sort/inc{{this._id}}/">Tăng dần</a> </li>
+                <li class="menu-drop"><a href="/category/sort/dec">Giảm dần</a> </li>
 
             </div>
             <!--initiate accordion-->

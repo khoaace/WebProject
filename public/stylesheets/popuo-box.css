@@ -260,7 +260,6 @@ button::-moz-focus-inner {
 	font-size:1.2em;
 	line-height:1.5em;
 	width:33%;
-	text-align:center;
 	padding: 1em 0;
 }
 @media(max-width:640px){

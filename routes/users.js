@@ -5,6 +5,7 @@ module.exports = function (app, passport) {
     var bodyParser = require('body-parser');
     var jwt = require('jsonwebtoken');
     var email = require('mailer');
+    var Brand = require('../models/brand');
     var Order = require('../models/donhang');
     var urlencodedParser = bodyParser.urlencoded({ extended: false });
     var nodemailer = require('nodemailer');
@@ -12,9 +13,12 @@ module.exports = function (app, passport) {
 
 /*----------------------Đăng kí--------------------------*/
     app.get('/signup', function (req, res) {
-        Loai.find(function (err, docs) {
-            res.render('user/signup', {title:'eShop - Đăng kí',loai: docs,message: req.flash('info')});
+        Brand.find(function (err,brand) {
+            Loai.find(function (err, docs) {
+                res.render('user/signup', {title:'eShop - Đăng kí',brand:brand,loai: docs,message: req.flash('info')});
+            });
         });
+
     });
     app.post('/signup', passport.authenticate('local-signup', {
         successRedirect: '/profile', // chuyển hướng tới trang được bảo vệ
@@ -37,9 +41,12 @@ module.exports = function (app, passport) {
     app.get('/login',isUnLoggedIn,function (req,res) {
         if(req.user != null)
             res.redirect('/');
-        Loai.find(function (err,result) {
-            res.render('user/login',{title:'eShop - Đăng nhập',Loai:result,message: req.flash('info')});
+        Brand.find(function (err,brand) {
+            Loai.find(function (err,result) {
+                res.render('user/login',{title:'eShop - Đăng nhập',brand:brand,loai:result,message: req.flash('info')});
+            });
         });
+
     });
   /* --------------------------------- Đăng xuất ----------------------------*/
     app.get('/logout', function (req, res) {
@@ -50,14 +57,17 @@ module.exports = function (app, passport) {
     });
 /*----------------------------Thông tin cá nhân---------------------------*/
     app.get('/profile', isLoggedIn,function (req, res) {
-        Loai.find(function (err,result) {
-            Order.find({idthanhvien:req.session.user._id},function (err,donhang) {
-                donhang.reverse();
-                res.render('user/profile', {title: 'eShop - Profile', loai:result,user: req.user,donhang:donhang, message: req.flash('info')});
+        Brand.find(function (err,brand) {
+            Loai.find(function (err,result) {
+                Order.find({idthanhvien:req.session.user._id},function (err,donhang) {
+                    donhang.reverse();
+                    res.render('user/profile', {title: 'eShop - Profile', loai:result,brand:brand,user: req.user,donhang:donhang, message: req.flash('info')});
+
+                });
 
             });
-
         });
+
     });
 
     app.post('/profile/checkout',function (req,res) {

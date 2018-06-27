@@ -18,13 +18,40 @@
         </div>
     </div>
 
-
-    <!-- Text input-->
+    <!-- Select Basic -->
     <div class="form-group">
-        <label class="col-md-4 control-label" for="textinput">Nhãn hiệu</label>
+        <label class="col-md-4 control-label" for="selectbasic">Nhãn hiệu</label>
         <div class="col-md-4">
-            <input id="textinput" name="nhanhieu" type="text" placeholder="" class="form-control input-md" value="{{product.nhanhieu}}" required="" oninvalid="this.setCustomValidity('Chưa nhập nhãn hiệu')"  oninput="setCustomValidity('')">
+            <select id="selectbasic" name="brand" class="form-control">
+                <optgroup label="Đã chọn">
+                <option value="{{brandsp._id}}" selected>{{brandsp.ten}}</option>
+                <optgroup label="Chọn lại">
+                {{# each brand}}
+                    {{#if this.ten}}
+                        <option value="{{this._id}}">{{this.ten}}</option>
+                    {{/if}}
+                {{/each}}
+                </optgroup>
+            </select>
+        </div>
+    </div>
 
+
+    <!-- Select Basic -->
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="selectbasic">Loại</label>
+        <div class="col-md-4">
+            <select id="selectbasic" name="loai" class="form-control">
+                <optgroup label="Đã chọn">
+                    <option value="{{loaisp._id}}" selected>{{loaisp.ten}}</option>
+                    <optgroup label="Chọn lại">
+                        {{# each loai}}
+                            {{#if this.ten}}
+                                <option value="{{this._id}}">{{this.ten}}</option>
+                            {{/if}}
+                        {{/each}}
+                    </optgroup>
+            </select>
         </div>
     </div>
 
@@ -77,21 +104,6 @@
         </div>
     </div>
 
-    <!-- Iamge input-->
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="textinput">Hình Ảnh 4</label>
-        <div class="col-md-4">
-            <input id="textinput" name="hinhanh" type="text" placeholder="Link hình ảnh (Có thể để trống)" class="form-control input-md" value="{{product.hinhanh.[3]}}">
-        </div>
-    </div>
-
-    <!-- Iamge input-->
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="textinput">Hình Ảnh 5</label>
-        <div class="col-md-4">
-            <input id="textinput" name="hinhanh" type="text" placeholder="Link hình ảnh (Có thể để trống)" class="form-control input-md" value="{{product.hinhanh.[4]}}">
-        </div>
-    </div>
 
     <!-- Modal footer -->
     <center><button type="submit" class="btn3d btn btn-success btn-lg">Cập nhật</button></center>

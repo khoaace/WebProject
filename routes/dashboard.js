@@ -170,10 +170,18 @@ router.get("/product/category/:id/page/:number", function (req, res, next) {
 
 router.get('/product/edit/:id',function (req,res) {
     var id = req.params.id;
-
-    Product.findOne({_id:id},function (err,product) {
-        res.render('product/product-edit',{title:'Dashboard-'+product.ten,product:product,layout:'dashboard_layout',message: req.flash('info'),user:req.user});
+Loai.find(function (err,loai) {
+    Brand.find(function (err,brand) {
+        Product.findOne({_id:id},function (err,product) {
+            Loai.findOne({_id:product.loai},function (err,loaisp) {
+                Brand.findOne({_id:product.nhanhieu},function (err,brandsp) {
+                    res.render('product/product-edit',{title:'Dashboard-'+product.ten,product:product,layout:'dashboard_layout',loai:loai,brand:brand,loaisp:loaisp,brandsp:brandsp,message: req.flash('info'),user:req.user});
+                });
+            });
+        });
     });
+});
+
 });
 router.get('/product/edit/:id/success',function (req,res,next) {
     var id = req.params.id;
@@ -185,7 +193,8 @@ router.post("/product/edit/update/",urlencodedParser,function (req,res) {
     var id =  req.body.id;
     var ten = req.body.ten;
     var tenTimKiem =change_alias(ten);
-    var nhanhieu = req.body.nhanhieu;
+    var nhanhieu = req.body.brand;
+    var loai = req.body.loai;
     var xuatxu = req.body.xuatxu;
     var gia = req.body.gia;
     var mmota = req.body.mota;
@@ -196,6 +205,7 @@ router.post("/product/edit/update/",urlencodedParser,function (req,res) {
         nhanhieu: nhanhieu,
         xuatxu: xuatxu,
         hinhanh: hinhanh,
+        loai:loai,
         mota: mmota}).exec(function (err, results) {
     });
     res.redirect('/dashboard/product/edit/'+id+'/success');
@@ -691,22 +701,192 @@ router.get('/category/search/:input/page/:number',function (req,res,next) {
 });
 
 
+
+/*------------------------------Hiển thị  nhãn hiệu sản phẩm-----------------------*/
+
+router.get('/brand',function (req,res,next) {
+    Brand.find(function (err,brand) {
+        var curentPage = '/dashboard/brand';
+        var size = brand.length;
+        var productChuck = initPage(1, brand);
+        var arrPage = createArrPage(brand, curentPage,1);
+        res.render('product/brand-list', {
+            title: 'Dashboard-Nhãn hiệu sản phẩm',
+            brand: productChuck,
+            pages: arrPage,
+            loai_count: size,
+            layout: 'dashboard_layout',
+            message: req.flash('info'),user:req.user
+        });
+    });
+});
+
+
+router.get('/brand/page/:number',function (req,res,next) {
+    var page = parseInt(req.params.number);
+    Brand.find(function (err,brand) {
+        var currentpage = '/dashboard/brand';
+        var allPage = countPage(brand);
+        if(page > allPage || page <1)
+        {
+            if(page>allPage)
+                page=allPage;
+            if(page<1)
+                page=1;
+            res.redirect(currentpage+'/page/'+page);
+        }
+        else {
+            var size = brand.length;
+            var productChuck = initPage(page, brand);
+            var arrPage = createArrPage(brand, currentpage, page);
+            res.render('product/category-list', {
+                title: 'Dashboard-Loại sản phẩm',
+                brand: productChuck,
+                pages: arrPage,
+                loai_count: size,
+                layout: 'dashboard_layout',
+                message: req.flash('info'),
+                user:req.user
+            });
+        }});
+});
+/*------------------------------Thêm  nhãn hiệu sản phẩm mới------------------------------*/
+/*okey*/
+router.post('/brand/add',urlencodedParser,function (req,res,next) {
+
+    var ten = req.body.ten;
+    if (ten == "")
+    {
+        res.status(400).send('no name');
+        return;
+    }
+
+    var brand = new Brand({
+        ten: ten,
+    });
+
+    brand.save(function (err, result) {
+        //req.flash('info',['alert-success','Thêm mới thành công.']);
+        //res.redirect('/dashboard/category');
+        res.send('okey');
+    });
+});
+/*------------------------------Xoá  nhãn hiệu sản phẩm----------------------------------*/
+router.post('/brand/delete',function (req,res,next) {
+    var id = req.body.id;
+
+    Product.deleteMany({nhanhieu:id},function (err,result) {
+        if (err)
+        {
+            res.status(409).send('delete many failed');
+            return;
+        }
+        else {
+            Brand.deleteOne({_id:id},function (err,result1) {
+                if (err)
+                {
+                    res.status(409).send('delete GENRES failed');
+                    return;
+                }
+                else{
+                    res.send('/dashboard/brand/');
+                }
+            });
+        }
+
+    });
+});
+
+/*okey*/
+router.post('/brand/select-delete',urlencodedParser,function (req,res,next) {
+    var checkif_array_or_object = req.body['checkbox[]'];
+
+    if (checkif_array_or_object ==  null)
+    {
+        res.status(400).send('err not ticked');
+    }
+    else if (checkif_array_or_object.constructor === Array)
+    {
+        var arr = checkif_array_or_object;
+        if(arr != null)
+        {
+            for(var i=0;i<arr.length;i++) {
+                Product.deleteMany({nhanhieu:arr[i]},function (err,result) {
+                });
+                Brand.deleteOne({_id:arr[i]}, function (err, result1) {
+
+                });
+            }
+
+            res.status(200).send('Đã xoá '+arr.length+' loại sản phẩm');
+        }
+    }
+    else
+    {
+        id = checkif_array_or_object;
+        Product.deleteMany({nhanhieu:id},function (err,result) {
+            Brand.deleteOne({_id:id},function (err,result1) {
+                res.status(200).send('Xoá thành công');
+            });
+        });
+    }
+
+
+});
+
+/*--------------------------------Sửa nhãn hiệu sản phẩm-----------------------------------*/
+/* okey */
+router.post('/brand/edit',urlencodedParser,function (req,res,next) {
+    var id = req.body.id;
+    var ten = req.body.ten;
+    var msg = {'ten': ""};
+    Brand.where({_id:id}).update({ten:ten}).exec(function (err,result) {
+        if (err)
+        {
+            msg.ten = ten;
+
+            res.status(400).send(msg);
+            return;
+        }
+        else{
+            msg.ten = req.body.ten;
+            res.status(200).send(msg);
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
 /*-------------------------------Phát sinh sản phẩm------------------------------------*/
 /*okey*/
 router.get('/product/generate',function (req,res,next) {
     Loai.find(function (err,loai) {
-        res.render('product/product-generate', {
-            loai: loai,
-            title:'Dashboard - Phát sinh sản phẩm',
-            layout: 'dashboard_layout',
-            message: req.flash('info'),
-            user:req.user
-        })
+        Brand.find(function (err,brand) {
+            res.render('product/product-generate', {
+                loai: loai,
+                brand:brand,
+                title:'Dashboard - Phát sinh sản phẩm',
+                layout: 'dashboard_layout',
+                message: req.flash('info'),
+                user:req.user
+            })
+        });
+
     });
 });
 /*okey*/
 router.post('/product/generate',function (req,res,next) {
     var loai = req.body.loai;
+    var brand = req.body.brand;
     var count = parseInt(req.body.count);
 
     res.charset = 'UTF-8';
@@ -717,7 +897,8 @@ router.post('/product/generate',function (req,res,next) {
         res.status(400).send(resmsg);
         return;
     }
-
+Brand.findOne({_id:brand},function (err,brand) {
+    console.log(brand);
     Loai.findOne({_id:loai},function (err,loai) {
         if (loai == null)
         {
@@ -734,7 +915,7 @@ router.post('/product/generate',function (req,res,next) {
                     tenTimKiem:"zo bot tet",
                     gia: 50000,
                     loai: loai,
-                    nhanhieu: "Robot dỏm",
+                    nhanhieu: brand,
                     xuatxu: "Việt Nam",
                     hinhanh: ["/images/robot.jpg", "/images/robot.jpg"]
                 }));
@@ -744,9 +925,11 @@ router.post('/product/generate',function (req,res,next) {
                 });
             }
             //req.flash('info',['alert-success','Phát sinh thành công '+count+' sản phẩm loại '+result.ten]);
-            res.send('Phát sinh thành công '+count+' sản phẩm loại '+loai.ten);
+            res.send('Phát sinh thành công '+count+' sản phẩm loại '+loai.ten+' nhãn hiệu '+ brand.ten);
         }
     });
+
+});
 
 });
 

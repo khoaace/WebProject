@@ -24,6 +24,20 @@
             </div>
         </div>
 
+        <!-- Select Basic -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="selectbasic">Chọn nhãn hiệu</label>
+            <div class="col-md-4">
+                <select id="selectbasicbrand" name="brand" class="form-control">
+                    {{# each brandlist}}
+                        {{#if this.ten}}
+                            <option value="{{this._id}}">{{this.ten}}</option>
+                        {{/if}}
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
 
         <!-- Number input-->
         <div class="form-group">

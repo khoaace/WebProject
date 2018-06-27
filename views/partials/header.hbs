@@ -83,6 +83,16 @@
                                                 </ul>
                                             </div>
                                         </div>
+                                        <div class="col1">
+                                            <div class="h_nav">
+                                                <h4>Phân loại nhãn hiệu</h4>
+                                                <ul>
+                                                    {{#each brand}}
+                                                        <li><a href="/brand/{{this._id}}/"> ▶{{this.ten}}</a></li>
+                                                    {{/each}}
+                                                </ul>
+                                            </div>
+                                        </div>
                                         <div class="col5">
                                             <img src="/images/me.png" class="img-responsive" alt="">
                                         </div>
@@ -175,14 +185,26 @@
 
                         </div>
                       <br>
-                        <label for="sel1">Tìm kiếm nâng cao</label>
-                        <select class="form-control" id="advance" name="advance">
-                            <option value="All">Tất cả sản phẩm</option>
-                            {{#each loai}}
-                                <option value="{{this._id}}">{{this.ten}}</option>
-                            {{/each}}
-                        </select>
 
+                        <h4>Tìm kiếm nâng cao</h4><hr>
+                        <div class="form-group" style="text-align: left;">
+                            <strong>Nhãn hiệu :</strong>
+                        {{#each brand}}
+                        <label class="radio-inline">
+                            <input type="radio" name="idBrand" id="idBrand" value="{{this._id}}">{{this.ten}}
+                        </label>
+                        {{/each}}
+                        <br>
+                            <hr>
+                            <strong>Loại :</strong>
+                        {{#each loai}}
+                            <label class="radio-inline">
+                                <input type="radio" name="idLoai" id="idLoai" value="{{this._id}}">{{this.ten}}
+                            </label>
+                        {{/each}}
+                        <br>
+
+                        </div>
 
                     </div>
                     </form>

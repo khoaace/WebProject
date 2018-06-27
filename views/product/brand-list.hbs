@@ -1,0 +1,122 @@
+{{#if message}}
+    <div class="alert {{message.[0]}}">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        {{message.[1]}}
+    </div>
+{{/if}}
+<br>
+<button data-toggle="collapse" data-target="#demo" class="btn-success">+</button>
+
+<div id="demo" class="collapse">
+    <form method="post" action="/dashboard/brand/add">
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="newgenres_textinput">Tên nhãn hiệu sản phẩm</label>
+            <div class="col-md-4">
+                <input id="newgenres_textinput" name="ten" type="text" placeholder="" class="form-control input-md"  required="" oninvalid="this.setCustomValidity('Chưa nhập tên')" oninput="setCustomValidity('')">
+            </div>
+        </div>
+        <button id="smbutton_addbrand" class="btn3d btn btn-success">Thêm mới</button>
+    </form>
+</div>
+<form class="brand_table" method="post" action="/dashboard/brand/select-delete">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-list"></span>Danh sách nhãn hiệu sản phẩm
+            <div class="btn-group pull-right">
+                <button id="sm_button_selectdel" class="btn-danger">Xoá các mục đã chọn</button>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <ul class="list-group">
+                {{#if brand}}
+                    {{# each brand}}
+                        {{# each this}}
+                            <li class="list-group-item">
+                                <div class="checkbox">
+                                    <input type="checkbox" name="checkbox" value="{{this._id}}" />
+                                    <label>
+                                        <strong id="{{this.id}}_id">{{this.ten}}</strong>
+                                    </label>
+
+                                </div>
+                                <div class="pull-right action-buttons">
+                                    <a class="smbutton_editbrand" id="{{this.id}}" name="{{this.ten}}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a class="smbutton_deletebrand" id="{{this._id}}" name="{{this.ten}}"><span class="glyphicon glyphicon-trash"></span></a>
+
+                                </div>
+                            </li>
+                        {{/each}}
+                    {{/each}}
+                {{else}}
+                    <div class="alert alert-danger">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        Không tìm nhãn hiệu sản phẩm nào.
+                    </div>
+                {{/if}}
+            </ul>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>
+                        Tổng số nhãn hiệu sản phẩm <span class="label label-info">{{loai_count}}</span></h6>
+                </div>
+                <div class="col-md-6">
+                    <ul class="pagination pagination-sm pull-right">
+                        {{#each pages}}
+                            <li class="{{this.[2]}}"><a href="{{this.[1]}}/page/{{this.[0]}}">{{this.[0]}}</a></li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- dialogedit -->
+<div id="dialog_edit" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <form method="post" action="/dashboard/brand/edit" class="form-horizontal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 id="dialog_edit_title" class="modal-title">Chỉnh sửa nhãn hiệu sản phẩm</h4>
+                </div>
+                <div class="modal-body" id="dialog_edit_body">
+                    <div class="row">
+                        <label class="col-md-4 control-label" for="textinput">Tên nhãn hiệu sản phẩm</label>
+                        <div class="col-md-4"><input id="dialog_edit_body_textinput" value="" type="text" placeholder="" class="form-control input-md"></div>
+                    </div>
+                </div>
+                <input id="dialog_edit_body_id" value="" type="hidden">
+                <div class="modal-footer">
+                    <button type="button" class="btn-success btn" id="smbutton_editbrand_modal">Cập nhật</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- dialog delete -->
+<div id="dialog_delete" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <form method="post" action="/dashboard/brand/edit" class="form-horizontal">
+            <div class="modal-content">
+                <div id="dialog_delete_header" class="modal-header" style="background-color: red">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 id="dialog_delete_title" class="modal-title">Chỉnh sửa nhãn hiệu sản phẩm</h4>
+                </div>
+                <div class="modal-body" id="dialog_delete_body">
+                    <!-- -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-danger btn" id="smbutton_deletebrand_modal">Xóa</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

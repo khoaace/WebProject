@@ -317,6 +317,192 @@ $(document).ready(function(){
         $("#modalbox").modal('show');
     });
 });
+
+//================ brand-list.hbs=======================
+$(document).ready(function(){
+    /* thêm danh mục mới */
+    $("#smbutton_addbrand").on('click', function(event){
+        event.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '/dashboard/brand/add',
+            data: {'ten': $("#newgenres_textinput").val()}
+        })
+            .done(function(data){
+                $("#newgenres_textinput").val('');
+                $("#main_modal_header").attr("style",'background-color: #00810b');
+                $("#main_modal_body_alert").html('Thêm mới thành công');
+                $("#main_modal_footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
+                $("#modalbox").modal('show');
+                //reload page content
+                $(".brand_table").load(window.location.pathname +  ' .brand_table');
+            })
+            .fail(function(data){
+                $("#main_modal_header").attr("style",'background-color: red');
+                $("#main_modal_body_alert").html('Thêm mới Thất Bại')
+                $("#main_modal_footer").html('<button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>');
+                $("#modalbox").modal('show');
+            });
+    });
+
+    var formData;
+
+    /* chỉnh sửa */
+    //nút sửa thông tin, mỗi row
+    //những element mà có thể bị thay đổi sau, thì viết kiểu này mới chạy được ở lần sau.
+    $(document).on('click', ".smbutton_editbrand", function(event){
+        event.preventDefault();
+        var genresid = $(this).attr('id');
+        var genresname = $(this).attr('name');
+
+        formData =  {
+            'ten'              : genresname,
+            'id'               : genresid
+        };
+
+        $("#dialog_edit_body_textinput").val(genresname);
+        $("#dialog_edit_body_id").val(genresid);
+
+        $("#dialog_edit").modal('show');
+    });
+
+    //nút [cập nhật] trên pop modal
+    $("#smbutton_editbrand_modal").on('click', function(event){
+        //event.preventDefault();
+        // process the form
+        formData.ten = $("#dialog_edit_body_textinput").val();
+
+        $.ajax({
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url         : '/dashboard/brand/edit', // the url where we want to POST
+            data        : formData, // our data object
+            dataType    : 'json', // what type of data do we expect back from the server
+            encode      : true,
+
+            /*success : function( data, textStatus, jqXHR ) {
+                // Handle data transformation or DOM manipulation in here.
+            }*/
+        }).done(function(data){
+
+            var iddanhmuc = "#" + formData.id + "_id";
+            $("#dialog_edit").modal('hide');
+            $(iddanhmuc).html(data.ten);
+
+            $(".smbutton_editbrand").attr("name", data.ten);
+            $("#main_modal_header").attr("style",'background-color: #00810b');
+            $("#main_modal_body").html('<p id="modalalert">Cập Nhật Thành Công</p>')
+            $("#main_modal_footer").html('<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>');
+            $("#modalbox").modal('show');
+        }).fail(function(data){
+            $("#modalbox").modal('hide');
+            $("#main_modal_header").attr("style","background-color: red")
+            $("#main_modal_body").html('<p id="modalalert">Cập Nhật Không Thành Công</p>')
+            $("#main_modal_footer").html('<button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>');
+            $("#modalbox").modal('show');
+        });
+    });
+
+    /*Xóa danh mục*/
+    //nút xóa danh mục mỗi row
+    $(document).on('click','.smbutton_deletebrand', function(event){
+        event.preventDefault();
+        var genresid = $(this).attr('id');
+        var genresname = $(this).attr('name');
+
+        formData =  {
+            'id'               : genresid
+        };
+
+        $("#dialog_delete_body").html('<p>Bạn có chắc chắn xoá <h4>' + genresname + '</h4> Mọi sản phẩm thuộc loại này sẽ bị xoá.</p>');
+
+        $("#dialog_delete").modal('show');
+    });
+
+    //nút [XÓA] trên pop modal
+    $("#smbutton_deletebrand_modal").on('click', function(event){
+        //event.preventDefault();
+        // process the form
+        $("#dialog_delete").modal('hide');
+        $.ajax({
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url         : '/dashboard/brand/delete', // the url where we want to POST
+            data        : formData, // our data object
+            //dataType    : 'json', // what type of data do we expect back from the server
+            //encode      : true,
+
+            /*success : function( data, textStatus, jqXHR ) {
+                // Handle data transformation or DOM manipulation in here.
+            }*/
+        }).done(function(data){
+            console.log(data);
+            $("#dialog_delete").modal('hide');
+            $("#main_modal_header").attr("style",'background-color: #00810b');
+            $("#main_modal_body").html('<p id="modalalert">Xóa Thành Công</p>');
+            $("#main_modal_footer").html('<button class="btn btn-success" data-dismiss="modal">OK</button>');
+            //reload page content
+            $(".brand_table").load(window.location.pathname +  ' .brand_table');
+
+
+        }).fail(function(data){
+            $("#modalbox").modal('hide');
+            $("#main_modal_header").attr("style","background-color: red");
+            $("#main_modal_body").html('<p id="modalalert">Xóa Không Thành Công</p>');
+            $("#main_modal_footer").html('<button role="button" class="btn btn-danger" data-dismiss="modal>Hủy</button>');
+
+        });
+
+        $("#modalbox").modal('show');
+    });
+
+    /*select and delete*/
+    $(document).on('click','#sm_button_selectdel', function(event){
+        event.preventDefault();
+
+        var del_list = [];
+
+        $('input[name="checkbox"]').each(function(){
+            if($(this).is(':checked'))
+            {
+                del_list.push($(this).val());
+            }
+        });
+
+        var delformData = {
+            'checkbox'          : del_list
+        }
+        console.log(delformData);
+        event.preventDefault();
+        // process the form
+
+        $.ajax({
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            url         : '/dashboard/brand/select-delete', // the url where we want to POST
+            data        : delformData, // our data object
+            //dataType    : 'json', // what type of data do we expect back from the server
+            //encode      : true,
+
+            /*success : function( data, textStatus, jqXHR ) {
+                // Handle data transformation or DOM manipulation in here.
+            }*/
+        }).done(function(data){
+            $("#main_modal_header").attr("style",'background-color: #00810b');
+            $("#main_modal_body").html('<p id="modalalert">' + data + '</p>');
+            $("#main_modal_footer").html('<button class="btn btn-success" data-dismiss="modal">OK</button>');
+            //reload page content
+            $(".brand_table").load(window.location.pathname +  ' .brand_table');
+
+
+        }).fail(function(data){
+            $("#main_modal_header").attr("style","background-color: red");
+            $("#main_modal_body").html('<p id="modalalert">Xóa Không Thành Công</p>');
+            $("#main_modal_footer").html('<button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>');
+
+        });
+
+        $("#modalbox").modal('show');
+    });
+});
+
 //================= product-generate  ==================
 $(document).ready(function(){
     $("#sm_product_gen").on("click", function(event){
@@ -324,7 +510,8 @@ $(document).ready(function(){
 
         var formData = {
             'loai'             : $("#selectbasic").val(),
-            'count'            : $("#numberforgen_textinput").val()
+            'count'            : $("#numberforgen_textinput").val(),
+            'brand'             : $("#selectbasicbrand").val()
         };
         
         // process the form
