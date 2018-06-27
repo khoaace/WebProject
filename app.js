@@ -32,7 +32,7 @@ app.use(flash({ unsafe: true }));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 900000 }}));
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 43200000 }}));
 // Login
 app.use(back());
 app.use(passport.initialize());

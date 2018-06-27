@@ -51,7 +51,7 @@ router.post('/detail/comment',function (req,res,next) {
        {
            nguoibinhluan= '[Khách]-'+req.body.nguoibinhluan;
        }
-       console.log(nguoibinhluan);
+
         var binhluan = new Binhluan();
         binhluan.nguoibinhluan = nguoibinhluan;
         binhluan.thoigian = dateCmt;
@@ -72,7 +72,6 @@ router.post('/detail/comment',function (req,res,next) {
 router.post('/detail/comment/update',function (req,res,next) {
         curpage=req.body.curpage;
         Binhluan.where({_id:req.body.idCmt}).update({noidung:req.body.noidung}).exec(function (err,doc) {
-            console.log(doc);
             res.send("thanhcong");
         });
 

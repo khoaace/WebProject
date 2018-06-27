@@ -13,7 +13,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 /*-----------------------------------Xác thực tài khoản----------------------------*/
-/*router.use(function(req, res, next) {
+router.use(function(req, res, next) {
     // check header or url parameters or post parameters for token
     var token = req.session.token;
     //req.body.token || req.query.token || req.headers['x-access-token']
@@ -41,7 +41,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
         req.flash('info','Chưa thực hiện đăng nhập.');
         res.redirect('/error');
     }
-});*/
+});
 
 router.get("/",function (req,res,next) {
     res.render('dashboard',{layout:'dashboard_layout',user:req.user});
@@ -133,7 +133,6 @@ router.get("/product/category/:id",function (req,res,next) {
 router.get("/product/category/:id/page/:number", function (req, res, next) {
     var id = req.params.id;
     var page = parseInt(req.params.number);
-    console.log(page);
     Loai.find(function (err, loai1) {
         Loai.findOne({_id: id}, function (err, loai2) {
             var currentPage = '/dashboard/product/category/' + id;
@@ -223,7 +222,6 @@ router.get('/product/add', function(req, res, next) {
 /*okey */
 router.post("/product/add",urlencodedParser,function (req,res) {
     var errmsg = false;
-    console.log("cec");
     var ten = req.body.ten;
     var tenTimKiem = change_alias(ten);
     if (ten === undefined || ten == "")
@@ -349,7 +347,7 @@ router.post("/product/add",urlencodedParser,function (req,res) {
 router.post('/product/delete',function (req,res,next) {
 
     var id = req.body.id;
-    console.log(id);
+
 
     if (id === undefined || id == "")
     {
@@ -494,7 +492,6 @@ router.get('/category',function (req,res,next) {
 
 router.get('/category/page/:number',function (req,res,next) {
     var page = parseInt(req.params.number);
-    console.log(page);
     Loai.find(function (err,loai) {
         var currentpage = '/dashboard/category';
         var allPage = countPage(loai);
@@ -1242,7 +1239,7 @@ router.get("/order/state/:state/by/:sortby/page/:number", function (req, res, ne
 router.post('/order/changestate', function(req, res, next){
     var orderId = req.body.id;
     var toState = req.body.toState;
-    console.log(toState);
+
     if (toState === undefined)
     {
         console.log("state swrong");
@@ -1260,7 +1257,7 @@ router.post('/order/changestate', function(req, res, next){
             }
             else
             {
-                console.log(doc);
+
                 doc.trangthai = toState;
                 doc.save(function(err){
                     if (err)
@@ -1302,7 +1299,6 @@ function orderdetails_checkproduct(arrayPro) {
 
 router.get('/order/query/:id', function(req, res, next){
     var orderId = req.params.id;
-    console.log(orderId);
     Order.findOne({_id: orderId }, function (err, doc){
         if (err)
         {
@@ -1334,8 +1330,7 @@ router.get('/order/query/:id', function(req, res, next){
                 default:
                 linecolor = "active";
             }
-            
-            console.log(doc.sanpham.length);
+
             for (var i = 0; i < doc.sanpham.length; i++)
             {
                 products.push(doc.sanpham[i]);
@@ -1360,8 +1355,6 @@ router.get('/order/query/:id', function(req, res, next){
             var sortedRealProduct = [];
             Product.find({_id: { $in: products}}, function(err,doc2){
                 realproducts = doc2.slice(0);
-                console.log(realproducts);
-                console.log(products);
                 for (var j = 0; j < products.length;j++)
                 {
                     var thisProductid = products[j];
@@ -1520,7 +1513,7 @@ router.post('/statistic/process', function(req, res, next){
                 for (var i = 0; i < genresofallproducts.length; i++)
                 {
                     var thisProd = genresofallproducts[i];
-                    console.log(thisProd);
+
                     var gen = topdanhmuc.find(stat_checkproduct, thisProd.loai);
                     
                     if (typeof gen !== "undefined")
@@ -1532,7 +1525,7 @@ router.post('/statistic/process', function(req, res, next){
                         topdanhmuc.push([thisProd.loai, 1])
                     }
                 }
-                console.log(topdanhmuc);
+
                 for (var i = 0; i < products.length; i++)
                 {
                     var element = topsanpham.find(stat_checkproduct, products[i]._id);
@@ -1684,8 +1677,7 @@ function countPage(docs) {
                     console.log(err);
                 }
                 else {
-                    //console.log(docs);
-                    console.log(docs.length);
+
 
                     for (var bill = 0; bill < docs.length; bill++) {
                         var sumBill = 0;
@@ -1696,18 +1688,13 @@ function countPage(docs) {
                         resultElementVal += sumBill;
                     }
                 }
-                console.log("today");
-                console.log(dateIndex);
-                console.log("romorow");
-                console.log(tomorow);
-                console.log(result);
+
 
 
                 var thisDate = dateIndex.toDateString();
                 var element = [thisDate, resultElementVal];
 
                 result.push(element);
-                console.log(result);
                 dateIndex.setDate(dateIndex.getDate() + 1);
                 return result;
             });

@@ -52,7 +52,7 @@ module.exports = function (passport) {
                             };
 
                             var token = jwt.sign(payload,'verysecret', {
-                                expiresIn: 900 // token tồn tại trong 15 phút
+                                expiresIn: 3600 // token tồn tại trong 15 phút
                             });
                          /*   Tạo token active tài khoản*/
                             // return the information including token as JSON
@@ -88,7 +88,7 @@ module.exports = function (passport) {
                 };
 
                 var token = jwt.sign(payload,'verysecret', {
-                    expiresIn: 900 // token tồn tại trong 15 phút
+                    expiresIn: 3600 // token tồn tại trong 15 phút
                 });
                 // return the information including token as JSON
                 req.session.token = token;
