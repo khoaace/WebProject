@@ -6,6 +6,7 @@ var Loai = require('../models/loai');
 var User  = require('../models/user');
 var Order = require('../models/donhang');
 var Brand = require('../models/brand');
+var Binhluan = require('../models/binhluan');
 
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
@@ -13,7 +14,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 /*-----------------------------------Xác thực tài khoản----------------------------*/
-router.use(function(req, res, next) {
+/*router.use(function(req, res, next) {
     // check header or url parameters or post parameters for token
     var token = req.session.token;
     //req.body.token || req.query.token || req.headers['x-access-token']
@@ -41,7 +42,7 @@ router.use(function(req, res, next) {
         req.flash('info','Chưa thực hiện đăng nhập.');
         res.redirect('/error');
     }
-});
+});*/
 
 router.get("/",function (req,res,next) {
     res.render('dashboard',{layout:'dashboard_layout',user:req.user});
@@ -52,7 +53,6 @@ router.get("/",function (req,res,next) {
 
 router.get("/product",function (req,res,next) {
     Loai.find(function (err,loai) {
-        console.log(err);
         var curentPage = '/dashboard/product';
         Product.find(function (err, product) {
             var size = product.length;
@@ -71,7 +71,6 @@ router.get("/product",function (req,res,next) {
         });
     });
 });
-
 
 router.get('/product/page/:number',function (req,res,next) {
     var page = parseInt(req.params.number);
@@ -365,17 +364,17 @@ router.post('/product/delete',function (req,res,next) {
         return;
     }
 
-    Product.findOne({_id:id},function (err,result) {
+    Product.deleteOne({_id:id},function (err,result) {
         if (err)
         {
             res.status(409).send('cannot delete');
             return;
         }
         else{
-            result.remove(function(){
-
-                res.send('done');
+                Binhluan.deleteMany({sanpham:id},function (err,result) {
+                    res.send('done');
             });
+
         }
     });
 
@@ -385,7 +384,7 @@ router.post('/product/delete',function (req,res,next) {
 /*okey*/
 router.post('/product/select-delete',urlencodedParser,function (req,res,next) {
     var checkif_array_or_object = req.body['checkbox[]'];
-
+    var pos=0;
     if (checkif_array_or_object ==  null)
     {
         res.status(400).send('err not ticked');
@@ -395,9 +394,14 @@ router.post('/product/select-delete',urlencodedParser,function (req,res,next) {
         var arr = checkif_array_or_object;
         if(arr != null)
         {
+            console.log(arr);
             for(var i=0;i<arr.length;i++) {
                 Product.deleteOne({_id:arr[i]}, function (err, result1) {
-
+                });
+            }
+            for(var i=0;i<arr.length;i++)
+            {
+                Binhluan.deleteMany({sanpham:arr[i]},function (err,result) {
                 });
             }
 
@@ -407,9 +411,16 @@ router.post('/product/select-delete',urlencodedParser,function (req,res,next) {
     else
     {
         id = checkif_array_or_object;
-        Product.deleteMany({loai:id},function (err,result) {
-            res.status(200).send('Xoá thành công');
+        Binhluan.deleteMany({sanpham:id},function (err,result) {
         });
+        Product.deleteMany({_id:id},function (err,result) {
+            res.status(200).send('Xoá thành công');
+    });
+
+
+
+
+
     }
 });
 
@@ -552,17 +563,7 @@ router.post('/category/add',urlencodedParser,function (req,res,next) {
     });
 });
 /*------------------------------Xoá loại sản phẩm----------------------------------*/
-/*bỏ*/
-router.get('/category/delete/:id',function (req,res,next) {
-    var id = req.params.id;
 
-    Product.deleteMany({loai:id},function (err,result) {
-        Loai.deleteOne({_id:id},function (err,result1) {
-            req.flash('info',['alert-success','Xoá thành công.']);
-            res.redirect('/dashboard/category/');
-        });
-    });
-});
 /*okey*/
 router.post('/category/delete',function (req,res,next) {
     var id = req.body.id;
@@ -606,7 +607,6 @@ router.post('/category/select-delete',urlencodedParser,function (req,res,next) {
                 Product.deleteMany({loai:arr[i]},function (err,result) {
                 });
                 Loai.deleteOne({_id:arr[i]}, function (err, result1) {
-
                 });
             }
 

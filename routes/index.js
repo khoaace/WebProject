@@ -51,10 +51,24 @@ router.get("/category/loai/:id",function (req,res,next) {
     Loai.find(function (err,result) {
         Product.find({loai:req.params.id},function (err,docs) {
             Loai.findOne({_id:req.params.id},function (err,result1) {
-                var productChuck = initPage(page,docs);
-                var arrPage = createArrPage(docs,currentpage,page);
-                curpage=1;
-                res.render('index', { title: 'eShop',products:productChuck,pages:arrPage,loai:result,current_cate:result1.ten,user:req.user});
+                if(result1== null)
+                {
+                    req.flash('info','Loại Sản phẩm không tồn tại trên hệ thống.');
+                    res.redirect('/error');
+                }
+                else {
+                    var productChuck = initPage(page, docs);
+                    var arrPage = createArrPage(docs, currentpage, page);
+                    curpage = 1;
+                    res.render('index', {
+                        title: 'eShop',
+                        products: productChuck,
+                        pages: arrPage,
+                        loai: result,
+                        current_cate: result1.ten,
+                        user: req.user
+                    });
+                }
             });
         });
     });
@@ -75,10 +89,25 @@ router.get("/brand/:id",function (req,res,next) {
         Product.find({nhanhieu:req.params.id},function (err,docs) {
             Brand.find(function (err,brand) {
                 Brand.findOne({_id:req.params.id},function (err,result1) {
-                    var productChuck = initPage(page,docs);
-                    var arrPage = createArrPage(docs,currentpage,page);
-                    curpage=1;
-                    res.render('index', { title: 'eShop',products:productChuck,pages:arrPage,loai:result,brand:brand,current_cate:result1.ten,user:req.user});
+                    if(result1 == null)
+                    {
+                        req.flash('info','Nhãn hiệu Sản phẩm không tồn tại trên hệ thống.');
+                        res.redirect('/error');
+                    }
+                    else {
+                        var productChuck = initPage(page, docs);
+                        var arrPage = createArrPage(docs, currentpage, page);
+                        curpage = 1;
+                        res.render('index', {
+                            title: 'eShop',
+                            products: productChuck,
+                            pages: arrPage,
+                            loai: result,
+                            brand: brand,
+                            current_cate: result1.ten,
+                            user: req.user
+                        });
+                    }
                 });
             });
 
@@ -140,7 +169,7 @@ router.get("/search",function (req,res) {
     var input = change_alias(req.query.search);
     var idLoai = req.query.idLoai;
     var idBrand = req.query.idBrand;
-
+    var gia = req.query.idGia;
     var currentpage = '/search/' + input;
     Brand.find(function (err, brand) {
         Loai.find(function (err, result1) {
@@ -160,7 +189,6 @@ router.get("/search",function (req,res) {
                             }
 
                         }
-                        console.log(result);
                     }
                     if(idBrand != null)
                     {
@@ -172,6 +200,19 @@ router.get("/search",function (req,res) {
                                 i--;
                             }
                         }
+                    }
+                    if(gia == "inc")
+                    {
+                        result.sort(function (a,b) {
+                            return a.gia - b.gia;
+                        });
+                    }
+                    if(gia == 'dec')
+                    {
+                        result.sort(function (a,b) {
+                            return a.gia - b.gia;
+                        });
+                        result.reverse();
                     }
                     productChuck = initPage(page, result);
                     arrPage = createArrPage(result, currentpage, page);
@@ -198,11 +239,13 @@ router.get("/search",function (req,res) {
 router.get("/error",function (req,res,next) {
     Brand.find(function (err,brand) {
         Loai.find(function (err,result) {
+
             res.render('error', {message: req.flash('info'),brand:brand,user:req.user,loai:result});
         });
     });
 
 });
+
 router.post("/error",function (req,res,next) {
    var data="Success";
    res.send(data);
@@ -300,9 +343,23 @@ router.get("/order/generate", function(){
 
 });
 
+router.post("/checkavailable",function (req,res,next) {
+    var id =req.body.id;
+        Product.findOne({_id:id},function (err,doc) {
+        if(doc == null)
+        { var data = {ten:'SP đã xoá',gia:0};
+            res.send(data);
+        }
+       else
+        {
+            var data = {ten:doc.ten,gia:doc.gia};
+            res.send(data);
+        }
+    });
+
+});
 
 /*-----------------Test -----------------------*/
-
 
 
 router.get("/todolist",function (req,res,next) {

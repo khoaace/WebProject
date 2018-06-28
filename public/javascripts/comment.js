@@ -120,6 +120,7 @@ $(document).ready(function () {
     }
     $("#sendComment").click(function (event) {
        event.preventDefault();
+       var error = false;
        if($("#userCurCmt").val().trim() =="")
        {
            $("#snackbar").html('Chưa nhập tên');
@@ -128,6 +129,7 @@ $(document).ready(function () {
            x.className = "show";
            // After 3 seconds, remove the show class from DIV
            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+           error = true;
        }
        if($("#comment").val().trim() == "")
        {
@@ -137,8 +139,9 @@ $(document).ready(function () {
            x.className = "show";
            // After 3 seconds, remove the show class from DIV
            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+           error = true;
        }
-       else {
+       if(!error) {
            var dataComment = {
                'nguoibinhluan': $("#userCurCmt").val(),
                'sanpham': $("#idProduct").val(),

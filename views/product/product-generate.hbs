@@ -29,7 +29,7 @@
             <label class="col-md-4 control-label" for="selectbasic">Chọn nhãn hiệu</label>
             <div class="col-md-4">
                 <select id="selectbasicbrand" name="brand" class="form-control">
-                    {{# each brandlist}}
+                    {{# each brand}}
                         {{#if this.ten}}
                             <option value="{{this._id}}">{{this.ten}}</option>
                         {{/if}}

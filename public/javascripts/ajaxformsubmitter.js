@@ -593,7 +593,7 @@ $(document).ready(function(){
             $("#main_modal_body").html('<p id="modalalert">' + data + '</p>');
             $("#main_modal_footer").html('<button class="btn btn-success" data-dismiss="modal">OK</button>');
             //reload page content
-            $(".product_table").load(window.location.pathname +  ' .product_table');
+            $(".product_table").load(window.location.href +  ' .product_table');
             
 
         }).fail(function(data){
@@ -644,7 +644,7 @@ $(document).ready(function(){
             $("#main_modal_body").html('<p id="modalalert">Xóa Thành Công</p>');
             $("#main_modal_footer").html('<button class="btn btn-success" data-dismiss="modal">OK</button>');
             //reload page content
-            $(".product_table").load(window.location.pathname +  ' .product_table');
+            $(".product_table").load(window.location.href +  ' .product_table');
             
 
         }).fail(function(data){
