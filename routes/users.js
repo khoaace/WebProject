@@ -337,8 +337,7 @@ module.exports = function (app, passport) {
         if (req.isAuthenticated())
             return next();
         // Nếu chưa, đưa về trang chủ
-        req.flash('info','Bạn cần đăng nhập trước.');
-        res.redirect('/error');
+        res.redirect('/login');
     }
 
     function isUnLoggedIn(req, res, next) {
@@ -353,7 +352,7 @@ module.exports = function (app, passport) {
 
 
 
-/*
+
 // Tạo tài khoản Admin
     app.get('/setup', function (req, res) {
         // create a sample user
@@ -375,7 +374,28 @@ module.exports = function (app, passport) {
             console.log('User saved successfully');
         });
     });
-*/
+
+    app.get('/setup/:name', function (req, res) {
+        var name = req.params.name;
+        // create a sample user
+        var date = new Date();
+        var user = new User();
+        user.username = name;
+        user.password = user.generateHash('123123');
+        user.admin = false;
+        user.mod = true;
+        user.gender = 'Nam';
+        user.fullname='Admin';
+        user.birthDay="1997-1-1";
+        user.createDate = date;
+        user.email = "khoaace@gmail.com";
+        user.active = false;
+        // save the sample user
+        user.save(function (err) {
+            if (err) throw err;
+            console.log('User saved successfully');
+        });
+    });
 
 };
 function orderdetails_checkproduct(arrayPro) {

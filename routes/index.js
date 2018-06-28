@@ -437,11 +437,19 @@ function escapeRegex(text) {
 /*-------------------Các hàm hỗ trợ xác thực-------------------------*/
 function isLoggedIn(req, res, next) {
     // Nếu một user đã xác thực, cho đi tiếp
-    if (req.isAuthenticated())
+    if (req.isAuthenticated()) {
+        if(req.session.user.active)
         return next();
-    // Nếu chưa, đưa về trang chủ
-    req.flash('info','Bạn cần đăng nhập trước.');
-    res.redirect('/error');
+        else
+        {
+            req.flash('info','Tài khoản của bạn chưa được kích hoạt.');
+        }
+        res.redirect('/error');
+    }
+    else {
+        // Nếu chưa, đưa về trang chủ
+        res.redirect('/login');
+    }
 }
 
 module.exports = router;

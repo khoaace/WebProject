@@ -1050,9 +1050,11 @@ router.get('/user/delete/:id',isAdmin,function (req,res,next) {
 
 });
 
-router.post('/user/select-delete',isAdmin,urlencodedParser,function (req,res,next) {
+/*router.post('/user/select-delete',isAdmin,urlencodedParser,function (req,res,next) {
     var checkif_array_or_object = req.body.checkbox;
     var error=false;
+    var run=false;
+    console.log(checkif_array_or_object);
     if (checkif_array_or_object ==  null)
     {
         req.flash('info', ['alert-warning', 'Chưa chọn thành viên']);
@@ -1060,35 +1062,37 @@ router.post('/user/select-delete',isAdmin,urlencodedParser,function (req,res,nex
     }
     else if (checkif_array_or_object.constructor === Array)
     {
+        var arrPromise = [];
         var arr = checkif_array_or_object;
         if(arr != null)
         {
+
             for(var i=0;i<arr.length;i++) {
-                User.findOne({_id:arr[i]},function (err,result) {
-                    if(result.admin)
-                    {
-                        error=true;
-                    }
-                });
+                arrPromise.push(
+                    User.findOne({_id:arr[i]}).exec(  function (err,result) {
+                        if(result.admin)
+                        {
+                            console.log('day ne');
+                        }
+                        else{
+                            console.log('concec');
+                            User.deleteOne({_id: arr[i]},function (err, result1) {
+                                console.log('concec');
+                            });
+
+                        }
+                    })
+                )
             }
-            if(!error) {
-                for(var i=0;i<arr.length;i++) {
-                    Loai.deleteOne({_id: arr[i]}, function (err, result1) {
-                    });
-                    req.flash('info', ['alert-success', 'Đã xoá ' + arr.length + ' thành viên']);
-                    res.redirect('/dashboard/user/');
-                }
-            }
-            else
-            {
-                req.flash('info',['alert-danger','Lỗi!!! Danh sách chứa thành viên không thể xoá.']);
-                res.redirect('/dashboard/user/');
-            }
+
+            Promise.all(arrPromise).then( res.redirect('/dashboard/user/'));
+
         }
     }
     else
     {
         id = checkif_array_or_object;
+
         User.findOne({_id:id},function (err,result) {
             if(result.admin)
             {
@@ -1096,7 +1100,7 @@ router.post('/user/select-delete',isAdmin,urlencodedParser,function (req,res,nex
                 res.redirect('/dashboard/user/');
             }
             else {
-                Loai.deleteOne({_id: id}, function (err, result1) {
+                User.deleteOne({_id: id}, function (err, result1) {
                     req.flash('info', ['alert-success', 'Xoá thành công.']);
                     res.redirect('/dashboard/user/');
                 });
@@ -1104,7 +1108,8 @@ router.post('/user/select-delete',isAdmin,urlencodedParser,function (req,res,nex
         });
     }
 
-});
+
+});*/
 
 /*------------------tìm kiếm thành viên----------------------------------*/
 
