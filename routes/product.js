@@ -34,13 +34,9 @@ router.get('/detail/:id', function(req, res, next) {
                                 Binhluan.find({sanpham: id}, function (err, binhluan) {
                                     binhluan.reverse();
 
-                                    for (var loop = 0; loop < binhluan.length; loop++)
-                                    {
-                                        binhluan[loop].thoigian = binhluan[loop].thoigian.toLocaleString("en-US", {timeZone: 'Asia/Jakarta' });
-                                    }
-                                    
                                     var binhluanChuck = initPage(page, binhluan);
                                     var arrPage = createArrPage(binhluan, null, page);
+                                   
                                     curpage = "";
                                     res.render('product/product-detail', {
                                         title: 'eShop-' + result.ten,

@@ -1,5 +1,9 @@
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
+    $('.text-muted').each(function(){
+        var date = new Date($(this).html());
+        $(this).html() = date.toLocaleString("en-US", {timeZone: 'Asia/Jakarta' });
+    });
 });
 
 $(document).ready(function(){
