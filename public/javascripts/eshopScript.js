@@ -3,7 +3,7 @@ $(document).ready(function(){
     $('.text-muted').each(function(){
         var date = new Date($(this).html());
         console.log(date);
-        $(this).html(date);
+        $(this).html(date.toString());
     });
 });
 
