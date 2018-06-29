@@ -2,7 +2,9 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
     $('.text-muted').each(function(){
         var date = new Date($(this).html());
+        console.log(date);
         $(this).html() = date.toLocaleString("en-US", {timeZone: 'Asia/Jakarta' });
+        console.log(date);
     });
 });
 
