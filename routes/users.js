@@ -379,6 +379,7 @@ module.exports = function (app, passport) {
         var name = req.params.name;
         // create a sample user
         var date = new Date();
+        date = date.toLocaleString("en-US", {timeZone: 'Asia/Jakarta' });
         var user = new User();
         user.username = name;
         user.password = user.generateHash('123123');

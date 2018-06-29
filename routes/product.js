@@ -68,6 +68,7 @@ router.post('/detail/comment/page',function (req,res) {
 /*-------------------------------Bình luận sản phẩm------------------------------*/
 router.post('/detail/comment',function (req,res,next) {
     var dateCmt = Date();
+    dateCmt = dateCmt.toLocaleString("en-US", {timeZone: 'Asia/Jakarta' });
     var nguoibinhluan;
     User.findOne({username:req.body.nguoibinhluan},function (err,doc) {
        if(doc)

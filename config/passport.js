@@ -31,6 +31,7 @@ module.exports = function (passport) {
                         return done(null, false, req.flash('info', 'Tên đăng nhập đã được sử dụng'));
                     } else {
                         var cur_date = new Date();
+                        cur_date = cur_date.toLocaleString("en-US", {timeZone: 'Asia/Jakarta' });
                         var newUser = new User();
                         newUser.username = username;
                         newUser.admin = false;
